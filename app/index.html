@@ -140,6 +140,12 @@
 <script type="module">
 const $ = function (id) { return document.getElementById(id); };
 const MODEL = "claude-opus-5";
+// Upper bounds on a single run. The key is the user's own, so an
+// accidental paste of a 200-page PDF bills them, not us - refusing it
+// up front is cheaper than a refund conversation. Roughly 15k and 5k
+// tokens of input; a long CV runs about 4k.
+const MAX_CV = 60000;
+const MAX_JOB = 20000;
 const API = "https://api.anthropic.com/v1/messages";
 let personas = [];
 
@@ -263,6 +269,8 @@ const PERSONA_SCHEMA = {
 $("go").addEventListener("click", async function () {
   var cv = $("cv").value.trim();
   if (cv.length < 200) return say($("s1"), "That CV looks too short to work from.", "err");
+  if (cv.length > MAX_CV) return say($("s1"), "That is " + cv.length.toLocaleString() +
+    " characters — longer than any CV needs to be, and it would bill your key for a large request. Trim it to the career history and try again.", "err");
   $("go").disabled = true;
   say($("s1"), "Reading the CV and building five personas…");
   try {
@@ -316,6 +324,8 @@ const SCORE_SCHEMA = {
 $("scoreBtn").addEventListener("click", async function () {
   var job = $("job").value.trim();
   if (job.length < 80) return say($("s2"), "Paste the advert text first.", "err");
+  if (job.length > MAX_JOB) return say($("s2"), "That is " + job.length.toLocaleString() +
+    " characters — more than an advert. Paste the advert itself rather than the whole page.", "err");
   $("scoreBtn").disabled = true;
   say($("s2"), "Scoring against your personas…");
   try {

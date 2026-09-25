@@ -29,13 +29,21 @@ export default {
        ORDER BY received_at DESC LIMIT 500`
     ).bind(row.id, Date.now() - 30 * 86400000).all();
 
-    return new Response(JSON.stringify({ alerts: results }), {
-      headers: {
-        "content-type": "application/json",
-        "cache-control": "no-store",
-        // The dashboard is served from a different origin than the worker.
-        "access-control-allow-origin": env.DASHBOARD_ORIGIN || "*",
-      },
-    });
+    const headers = {
+      "content-type": "application/json",
+      "cache-control": "no-store",
+    };
+    // The dashboard is served from a different origin than the worker, so it
+    // needs an explicit allow. It is named, never "*": the token sits in the
+    // URL, so a wildcard would let any page the user visits read their whole
+    // feed. Unset means no header at all, which fails closed - the dashboard
+    // stops working until the var is set, rather than the feed quietly opening
+    // to every origin the moment a deploy forgets it.
+    if (env.DASHBOARD_ORIGIN) {
+      headers["access-control-allow-origin"] = env.DASHBOARD_ORIGIN;
+      headers["vary"] = "origin";
+    }
+
+    return new Response(JSON.stringify({ alerts: results }), { headers });
   },
 };

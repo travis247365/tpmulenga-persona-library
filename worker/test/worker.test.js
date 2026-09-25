@@ -200,6 +200,22 @@ describe("feed api", () => {
     assert.equal((await get(`/feed/${"c".repeat(32)}`)).status, 404);
   });
 
+  test("names the dashboard origin, never a wildcard", async () => {
+    env.DASHBOARD_ORIGIN = "https://dashboard.example";
+    const r = await get(`/feed/${TOKEN_A}`);
+    assert.equal(r.headers.get("access-control-allow-origin"), "https://dashboard.example");
+    assert.equal(r.headers.get("vary"), "origin");
+  });
+
+  // The token sits in the URL, so a wildcard would let any page the user
+  // happens to visit read their whole feed. A missing var must fail closed:
+  // the dashboard breaks loudly rather than the feed opening silently.
+  test("missing origin var sends no CORS header at all", async () => {
+    delete env.DASHBOARD_ORIGIN;
+    const r = await get(`/feed/${TOKEN_A}`);
+    assert.equal(r.headers.get("access-control-allow-origin"), null);
+  });
+
   test("bad path returns the same 404 shape", async () => {
     const bad = await get("/feed/short");
     const wrong = await get(`/feed/${"c".repeat(32)}`);
