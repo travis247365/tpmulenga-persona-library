@@ -1,0 +1,354 @@
+<title>Persona Forge</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
+       -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:0 72px;}
+  header{padding-block:48px 28px;border-bottom:2px solid var(--ink);}
+  .eyebrow{font-family:var(--label);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--accent);margin:0 0 14px;}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5.5vw,3.1rem);
+     line-height:1.05;letter-spacing:-.022em;margin:0;text-wrap:balance;}
+  .lede{font-size:1.04rem;color:var(--slate);max-width:60ch;margin:18px 0 0;}
+
+  .privacy{display:flex;gap:14px;align-items:flex-start;margin-top:26px;padding:16px 18px;
+           background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 var(--r-sm) var(--r-sm) 0;}
+  .privacy .k{font-family:var(--label);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+              color:var(--accent);white-space:nowrap;padding-top:3px;}
+  .privacy p{margin:0;font-size:.92rem;max-width:72ch;}
+
+  .step{margin-top:34px;background:var(--raised);border:1px solid var(--rule);
+        border-radius:var(--r-md);padding:22px;}
+  .step h2{font-family:var(--display);font-weight:600;font-size:1.12rem;margin:0 0 4px;
+           display:flex;align-items:baseline;gap:10px;}
+  .num{font-family:var(--label);font-size:.76rem;color:var(--accent);}
+  .hint{font-size:.89rem;color:var(--slate);margin:0 0 14px;max-width:70ch;}
+  label{display:block;font-family:var(--label);font-size:.68rem;letter-spacing:.08em;
+        text-transform:uppercase;color:var(--slate);margin:14px 0 6px;}
+  textarea,input[type=password],input[type=text]{
+    width:100%;box-sizing:border-box;background:var(--sunken);color:var(--ink);
+    border:1px solid var(--rule);border-radius:var(--r-sm);padding:11px 13px;
+    font-family:var(--mono);font-size:.82rem;line-height:1.5;}
+  textarea{min-height:150px;resize:vertical;}
+  input:focus-visible,textarea:focus-visible,button:focus-visible{
+    outline:2px solid var(--accent);outline-offset:2px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;}
+  button{font-family:var(--label);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;
+         padding:10px 16px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--ink);
+         background:var(--ink);color:var(--paper);}
+  button.ghost{background:transparent;color:var(--ink);}
+  input[type=file]{font-family:var(--label);font-size:.72rem;color:var(--slate);
+                   max-width:100%;}
+  input[type=file]::file-selector-button{font-family:var(--label);font-size:.74rem;
+    letter-spacing:.05em;text-transform:uppercase;padding:9px 14px;margin-right:10px;
+    border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;
+    background:transparent;color:var(--ink);}
+  input[type=file]::file-selector-button:hover{background:var(--sunken);}
+  button[disabled]{opacity:.45;cursor:not-allowed;}
+  .filerow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;
+           font-size:.85rem;color:var(--slate);}
+
+  .status{font-family:var(--label);font-size:.76rem;margin-top:14px;padding:11px 13px;
+          border-radius:var(--r-sm);border:1px solid var(--rule);background:var(--sunken);display:none;}
+  .status.on{display:block;}
+  .status.err{border-color:var(--crit);color:var(--crit);}
+  .status.ok{border-color:var(--good);}
+
+  .out{margin-top:18px;display:none;}
+  .out.on{display:block;}
+  .persona{border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 18px;margin-top:12px;
+           background:var(--sunken);}
+  .persona h3{font-family:var(--display);font-size:1.02rem;margin:0 0 3px;}
+  .persona .dom{font-family:var(--label);font-size:.68rem;color:var(--slate);margin:0 0 10px;}
+  .persona pre{white-space:pre-wrap;font-family:var(--body);font-size:.9rem;margin:0;}
+  .persona .ev{font-size:.85rem;color:var(--slate);margin:10px 0 0;padding-top:9px;
+               border-top:1px solid var(--rule);}
+  .copy{font-size:.66rem;padding:6px 11px;margin-top:10px;}
+  .score{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  .meter{flex:1;height:8px;background:var(--sunken);border-radius:var(--r-sm);overflow:hidden;}
+  .meter i{display:block;height:100%;border-radius:0 var(--r-sm) var(--r-sm) 0;background:var(--accent);}
+  .sv{font-family:var(--label);font-size:.8rem;font-variant-numeric:tabular-nums;}
+
+  footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--rule);
+         font-size:.85rem;color:var(--slate);}
+  footer a{color:var(--accent);}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Persona Forge · bring your own key</p>
+    <h1>Your CV, read properly</h1>
+    <p class="lede">Paste a CV and get five working personas — each a usable system prompt,
+      each backed by the engagement it came from. Then score any job advert against them.</p>
+    <div class="privacy"><span class="k">Where your data goes</span>
+      <p><b>Nowhere but Anthropic.</b> This page has no backend and no database. Your CV and
+      your API key stay in this browser and are sent only to <code>api.anthropic.com</code>,
+      directly from your machine. Nobody — including whoever published this page — can read
+      either. That is why it needs your own key rather than offering a free tier.</p></div>
+  </header>
+
+  <div class="step">
+    <h2><span class="num">01</span>Your Anthropic API key</h2>
+    <p class="hint">From <a href="https://console.anthropic.com/settings/keys" target="_blank"
+      rel="noopener">console.anthropic.com</a>. Kept in this browser's local storage and sent
+      only to Anthropic. Generating five personas from a two-page CV costs a few cents.</p>
+    <label for="key">sk-ant-…</label>
+    <input id="key" type="password" autocomplete="off" spellcheck="false"
+           placeholder="sk-ant-api03-…">
+    <div class="row">
+      <button class="ghost" id="forget" type="button">Forget key</button>
+      <span class="hint" style="margin:0" id="keystate">not saved</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">02</span>Your CV</h2>
+    <p class="hint">Paste the text, or load a .txt or .md file. PDFs are not parsed here —
+      open the PDF, select all, and paste, which keeps everything client-side.</p>
+    <textarea id="cv" placeholder="Paste your CV…" spellcheck="false"></textarea>
+    <div class="filerow">
+      <input type="file" id="file" accept=".txt,.md,.markdown,text/plain">
+      <span id="fileinfo"></span>
+    </div>
+    <div class="row"><button id="go" type="button">Build my personas</button></div>
+    <div class="status" id="s1"></div>
+    <div class="out" id="personas"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">03</span>Score a role</h2>
+    <p class="hint">Paste a job advert. It is scored against the personas above, with the
+      reasoning shown — including what the CV does <em>not</em> support.</p>
+    <textarea id="job" placeholder="Paste a job advert…" spellcheck="false"
+              style="min-height:120px"></textarea>
+    <div class="row"><button id="scoreBtn" type="button" disabled>Score it</button></div>
+    <div class="status" id="s2"></div>
+    <div class="out" id="scoreOut"></div>
+  </div>
+
+  <footer>
+    <p>Personas are generated from what the CV actually says. The prompt instructs the model
+    not to invent credentials, employers or figures, and to leave a claim out rather than
+    guess — a portfolio gets tested before it gets believed. Verify every generated line
+    against your own documents before using it anywhere.</p>
+  </footer>
+</div>
+
+<script type="module">
+const $ = function (id) { return document.getElementById(id); };
+const MODEL = "claude-opus-5";
+const API = "https://api.anthropic.com/v1/messages";
+let personas = [];
+
+// ---- key, kept only in this browser -------------------------------------
+try { $("key").value = localStorage.getItem("pf.key") || ""; } catch (e) {}
+function keyState() {
+  var has = !!$("key").value.trim();
+  $("keystate").textContent = has ? "saved in this browser only" : "not saved";
+}
+$("key").addEventListener("input", function () {
+  try { localStorage.setItem("pf.key", $("key").value.trim()); } catch (e) {}
+  keyState();
+});
+$("forget").addEventListener("click", function () {
+  $("key").value = "";
+  try { localStorage.removeItem("pf.key"); } catch (e) {}
+  keyState();
+});
+keyState();
+
+// ---- file load ----------------------------------------------------------
+$("file").addEventListener("change", function (e) {
+  var f = e.target.files && e.target.files[0];
+  if (!f) return;
+  var r = new FileReader();
+  r.onload = function () {
+    $("cv").value = r.result;
+    $("fileinfo").textContent = f.name + " — " + Math.round(f.size / 1024) + " KB loaded";
+  };
+  r.readAsText(f);
+});
+
+function say(el, msg, cls) {
+  el.className = "status on" + (cls ? " " + cls : "");
+  el.textContent = msg;
+}
+
+// ---- the one call site --------------------------------------------------
+async function ask(system, user, schema) {
+  var key = $("key").value.trim();
+  if (!key) throw new Error("Add your API key in step 1.");
+
+  var body = {
+    model: MODEL,
+    max_tokens: 16000,
+    system: system,
+    messages: [{ role: "user", content: user }],
+    output_config: { format: { type: "json_schema", schema: schema }, effort: "high" }
+  };
+
+  var res = await fetch(API, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      // Required for calls made straight from a browser. The key is the
+      // user's own and never leaves their machine except to Anthropic.
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    var detail = "";
+    try { detail = (await res.json()).error.message; } catch (e) { detail = res.statusText; }
+    if (res.status === 401) throw new Error("Anthropic rejected that key (401).");
+    if (res.status === 429) throw new Error("Rate limited (429). Wait a moment and retry.");
+    throw new Error("Anthropic returned " + res.status + ": " + detail);
+  }
+
+  var data = await res.json();
+  // Always check stop_reason before reading content.
+  if (data.stop_reason === "refusal") {
+    throw new Error("The model declined this request" +
+      (data.stop_details && data.stop_details.category
+        ? " (" + data.stop_details.category + ")." : "."));
+  }
+  var text = (data.content || []).filter(function (b) { return b.type === "text"; })
+                                 .map(function (b) { return b.text; }).join("");
+  return JSON.parse(text);
+}
+
+// ---- step 2: personas ---------------------------------------------------
+const PERSONA_SYSTEM = [
+  "You turn a CV into five AI personas. Each is a usable system prompt AND a piece of",
+  "portfolio evidence.",
+  "",
+  "Rules you must not break:",
+  "- Use ONLY what the CV states. Never invent an employer, a qualification, a date or a figure.",
+  "- Name a qualification exactly as the CV names it. If it says Postgraduate Diploma, never",
+  "  write MBA. If a credential is absent, it does not exist.",
+  "- Every persona's evidence must quote or closely paraphrase something in the CV, and name",
+  "  the organisation and period it came from.",
+  "- Where the CV is vague, say so in the gap field rather than filling it in. A portfolio is",
+  "  tested before it is believed, and one unsupported claim discredits the rest.",
+  "- Derive the five domains from this CV specifically. Do not use a generic set."
+].join("\n");
+
+const PERSONA_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["personas"],
+  properties: {
+    personas: {
+      type: "array", minItems: 5, maxItems: 5,
+      items: {
+        type: "object", additionalProperties: false,
+        required: ["name", "domain", "systemPrompt", "evidence", "gap"],
+        properties: {
+          name: { type: "string" },
+          domain: { type: "string" },
+          systemPrompt: { type: "string" },
+          evidence: { type: "string" },
+          gap: { type: "string" }
+        }
+      }
+    }
+  }
+};
+
+$("go").addEventListener("click", async function () {
+  var cv = $("cv").value.trim();
+  if (cv.length < 200) return say($("s1"), "That CV looks too short to work from.", "err");
+  $("go").disabled = true;
+  say($("s1"), "Reading the CV and building five personas…");
+  try {
+    var out = await ask(PERSONA_SYSTEM, "Here is the CV:\n\n" + cv, PERSONA_SCHEMA);
+    personas = out.personas;
+    $("personas").className = "out on";
+    $("personas").innerHTML = personas.map(function (p, i) {
+      return '<div class="persona"><h3>' + esc(p.name) + "</h3>" +
+        '<p class="dom">' + esc(p.domain) + "</p>" +
+        "<pre>" + esc(p.systemPrompt) + "</pre>" +
+        '<p class="ev"><b>Evidence:</b> ' + esc(p.evidence) +
+        (p.gap ? '<br><b>Not supported by the CV:</b> ' + esc(p.gap) : "") + "</p>" +
+        '<button class="copy ghost" data-i="' + i + '" type="button">Copy prompt</button></div>';
+    }).join("");
+    $("scoreBtn").disabled = false;
+    say($("s1"), "Five personas built. Check each against your own documents.", "ok");
+  } catch (err) {
+    say($("s1"), err.message, "err");
+  } finally {
+    $("go").disabled = false;
+  }
+});
+
+$("personas").addEventListener("click", function (e) {
+  var b = e.target.closest(".copy");
+  if (!b) return;
+  var t = personas[+b.dataset.i].systemPrompt;
+  var done = function () {
+    b.textContent = "Copied";
+    setTimeout(function () { b.textContent = "Copy prompt"; }, 1600);
+  };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(done, function () { b.textContent = "Copy failed"; });
+    } else { b.textContent = "Copy unavailable"; }
+  } catch (err) { b.textContent = "Copy unavailable"; }
+});
+
+// ---- step 3: score ------------------------------------------------------
+const SCORE_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["score", "verdict", "fits", "gaps"],
+  properties: {
+    score: { type: "integer", minimum: 0, maximum: 5 },
+    verdict: { type: "string" },
+    fits: { type: "array", items: { type: "string" } },
+    gaps: { type: "array", items: { type: "string" } }
+  }
+};
+
+$("scoreBtn").addEventListener("click", async function () {
+  var job = $("job").value.trim();
+  if (job.length < 80) return say($("s2"), "Paste the advert text first.", "err");
+  $("scoreBtn").disabled = true;
+  say($("s2"), "Scoring against your personas…");
+  try {
+    var sys = "Score a job advert against a candidate's personas. Award one point each for: " +
+      "seniority match; domain match; function match; location or remote match; and implied " +
+      "P&L, team or transformation ownership. Be honest about gaps — naming a real gap is " +
+      "more useful than a flattering score, and the candidate will be asked about it in an " +
+      "interview. Never claim experience the personas do not evidence.";
+    var out = await ask(sys,
+      "PERSONAS:\n" + JSON.stringify(personas, null, 1) + "\n\nJOB ADVERT:\n" + job,
+      SCORE_SCHEMA);
+    $("scoreOut").className = "out on";
+    $("scoreOut").innerHTML =
+      '<div class="persona"><div class="score"><span class="sv">' + out.score +
+      '/5</span><span class="meter"><i style="width:' + (out.score / 5 * 100) +
+      '%"></i></span></div><p style="margin:12px 0 0">' + esc(out.verdict) + "</p>" +
+      list("Fits", out.fits) + list("Gaps", out.gaps) + "</div>";
+    say($("s2"), "Scored.", "ok");
+  } catch (err) {
+    say($("s2"), err.message, "err");
+  } finally {
+    $("scoreBtn").disabled = false;
+  }
+});
+
+function list(title, arr) {
+  if (!arr || !arr.length) return "";
+  return '<p class="ev"><b>' + title + ":</b></p><ul style='margin:4px 0 0'>" +
+    arr.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+</script>

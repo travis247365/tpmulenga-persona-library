@@ -1,0 +1,75 @@
+/* ==========================================================================
+   TPCL Design System — token layer
+   --------------------------------------------------------------------------
+   This is the ONLY file that carries design values. Every rule in the app
+   consumes these variables and holds no literal colour, font or radius, so
+   the authoritative design.claude.ai export replaces this file wholesale
+   and nothing else has to be touched.
+
+   Provenance of what is here now:
+     TYPOGRAPHY  verified. Standing instruction: all Travis Paul Consulting
+                 work is set in Poppins (personal work uses Trebuchet MS).
+                 One family throughout, so the label layer is Poppins at
+                 small size with letterspacing rather than a second face.
+                 The monospace slot is reserved for API keys and code, where
+                 character alignment is functional, not decorative.
+     COLOUR      PROVISIONAL. The TPCL export was not reachable from this
+                 container, so these are neutral greys plus a single accent.
+                 They are deliberately unbranded rather than a guessed TPCL
+                 palette. Replace on arrival of the export.
+   ========================================================================== */
+
+:root{
+  color-scheme:light;
+
+  /* --- surfaces & ink ---------------------------------------------------- */
+  --ink:#14181c;          /* primary text, hard rules                       */
+  --slate:#5b6570;        /* secondary text                                 */
+  --paper:#f6f7f8;        /* page ground                                    */
+  --raised:#ffffff;       /* cards sitting above the page                   */
+  --sunken:#eef0f2;       /* inputs, wells                                  */
+  --rule:#dde1e5;         /* hairlines                                      */
+
+  /* --- accent ------------------------------------------------------------ */
+  --accent:#1c5fa8;
+  --accent-soft:#e2ebf5;
+
+  /* --- status (reserved; never reused as a series colour) ----------------
+     Stepped to clear 4.5:1 on --paper, because these are worn by status TEXT
+     and by 1px borders, not by fills. The obvious mid-tones do not: the
+     bright amber measured 2.02:1 and the bright red 3.69:1 against this
+     ground, which reads as legible only to someone who already knows what
+     the message says. Dark mode keeps its own lighter steps below. */
+  --good:#127f58;
+  --warn:#8f6200;
+  --crit:#c02c2b;
+
+  /* --- type -------------------------------------------------------------- */
+  --display:"Poppins","Helvetica Neue",Arial,sans-serif;
+  --body:"Poppins","Helvetica Neue",Arial,sans-serif;
+  --label:"Poppins","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+
+  /* --- geometry ---------------------------------------------------------- */
+  --r-sm:4px;
+  --r-md:6px;
+  --r-lg:10px;
+}
+
+/* Dark mode is selected, not an inversion: each step is chosen against the
+   dark ground so ink keeps its contrast and the accent keeps its chroma. */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --ink:#e9ecef; --slate:#97a2ad;
+  --paper:#11151a; --raised:#181d23; --sunken:#0d1116; --rule:#28303a;
+  --accent:#6aa9e8; --accent-soft:#16283c;
+  --good:#199e70; --warn:#c98500; --crit:#e66767;
+}}
+
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#e9ecef; --slate:#97a2ad;
+  --paper:#11151a; --raised:#181d23; --sunken:#0d1116; --rule:#28303a;
+  --accent:#6aa9e8; --accent-soft:#16283c;
+  --good:#199e70; --warn:#c98500; --crit:#e66767;
+}

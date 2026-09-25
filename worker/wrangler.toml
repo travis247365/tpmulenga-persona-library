@@ -1,0 +1,15 @@
+name = "jobsearch-ingest"
+main = "src/email.js"
+compatibility_date = "2026-09-01"
+
+# Email Routing delivers forwarded alerts to the email() handler. Configure the
+# catch-all or a jobs@ rule to this worker in the Cloudflare dashboard under
+# Email > Email Routing > Routes.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jobsearch"
+database_id = "REPLACE_AFTER_CREATE"
+
+[vars]
+DASHBOARD_ORIGIN = "https://dashboard.tpm-persona-library.pages.dev"
