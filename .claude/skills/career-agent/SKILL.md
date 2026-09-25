@@ -227,3 +227,45 @@ compensation detail and reaches the lock screen.
 every notification on it, and these disclose that a search is underway, which
 roles, and which recruiters. Use a long random topic, or a server with access
 control. Never commit the topic, and never log it.
+
+## 7. Daily export and email
+
+At the end of a scheduled run, package the day into one folder and send it.
+
+```sh
+.claude/skills/career-agent/tools/export-bundle.sh \
+  --since "1 day ago" --actions /tmp/sweep-report.md
+```
+
+It prints the folder and a zip of it. The layout is fixed on purpose — one
+folder, three things, and a manifest:
+
+| Folder | Holds |
+|---|---|
+| `01-actions/` | the sweep report and the commit log for the window |
+| `02-files/` | only the files that changed, so it is about today rather than a re-send of the repository |
+| `03-documentation/` | the agents, skills and personas as they stood |
+| `MANIFEST.txt` | every file with size and SHA-256, so a bundle opened months later can be checked rather than trusted |
+
+`ntfy.conf` is stripped from the bundle. The topic is the only thing protecting
+those notifications and this travels by email.
+
+Then send it with `send_message`, attaching the zip:
+
+- **To:** travis.mulenga@gmail.com — himself, and nobody else, ever.
+- **Subject:** `JobSearch AGI — {DATE} — {N} new, {M} actions`
+- **Body:** the shortlist table, what changed, and anything waiting on a decision.
+
+**This is the one exception to "never send email", and it is narrow.** The rail
+exists so nothing reaches a recruiter, an employer or a referee without a human
+sending it. A digest addressed solely to Travis breaks none of that. Any other
+recipient, on any pretext, is still forbidden.
+
+### Getting it into iCloud
+
+Nothing here can write to `~/Library/Mobile Documents/` — that is on the Mac and
+unreachable from the cloud container. The email attachment is the crossing
+point. On the Mac, either save the attachment into
+`iCloud Drive/Career Applications/_Daily/`, or let a Mail rule or Shortcut do it
+automatically. Say this plainly rather than implying the folder appears by
+itself.

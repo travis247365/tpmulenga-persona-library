@@ -1,10 +1,28 @@
 # fly.io deployment for the persona library.
 #
-# Deploy with:  fly launch --no-deploy   (first time, to create the app)
-#               fly deploy
+# THIS APP IS PRIVATE. It has no public IP and is not on the internet.
+# Reaching it requires being on the org's private network.
 #
-# The server reads PORT from the environment, so internal_port below is the
-# only place the port is set.
+#   fly launch --no-deploy            # create the app, first time only
+#   fly ips list                      # must be EMPTY - see below
+#   fly deploy
+#   fly wireguard create              # once per machine that needs access
+#
+# Then browse to http://tpmulenga-persona-library.flycast/
+#
+# Two things decide whether this is actually private, and neither is in this
+# file, so check both after the first deploy:
+#
+#   1. NO PUBLIC IPs. `fly launch` allocates them by default. Run `fly ips list`
+#      and release anything shown with `fly ips release <address>`. A public
+#      IPv4 or IPv6 puts the site on the internet regardless of what is
+#      written here.
+#   2. A PRIVATE IP allocated:  fly ips allocate-v6 --private
+#      That gives the app its .flycast address over 6PN.
+#
+# The absence of a [http_service] block below is what stops Fly attaching a
+# public edge listener. Do not add one back to "make it reachable" - that
+# publishes the app. Use WireGuard instead.
 
 app = "tpmulenga-persona-library"
 primary_region = "jnb"          # Johannesburg - nearest region to Lusaka
@@ -16,14 +34,16 @@ primary_region = "jnb"          # Johannesburg - nearest region to Lusaka
   NODE_ENV = "production"
   PORT = "3000"
 
-[http_service]
+# Private service: bound to the 6PN network only, reached via .flycast.
+# No `ports` entries, so nothing is published to the public edge.
+[[services]]
   internal_port = 3000
-  force_https = true
+  protocol = "tcp"
   auto_stop_machines = "stop"
   auto_start_machines = true
-  min_machines_running = 0      # scales to zero; a portfolio site is idle most of the time
+  min_machines_running = 0      # scales to zero; idle most of the time
 
-  [http_service.concurrency]
+  [services.concurrency]
     type = "requests"
     hard_limit = 250
     soft_limit = 200
