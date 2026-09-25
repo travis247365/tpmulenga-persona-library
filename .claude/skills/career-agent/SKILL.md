@@ -137,8 +137,18 @@ time-critical item in the report.
 ## Scheduled runs
 
 Keep the window to `7d` and report only where something scored 4 or better. A run
-that finds nothing worth surfacing says so in one line and stops. Do not pad, and
-do not re-report a thread already carrying `Label_25` or `Label_26`.
+that finds nothing worth surfacing says so in one line and stops. Do not pad.
+
+**Deduplicate in code, never with a `-label:` query.** Gmail matches a thread when
+any of its messages match, so a negative label filter does not reliably exclude an
+already-labelled thread. Trialled against this inbox, a query carrying
+`-label:Label_2 -label:Label_25 -label:Label_26` returned seven threads whose own
+`labelIds` contained those very labels.
+
+Left unfixed, a scheduled run re-reports everything it has already seen and
+re-pushes the same notification every day. So: fetch the window, read each
+thread's `labelIds`, and skip in code anything already carrying `Label_2`,
+`Label_25` or `Label_26`.
 
 ## 6. Notifications (ntfy → iOS)
 
@@ -170,11 +180,22 @@ only when the sender is a *named human* — not `noreply`, `no-reply`, `jobs-nor
 `application` events at most.
 
 ```
-newer_than:2d -from:noreply -from:no-reply -from:donotreply
-  -from:jobalerts-noreply@linkedin.com -from:jobs-noreply@linkedin.com
-  (subject:application OR subject:interview OR subject:role OR subject:opportunity
-   OR subject:CV OR subject:candidate)
+newer_than:2d -in:promotions -in:updates -in:social -in:forums
+  -from:noreply -from:no-reply -from:donotreply
+  (subject:application OR subject:interview OR subject:candidate
+   OR subject:"your CV" OR subject:shortlist)
 ```
+
+**The subject terms alone are not enough.** Trialled over 7 days this query
+returned two hits, both newsletters: a design newsletter, and a news alert whose
+subject read "candidate's racist post". Editorial copy uses these words constantly.
+
+So filter on the *sender*, in code, before notifying. A `reply` requires all of:
+
+1. the sender is not on the newsletter/ATS exclusion lists above;
+2. the From header carries a personal display name, not a brand or a role
+   mailbox (`careers@`, `recruiting@`, `talent@`, `hr@`);
+3. the thread body addresses Travis directly about a specific role.
 
 Read each candidate thread before notifying. A `reply` push carries the sender's
 name, the role, and a link to the thread — never the message body, which can hold
