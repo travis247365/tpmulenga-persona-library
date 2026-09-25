@@ -128,8 +128,22 @@ rm -f "$LOG"
 # --- the part that actually decides privacy --------------------------------
 say "Checking whether Access is protecting it"
 echo "probing $URL"
-CODE=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 20 "$URL" || echo 000)
-CHAIN=$(curl -s -o /dev/null -w '%{url_effective}' -L --max-time 20 "$URL" || true)
+# One curl, both values, and the exit status handled separately. Appending a
+# fallback with `|| echo 000` concatenated onto curl's own "000" and produced
+# "000000", which matched no branch below. A fresh Pages URL also takes a few
+# seconds to answer, so retry rather than calling the first miss inconclusive.
+CODE=000; CHAIN=""
+for attempt in 1 2 3 4 5; do
+  if out=$(curl -s -o /dev/null -w '%{http_code} %{url_effective}' \
+             -L --max-time 20 "$URL" 2>/dev/null); then
+    CODE=${out%% *}
+    CHAIN=${out#* }
+    [ "$CODE" != "000" ] && break
+  fi
+  echo "  no answer yet (attempt $attempt/5) — waiting 10s for propagation"
+  sleep 10
+done
+echo "  HTTP $CODE"
 
 if printf '%s' "$CHAIN" | grep -q 'cloudflareaccess\.com'; then
   printf '\n\033[32mPROTECTED.\033[0m Requests are redirected to Cloudflare Access.\n'
