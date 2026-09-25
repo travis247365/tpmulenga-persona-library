@@ -97,7 +97,14 @@ Bands: **5 = strong**, **4 = worth a look**, **3 = marginal**, **≤2 = reject**
 | 5 | `Label_2` (JOBZZZ) + `Label_25` ([Mailbox]/To Pursue) | hand off (§4) |
 | 4 | `Label_2` (JOBZZZ) | shortlist |
 | 3 | none | shortlist as marginal |
-| ≤2 | `Label_26` ([Mailbox]/Do Not Pursue) | omit |
+| ≤2 | see below | omit |
+
+**Only ever label a thread for the best role it contains.** LinkedIn and Executive
+Placements alerts are digests: one subject line, roughly six distinct roles beneath
+it. `Label_26` ([Mailbox]/Do Not Pursue) is therefore reserved for threads carrying
+a single role — a direct approach, or an alert whose body you have read in full and
+confirmed holds nothing above 2. Never reject a digest on its subject line; that
+buries the five roles the subject does not name.
 
 Labelling is idempotent. Before labelling, read the thread's current `labelIds`; if
 a human has already filed it under To Pursue or Do Not Pursue, leave that alone and
