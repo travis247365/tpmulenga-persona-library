@@ -269,3 +269,70 @@ point. On the Mac, either save the attachment into
 `iCloud Drive/Career Applications/_Daily/`, or let a Mail rule or Shortcut do it
 automatically. Say this plainly rather than implying the folder appears by
 itself.
+
+## 8. Calendar events and application filing
+
+### Calendar — Google Calendar, not Outlook
+
+Write to the primary calendar `travis.mulenga@gmail.com` (Africa/Maputo, which is
+Lusaka time). **Outlook is read-only**: the Microsoft 365 connector holds
+`Calendars.Read` and `Files.Read` but no write scope, so `outlook_create_event`
+and any OneDrive upload will fail until an administrator grants
+`Calendars.ReadWrite` and `Files.ReadWrite` in Entra.
+
+Create an event for exactly two things, and nothing else:
+
+| Event | Created when |
+|---|---|
+| **Interview** | a named human proposes or confirms a time — never from an automated scheduler link that has not been used |
+| **Deadline** | the posting states a closing date, or the employer states a response window |
+
+**Deduplicate before writing.** Search the calendar for the role and company
+first. A daily run that does not check creates the same event every morning.
+
+**Mark a derived date as derived.** A closing date printed in the advert is a
+fact; "60 days from submission" is arithmetic on a policy, and the description
+must say so. The Sasol event reads "This date is derived from that rule, not
+stated by Sasol directly" for exactly that reason.
+
+Conventions that keep the calendar usable:
+
+- Set `availability: AVAILABILITY_FREE` for deadlines. They are markers, not
+  commitments, and should not make the day look booked.
+- One popup reminder 24 hours ahead (`overrideReminders`), not the calendar
+  default, which may be minutes.
+- **Never add attendees.** Adding a recruiter's address sends them an invitation
+  from a calendar entry Travis has not agreed to, which is both presumptuous and
+  irreversible. Put the name in the description.
+- Set `notificationLevel: NONE` on updates, so a correction does not mail anyone.
+- End the description with "Created by career-agent", so its provenance is
+  visible in a shared calendar.
+
+### Filing applications
+
+The intended target is OneDrive, under `Career Applications/{YYYY-MM} {Role}
+({Company})/`, mirroring the iCloud structure.
+
+**Blocked today.** The M365 connector's granted scopes are read-only —
+`Files.Read`, `Files.Read.All`, `Sites.Read.All` — so `sharepoint_upload_file`
+cannot write. The fix is an Entra consent grant for `Files.ReadWrite.All`; it is
+not something to work around, and no alternative route to OneDrive should be
+attempted.
+
+Until then, file to Google Drive, which is writable, under the same folder
+naming, and say in the run's report that OneDrive was skipped and why. Never
+report a pack as filed when it was not.
+
+What gets filed, once per application:
+
+```
+{YYYY-MM} {Role} ({Company})/
+  01_CV/              the version actually sent, and only that version
+  02_Cover/           cover note and any point-of-view one-pager
+  03_Correspondence/  the recruiter thread as sent and received
+  04_Job_Ad/          a captured copy, since adverts get pulled
+  05_Brief/           the internal brief, which never leaves
+```
+
+Credentials and reference letters are **offer-stage only** and are not filed with
+the application pack.
