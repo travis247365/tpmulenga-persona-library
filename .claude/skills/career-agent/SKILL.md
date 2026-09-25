@@ -150,17 +150,39 @@ re-pushes the same notification every day. So: fetch the window, read each
 thread's `labelIds`, and skip in code anything already carrying `Label_2`,
 `Label_25` or `Label_26`.
 
-## 6. Notifications (ntfy → iOS)
+## 6. Notifications
 
-`notify.sh` pushes an event to ntfy. It needs `NTFY_URL` (the full topic URL) in
-the environment, and optionally `NTFY_TOKEN`. Without `NTFY_URL` it exits 78 and
-the run continues — a missing push must never fail a sweep.
+Two delivery paths. Use the first; the second is an upgrade that depends on a
+setting outside this repo.
+
+**Primary — `PushNotification`.** Reaches the phone through the Claude app,
+needs no configuration and no outbound network, so it works on a scheduled run
+today. Keep it under 200 characters, one line, no markdown, and lead with what
+is actionable. This is the default and a run should always use it.
+
+**Optional — `notify.sh` (ntfy).** Richer: per-event priority, tags and a tap
+target straight to the posting. It needs `NTFY_URL` (the full topic URL) and
+optionally `NTFY_TOKEN`, and it needs `ntfy.sh` to be reachable.
+
+> **Blocked in the cloud environment as it stands.** A `CONNECT` to `ntfy.sh:443`
+> is refused by the egress policy — the proxy reports `connect_rejected`,
+> "gateway answered 403". That is an environment setting, not a bug in the
+> script: add `ntfy.sh` to the environment's allowed domains, or widen its
+> network access level, and the script works unchanged. Never route around it.
+
+Without `NTFY_URL`, `notify.sh` exits 78 and the run continues — a missing push
+must never fail a sweep.
 
 ```sh
 ./notify.sh match "Head: Performance, Data & Transformation — Absa" \
   "Johannesburg · scored 5/5 · data & transformation leadership" \
   "https://www.linkedin.com/jobs/view/4470400753/"
 ```
+
+Send one `PushNotification` per sweep summarising what is new, rather than one
+per role — several buzzes in a row for a single run is how a useful alert becomes
+one that gets muted. Where ntfy is available, it additionally fires per event as
+below, because a per-event tap target is the thing it adds.
 
 Fire on exactly three events, once each. Deduplicate on the LinkedIn job id, or on
 the Gmail thread id where there is no job id — a scheduled sweep re-reads the same
