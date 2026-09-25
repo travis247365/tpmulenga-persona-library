@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+# Deploy the persona library to Cloudflare Pages, then CHECK that Cloudflare
+# Access is actually protecting it.
+#
+#   1. Copy your Cloudflare API token to the clipboard
+#   2. bash cloudflare-deploy.sh
+#
+# Pages is free and Access is free for small teams, so this is the one
+# free-and-private combination. But Pages alone is PUBLIC: Access is a separate
+# thing you configure in the Zero Trust dashboard, and until you do, the site is
+# on the internet. This script deploys, then probes the live URL and tells you
+# which of the two states you are in rather than assuming the good one.
+#
+# Token needs: Account > Cloudflare Pages > Edit
+#   https://dash.cloudflare.com/profile/api-tokens
+
+set -euo pipefail
+
+PROJECT=${PROJECT:-tpm-persona-library}
+BRANCH=claude/epic-thompson-hgbsmp
+REPO=https://github.com/travis247365/tpmulenga-persona-library
+WORKDIR=${WORKDIR:-$HOME/dev/tpmulenga-persona-library}
+
+say()  { printf '\n\033[1m==> %s\033[0m\n' "$1"; }
+warn() { printf '\n\033[33m%s\033[0m\n' "$1"; }
+die()  { printf '\n\033[31mERROR: %s\033[0m\n' "$1" >&2; exit 1; }
+
+command -v npx >/dev/null || die "node/npx not found. Install: brew install node"
+
+# --- token -----------------------------------------------------------------
+say "Token"
+if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
+  echo "using CLOUDFLARE_API_TOKEN from the environment"
+else
+  TOKEN=$(pbpaste 2>/dev/null || true)
+  # Cloudflare tokens are 40 chars of [A-Za-z0-9_-]; check shape, never print it.
+  if printf '%s' "$TOKEN" | grep -qE '^[A-Za-z0-9_-]{36,}$'; then
+    export CLOUDFLARE_API_TOKEN="$TOKEN"
+    echo "using the token on your clipboard"
+  else
+    die "no token. Create one with 'Account > Cloudflare Pages > Edit' at
+     https://dash.cloudflare.com/profile/api-tokens
+     then copy it and re-run."
+  fi
+fi
+
+# --- source and build ------------------------------------------------------
+say "Source"
+if [ -d "$WORKDIR/.git" ]; then
+  git -C "$WORKDIR" fetch --quiet origin "$BRANCH"
+  git -C "$WORKDIR" checkout --quiet "$BRANCH"
+  git -C "$WORKDIR" pull --quiet origin "$BRANCH"
+else
+  mkdir -p "$(dirname "$WORKDIR")"
+  git clone --quiet --branch "$BRANCH" "$REPO" "$WORKDIR"
+fi
+cd "$WORKDIR"
+
+say "Building"
+corepack enable >/dev/null 2>&1 || true
+pnpm install --frozen-lockfile
+pnpm run build
+[ -d dist/public ] || die "dist/public missing after build"
+
+# --- deploy ----------------------------------------------------------------
+say "Deploying to Cloudflare Pages"
+OUT=$(npx --yes wrangler@4 pages deploy dist/public \
+        --project-name "$PROJECT" --commit-dirty=true 2>&1 | tee /dev/stderr)
+URL=$(printf '%s' "$OUT" | grep -oE 'https://[a-z0-9.-]*\.pages\.dev' | tail -1)
+[ -n "$URL" ] || die "could not find the deployed URL in wrangler's output"
+
+# --- the part that actually decides privacy --------------------------------
+say "Checking whether Access is protecting it"
+echo "probing $URL"
+CODE=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 20 "$URL" || echo 000)
+CHAIN=$(curl -s -o /dev/null -w '%{url_effective}' -L --max-time 20 "$URL" || true)
+
+if printf '%s' "$CHAIN" | grep -q 'cloudflareaccess\.com'; then
+  printf '\n\033[32mPROTECTED.\033[0m Requests are redirected to Cloudflare Access.\n'
+  echo "  $URL  ->  $CHAIN"
+elif [ "$CODE" = "200" ]; then
+  warn "PUBLIC. The site returned 200 with no Access redirect — anyone with the
+URL can read it right now. Personas are not secret, but you asked for private,
+so finish the second half:
+
+  1. https://one.dash.cloudflare.com  ->  Access  ->  Applications
+  2. Add an application  ->  Self-hosted
+  3. Application domain:  ${URL#https://}
+  4. Add a policy:  Action = Allow,  Include = Emails = travis.mulenga@gmail.com
+  5. Save, then re-run this script — it will re-probe and confirm.
+
+Until then treat the URL as public."
+  exit 2
+else
+  warn "Inconclusive: HTTP $CODE. Cloudflare may still be propagating — wait a
+minute and re-run. Do not assume it is protected."
+  exit 2
+fi
+
+cat <<TXT
+
+Deployed and protected.
+  Library:  $URL/personas/
+
+If you used a clipboard token, clear it:  pbcopy </dev/null
+Revoke it any time at https://dash.cloudflare.com/profile/api-tokens
+TXT
