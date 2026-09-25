@@ -96,12 +96,34 @@ pnpm install --frozen-lockfile
 pnpm run build
 [ -d dist/public ] || die "dist/public missing after build"
 
+# --- project ---------------------------------------------------------------
+# `pages deploy` offers to create a missing project, which needs prompts it
+# cannot show when its output is piped. So create it explicitly, with the
+# branch named, and let "already exists" pass.
+say "Pages project"
+CREATE_LOG=$(mktemp)
+if npx --yes wrangler@4 pages project create "$PROJECT" \
+      --production-branch main >"$CREATE_LOG" 2>&1; then
+  echo "created project '$PROJECT'"
+elif grep -qiE 'already (exists|have)|duplicate' "$CREATE_LOG"; then
+  echo "project '$PROJECT' already exists"
+else
+  cat "$CREATE_LOG" >&2
+  die "could not create the Pages project — see above"
+fi
+rm -f "$CREATE_LOG"
+
 # --- deploy ----------------------------------------------------------------
 say "Deploying to Cloudflare Pages"
-OUT=$(npx --yes wrangler@4 pages deploy dist/public \
-        --project-name "$PROJECT" --commit-dirty=true 2>&1 | tee /dev/stderr)
-URL=$(printf '%s' "$OUT" | grep -oE 'https://[a-z0-9.-]*\.pages\.dev' | tail -1)
-[ -n "$URL" ] || die "could not find the deployed URL in wrangler's output"
+# Write to a log AND the terminal, but keep the pipeline out of a command
+# substitution: wrapping wrangler in $(...) hid its progress and made it treat
+# the run as non-interactive.
+LOG=$(mktemp)
+npx --yes wrangler@4 pages deploy dist/public \
+    --project-name "$PROJECT" --branch main --commit-dirty=true 2>&1 | tee "$LOG"
+URL=$(grep -oE 'https://[a-z0-9.-]*\.pages\.dev' "$LOG" | tail -1)
+rm -f "$LOG"
+[ -n "$URL" ] || die "deploy produced no *.pages.dev URL — see wrangler's output above"
 
 # --- the part that actually decides privacy --------------------------------
 say "Checking whether Access is protecting it"
