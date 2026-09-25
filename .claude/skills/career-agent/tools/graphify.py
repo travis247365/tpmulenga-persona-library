@@ -93,14 +93,13 @@ def render(nodes, results):
     return "\n".join(lines) + "\n"
 
 
-def to_cortex(nodes, data):
-    """Emit a shape cortex can ingest.
+def _esc(v):
+    """Escape a value for a Cypher single-quoted string."""
+    return str(v).replace("\\", "\\\\").replace("'", "\\'")
 
-    The real schema is unknown from this container, so this is deliberately
-    plain: typed nodes, typed directed edges, provenance on every edge.
-    Adapt the writer, not the graph, once cortex's schema is in hand.
-    """
-    return {
+
+def emit_json(nodes, data):
+    return json.dumps({
         "format": "graphify/v1",
         "nodes": [
             {"id": n["id"], "type": n["type"], "label": n["label"],
@@ -113,7 +112,84 @@ def to_cortex(nodes, data):
              "asserted": "evidence" not in e}
             for e in data["edges"]
         ],
-    }
+    }, indent=2)
+
+
+def emit_cypher(nodes, data):
+    """Neo4j / openCypher MERGE statements, idempotent on re-import."""
+    out = ["// graphify/v1 - safe to re-run; every statement MERGEs"]
+    for n in nodes.values():
+        props = [f"label: '{_esc(n['label'])}'", f"kind: '{_esc(n['type'])}'"]
+        if n.get("sensitivity"):
+            props.append(f"sensitivity: '{_esc(n['sensitivity'])}'")
+        if n.get("note"):
+            props.append(f"note: '{_esc(n['note'])}'")
+        out.append(f"MERGE (n:Entity {{id: '{_esc(n['id'])}'}}) SET n += {{{', '.join(props)}}};")
+    for e in data["edges"]:
+        rel = e["type"].upper().replace(" ", "_")
+        props = [f"weight: {e.get('weight', 1.0)}",
+                 f"asserted: {'false' if 'evidence' in e else 'true'}"]
+        if e.get("evidence"):
+            props.append(f"evidence: '{_esc(e['evidence'])}'")
+        out.append(
+            f"MATCH (a:Entity {{id: '{_esc(e['src'])}'}}), (b:Entity {{id: '{_esc(e['dst'])}'}}) "
+            f"MERGE (a)-[r:{rel}]->(b) SET r += {{{', '.join(props)}}};")
+    return "\n".join(out)
+
+
+def emit_graphml(nodes, data):
+    """GraphML - opens in Gephi, yEd, Cytoscape."""
+    from xml.sax.saxutils import escape
+    keys = [("label", "node", "string"), ("kind", "node", "string"),
+            ("sensitivity", "node", "string"), ("note", "node", "string"),
+            ("type", "edge", "string"), ("weight", "edge", "double"),
+            ("evidence", "edge", "string"), ("asserted", "edge", "boolean")]
+    out = ['<?xml version="1.0" encoding="UTF-8"?>',
+           '<graphml xmlns="http://graphml.graphdrawing.org/xmlns">']
+    for name, dom, typ in keys:
+        out.append(f'  <key id="{name}" for="{dom}" attr.name="{name}" attr.type="{typ}"/>')
+    out.append('  <graph edgedefault="directed">')
+    for n in nodes.values():
+        out.append(f'    <node id="{escape(n["id"])}">')
+        for k, v in (("label", n["label"]), ("kind", n["type"]),
+                     ("sensitivity", n.get("sensitivity")), ("note", n.get("note"))):
+            if v:
+                out.append(f'      <data key="{k}">{escape(str(v))}</data>')
+        out.append("    </node>")
+    for i, e in enumerate(data["edges"]):
+        out.append(f'    <edge id="e{i}" source="{escape(e["src"])}" target="{escape(e["dst"])}">')
+        out.append(f'      <data key="type">{escape(e["type"])}</data>')
+        out.append(f'      <data key="weight">{e.get("weight", 1.0)}</data>')
+        out.append(f'      <data key="asserted">{"false" if "evidence" in e else "true"}</data>')
+        if e.get("evidence"):
+            out.append(f'      <data key="evidence">{escape(e["evidence"])}</data>')
+        out.append("    </edge>")
+    out += ["  </graph>", "</graphml>"]
+    return "\n".join(out)
+
+
+def emit_csv(nodes, data):
+    """Two CSV blocks - the lowest common denominator for any importer."""
+    import csv
+    import io
+    buf = io.StringIO()
+    w = csv.writer(buf)
+    w.writerow(["# nodes"])
+    w.writerow(["id", "type", "label", "sensitivity", "note"])
+    for n in nodes.values():
+        w.writerow([n["id"], n["type"], n["label"],
+                    n.get("sensitivity", ""), n.get("note", "")])
+    w.writerow([])
+    w.writerow(["# edges"])
+    w.writerow(["src", "dst", "type", "weight", "evidence", "asserted"])
+    for e in data["edges"]:
+        w.writerow([e["src"], e["dst"], e["type"], e.get("weight", 1.0),
+                    e.get("evidence", ""), "evidence" not in e])
+    return buf.getvalue()
+
+
+EMITTERS = {"json": emit_json, "cypher": emit_cypher,
+            "graphml": emit_graphml, "csv": emit_csv}
 
 
 def main():
@@ -121,7 +197,9 @@ def main():
     ap.add_argument("--graph", required=True)
     ap.add_argument("--target", help="node id to trace exposures from")
     ap.add_argument("--max-hops", type=int, default=5)
-    ap.add_argument("--emit", help="write cortex-ingestable JSON here")
+    ap.add_argument("--emit", help="write the graph here")
+    ap.add_argument("--format", choices=sorted(EMITTERS), default="json",
+                    help="output format (default: json)")
     a = ap.parse_args()
 
     try:
@@ -131,8 +209,9 @@ def main():
         return 2
 
     if a.emit:
-        Path(a.emit).write_text(json.dumps(to_cortex(nodes, data), indent=2))
-        print(f"wrote {a.emit}: {len(nodes)} nodes, {len(data['edges'])} edges")
+        Path(a.emit).write_text(EMITTERS[a.format](nodes, data))
+        print(f"wrote {a.emit} as {a.format}: "
+              f"{len(nodes)} nodes, {len(data['edges'])} edges")
 
     if a.target:
         try:

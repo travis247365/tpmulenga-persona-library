@@ -10,11 +10,20 @@ A conflict nobody thought to look for is a path in a graph. The MTN exposure in
 the Flytxt application took a human several passes to spot; as a query it is two
 hops. This agent maintains that graph and asks it questions.
 
-> **Cortex target unresolved.** `/Users/tpmulenga/dev/cortex` is on the Mac and
-> unreachable from this container, and there is no `cortex` repo on GitHub. The
-> emitter therefore writes `graphify/v1` — typed nodes, typed directed edges,
-> provenance on every edge — which is a deliberately plain shape. Once cortex's
-> schema is known, adapt `to_cortex()` in the tool and leave the graph alone.
+> **Cortex target unresolved — and it no longer blocks anything.**
+> `/Users/tpmulenga/dev/cortex` is on the Mac and unreachable from here, and no
+> `cortex` repo exists on GitHub. Rather than guess at its schema, the tool emits
+> four formats, which between them cover essentially any graph store:
+>
+> | `--format` | For |
+> |---|---|
+> | `json` | the native `graphify/v1` shape |
+> | `cypher` | Neo4j / openCypher — idempotent `MERGE`s, safe to re-run |
+> | `graphml` | Gephi, yEd, Cytoscape |
+> | `csv` | node and edge blocks, for any importer |
+>
+> Pick whichever cortex takes. If it takes none of them, add an emitter to
+> `EMITTERS` in the tool and leave the graph model alone.
 
 ## Running it
 
@@ -24,7 +33,7 @@ T=.claude/skills/career-agent/tools
 
 $VP $T/graphify.py --graph .claude/skills/career-agent/corpus.json \
     --target flytxt --max-hops 4
-$VP $T/graphify.py --graph corpus.json --emit /tmp/cortex.json
+$VP $T/graphify.py --graph corpus.json --emit /tmp/cortex.cypher --format cypher
 ```
 
 Exit 1 means exposures were found — that is a report, not an error.
