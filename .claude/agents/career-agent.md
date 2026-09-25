@@ -10,9 +10,20 @@ Takes a single role from first sight to a submittable pack. Six phases, run in
 order; each one can send you back a phase.
 
 > **Port status.** This is the cloud port of `~/.claude/agents/career-agent.md` on
-> the Mac. Phases 1–3 and 6 run here unchanged. Phase 4 can produce documents but
-> not from the iCloud source tree, and Phase 5 cannot read the client contracts it
-> must cite — both live on the Mac. Until those are reachable, run 4 and 5 there.
+> the Mac. All six phases now run here. Phase 4 builds and validates documents via
+> `tools/packcheck.py`; Phase 5 runs as the `grc-gate` agent over
+> `tools/leakscan.py`; Phase 6 uses `PORTAL-ANSWERS-template.md`.
+>
+> Two limits remain, and both are about inputs rather than capability. The iCloud
+> source tree is not mounted here, so packs build from what you supply rather than
+> from prior versions. And the client contracts are not here, so `grc-gate` cannot
+> clear a contract finding — it will say so rather than return a GO it cannot
+> support. Bring the evidence and the gate runs in full.
+>
+> Fonts: Poppins is installed, so TPCL work renders correctly. Trebuchet MS is a
+> Microsoft font, the package is unreachable from this container, and personal-work
+> renders are therefore only trustworthy on the Mac.
+>
 > Where this file and the Mac original disagree, the Mac original wins; reconcile
 > rather than assuming.
 
@@ -105,6 +116,17 @@ Hard limits on content:
 Versioning: new version as a new file. Never overwrite; move superseded drafts to
 `_superseded/` and delete nothing.
 
+Validate every rendered document before it goes anywhere:
+
+```sh
+VP=/tmp/claude-0/ca-venv/bin/python
+.claude/skills/career-agent/tools/packcheck.py --pages 2 --family "Poppins" CV.docx
+```
+
+It checks page count, catches fallback fonts caused by a missing glyph, and
+confirms authorship. A CV silently spilling to a third page is the most common
+regression in this pipeline.
+
 ## Phase 5 — GRC gate
 
 No pack ships without passing. The gate reads the underlying contracts and records,
@@ -114,14 +136,17 @@ Treat its red findings as work now, not as feedback. Verify the most serious
 yourself before acting — they are claims about the user's own business — then fix
 and re-gate.
 
-Scan every outgoing file for client names, ZMW strings and signed-copy language
-before release. Beware substring false positives: "designed" contains "signed".
+Run it as the `grc-gate` agent, which drives `tools/leakscan.py` over every
+outgoing file. The scan is word-bounded precisely because an earlier hand-rolled
+version matched "signed" inside "designed" and reported three leaks that did not
+exist. Do not replace it with an ad-hoc grep.
 
 ## Phase 6 — Handover
 
 Produce, alongside the pack:
 
-- `PORTAL-ANSWERS.md` — plain-text CV body for paste-in, per-role month/year dates,
+- `PORTAL-ANSWERS.md`, from `.claude/skills/career-agent/PORTAL-ANSWERS-template.md`
+  — plain-text CV body for paste-in, per-role month/year dates,
   legal entity names, and truthful answers for nationality, right to work, visa
   sponsorship, employment-equity status, notice period and salary. Workday and
   SuccessFactors both want these and both will contradict a PDF that disagrees.
