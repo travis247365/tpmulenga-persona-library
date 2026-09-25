@@ -1,0 +1,337 @@
+<title>JobSearch AGI Console</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    color-scheme:light;
+    --ink:#14181c; --paper:#f6f7f8; --raised:#ffffff; --sunken:#eef0f2;
+    --slate:#5b6570; --rule:#dde1e5;
+    --copper:#a85730; --copper-soft:#f0e3db;
+    --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+    --good:#1baf7a; --warn:#eda100; --crit:#e34948;
+    --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --body:"Source Serif 4",Georgia,serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ink:#e9ecef; --paper:#11151a; --raised:#181d23; --sunken:#0d1116;
+    --slate:#97a2ad; --rule:#28303a;
+    --copper:#d9884f; --copper-soft:#2a1f18;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --good:#199e70; --warn:#c98500; --crit:#e66767;
+  }}
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --ink:#e9ecef; --paper:#11151a; --raised:#181d23; --sunken:#0d1116;
+    --slate:#97a2ad; --rule:#28303a;
+    --copper:#d9884f; --copper-soft:#2a1f18;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --good:#199e70; --warn:#c98500; --crit:#e66767;
+  }
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.5;
+       -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 64px;}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,4.4vw,2.5rem);
+     letter-spacing:-.02em;margin:0;line-height:1.08;}
+  h2{font-family:var(--display);font-weight:600;font-size:1.06rem;letter-spacing:-.008em;
+     margin:0 0 4px;}
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--copper);margin:0 0 14px;}
+  header{padding-block:44px 26px;border-bottom:2px solid var(--ink);}
+  .clock{font-family:var(--mono);font-size:.74rem;color:var(--slate);margin-top:14px;}
+  .clock b{color:var(--ink);font-weight:500;}
+
+  section{margin-top:38px;}
+  .shead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+         flex-wrap:wrap;margin-bottom:16px;}
+  .sub{font-size:.9rem;color:var(--slate);margin:0;max-width:66ch;}
+
+  /* stat tiles */
+  .tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));}
+  .tile{background:var(--raised);border:1px solid var(--rule);border-radius:6px;padding:18px 18px 16px;}
+  .tile .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+           color:var(--slate);margin:0 0 8px;}
+  .tile .v{font-family:var(--display);font-weight:700;font-size:2.3rem;line-height:1;
+           letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+  .tile .n{font-size:.83rem;color:var(--slate);margin:8px 0 0;}
+  .tile.flag{border-color:var(--crit);}
+  .tile.flag .v{color:var(--crit);}
+
+  .note{display:flex;gap:14px;align-items:flex-start;margin-top:18px;padding:15px 17px;
+        background:var(--copper-soft);border-left:3px solid var(--copper);border-radius:0 4px 4px 0;}
+  .note p{margin:0;font-size:.92rem;max-width:74ch;}
+  .note .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+           color:var(--copper);white-space:nowrap;padding-top:3px;}
+
+  /* bar charts */
+  .chart{background:var(--raised);border:1px solid var(--rule);border-radius:6px;padding:20px;}
+  .cols{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+  .bars{display:flex;flex-direction:column;gap:9px;margin-top:16px;}
+  .row{display:grid;grid-template-columns:minmax(88px,auto) 1fr auto;align-items:center;gap:10px;}
+  .row .lbl{font-family:var(--mono);font-size:.7rem;color:var(--slate);white-space:nowrap;}
+  .track{background:var(--sunken);border-radius:3px;height:20px;position:relative;
+         overflow:hidden;cursor:help;}
+  .bar{height:100%;border-radius:0 4px 4px 0;min-width:2px;}
+  .row .val{font-family:var(--mono);font-size:.74rem;font-variant-numeric:tabular-nums;
+            color:var(--ink);min-width:2.4em;text-align:right;}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;
+          font-family:var(--mono);font-size:.68rem;color:var(--slate);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:10px;height:10px;border-radius:2px;display:inline-block;}
+
+  /* tasks */
+  .tasks{display:flex;flex-direction:column;gap:0;background:var(--raised);
+         border:1px solid var(--rule);border-radius:6px;overflow:hidden;}
+  .task{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;
+        padding:14px 16px;border-top:1px solid var(--rule);}
+  .task:first-child{border-top:none;}
+  .task input{margin-top:3px;width:15px;height:15px;accent-color:var(--copper);cursor:pointer;}
+  .task .t{font-size:.94rem;}
+  .task .t b{font-weight:600;}
+  .task .why{display:block;font-size:.83rem;color:var(--slate);margin-top:3px;}
+  .task.done .t{opacity:.45;text-decoration:line-through;}
+  .age{font-family:var(--mono);font-size:.7rem;font-variant-numeric:tabular-nums;
+       color:var(--slate);white-space:nowrap;text-align:right;}
+  .pill{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;
+        text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-right:7px;
+        border:1px solid currentColor;}
+  .p-block{color:var(--crit);} .p-send{color:var(--copper);} .p-rev{color:var(--warn);}
+  .p-ops{color:var(--s1);}
+
+  /* queue table */
+  .tblwrap{overflow-x:auto;background:var(--raised);border:1px solid var(--rule);border-radius:6px;}
+  table{border-collapse:collapse;width:100%;font-size:.88rem;}
+  th{font-family:var(--mono);font-size:.64rem;letter-spacing:.09em;text-transform:uppercase;
+     color:var(--slate);text-align:left;padding:12px 14px;border-bottom:1px solid var(--rule);
+     white-space:nowrap;font-weight:500;}
+  td{padding:11px 14px;border-bottom:1px solid var(--rule);}
+  tr:last-child td{border-bottom:none;}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .badge{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;
+         padding:2px 7px;border-radius:3px;border:1px solid currentColor;white-space:nowrap;}
+  .b-none{color:var(--slate);} .b-wait{color:var(--warn);} .b-live{color:var(--good);}
+
+  footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--rule);
+         font-size:.85rem;color:var(--slate);}
+  footer p{max-width:76ch;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">JobSearch AGI · Console</p>
+    <h1>Ten out, none back</h1>
+    <p class="clock">Data swept from Gmail <b id="asof">25 Sep 2026, 23:0x UTC</b> ·
+      regenerated by the 06:58 Lusaka routine · live for <b id="uptime">—</b></p>
+  </header>
+
+  <section>
+    <div class="tiles">
+      <div class="tile"><p class="k">Submitted</p><div class="v" id="t-sub">10</div>
+        <p class="n">9 via LinkedIn, 1 via employer portal</p></div>
+      <div class="tile flag"><p class="k">Employer replies</p><div class="v">0</div>
+        <p class="n">in 60 days, across all channels</p></div>
+      <div class="tile"><p class="k">Oldest still silent</p><div class="v" id="t-old">—</div>
+        <p class="n">solarVis, 10 Aug</p></div>
+      <div class="tile"><p class="k">Shortlisted, not applied</p><div class="v">4</div>
+        <p class="n">scored 5/5 and labelled To&nbsp;Pursue</p></div>
+    </div>
+
+    <div class="note"><span class="k">Read this first</span>
+      <p><b>Zero responses is the finding, not a gap in the data.</b> A 60-day search over
+      rejections, interview invitations and recruiter replies returned only false
+      positives — newsletters and payment-failure notices. Ten applications with no reply
+      of any kind points at the applications themselves, or at applying through LinkedIn
+      Easy Apply, rather than at bad luck. The four roles scored 5/5 and never applied to
+      are the more useful number beside it.</p></div>
+  </section>
+
+  <section>
+    <div class="cols">
+      <div class="chart">
+        <div class="shead"><div><h2>Submissions by week</h2>
+          <p class="sub">Every bar is labelled, so the chart is readable without colour.</p></div></div>
+        <div class="bars" id="c-weeks"></div>
+      </div>
+      <div class="chart">
+        <div class="shead"><div><h2>Inbound alert volume by source</h2>
+          <p class="sub">Last 7 days. One alert email carries roughly six distinct roles.</p></div></div>
+        <div class="bars" id="c-src"></div>
+        <div class="legend">
+          <span><i class="swatch" style="background:var(--s1)"></i>LinkedIn alerts</span>
+          <span><i class="swatch" style="background:var(--s2)"></i>Executive Placements</span>
+          <span><i class="swatch" style="background:var(--s3)"></i>Other</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shead"><div><h2>Actions pending</h2>
+      <p class="sub">Ticking one only hides it for you, in this browser. Nothing here writes
+      back to Gmail or the repository.</p></div></div>
+    <div class="tasks" id="tasks"></div>
+  </section>
+
+  <section>
+    <div class="shead"><div><h2>Submissions queue</h2>
+      <p class="sub">Days-silent counts from the acknowledgement date. Sasol's window is the
+      only one with a stated close.</p></div></div>
+    <div class="tblwrap"><table>
+      <thead><tr><th>Company</th><th>Role</th><th>Sent</th><th>Days silent</th><th>Channel</th><th>Response</th></tr></thead>
+      <tbody id="queue"></tbody>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>Counts come from Gmail searches over 60 days: LinkedIn application
+    acknowledgements, the labelled pipeline (JOBZZZ, To Pursue, Do Not Pursue), and a
+    response sweep excluding bulk senders. Roles shown as “—” are ones LinkedIn's
+    acknowledgement email does not name. Nothing on this page is estimated; where a
+    number could not be established it is absent rather than guessed.</p>
+  </footer>
+</div>
+
+<script type="application/json" id="data">
+{
+  "asOf": "2026-09-25T23:05:00Z",
+  "submissions": [
+    {"co":"TikTok","role":"—","date":"2026-09-25","via":"LinkedIn","resp":"none"},
+    {"co":"Sasol","role":"VP AI, Data & Digital Innovation (Req 13201)","date":"2026-09-23","via":"Portal","resp":"window"},
+    {"co":"Clicks Group","role":"Project Management Executive","date":"2026-09-22","via":"LinkedIn","resp":"none"},
+    {"co":"Clicks Group","role":"—","date":"2026-09-19","via":"LinkedIn","resp":"none"},
+    {"co":"Binance","role":"—","date":"2026-09-19","via":"LinkedIn","resp":"none"},
+    {"co":"MTN Mobile Money","role":"—","date":"2026-09-19","via":"LinkedIn","resp":"none"},
+    {"co":"iDE","role":"—","date":"2026-09-17","via":"LinkedIn","resp":"none"},
+    {"co":"G4S","role":"—","date":"2026-09-11","via":"LinkedIn","resp":"none"},
+    {"co":"AltGen Zambia","role":"—","date":"2026-09-11","via":"LinkedIn","resp":"none"},
+    {"co":"solarVis","role":"—","date":"2026-08-10","via":"LinkedIn","resp":"none"}
+  ],
+  "sources": [
+    {"name":"LinkedIn job alerts","n":48,"slot":1},
+    {"name":"Executive Placements","n":13,"slot":2},
+    {"name":"NTT / other","n":6,"slot":3}
+  ],
+  "tasks": [
+    {"id":"d1","kind":"send","label":"Send reply to Fasil (Talent Hire) answering pay, notice and CV",
+     "why":"Answers Flytxt HR's three questions in one place. Cleared by the GRC re-check.","since":"2026-09-25"},
+    {"id":"d2","kind":"send","label":"Send the matched note to Suchitra and Vaisakh at Flytxt",
+     "why":"Corrects the “sabbatical” line and asks which of them you are dealing with.","since":"2026-09-25"},
+    {"id":"d3","kind":"block","label":"Hold the CV to Fasil until he writes from @talenthireitsolutions.com",
+     "why":"No email has arrived — only LinkedIn notifications. Silence is not confirmation of a mandate.","since":"2026-09-25"},
+    {"id":"ref","kind":"review","label":"Ask the MTN MoMo MD whether he will act as referee to an MTN supplier",
+     "why":"Flytxt has supplied MTN Group since 2014 and is live in MTN Zambia. Do this before any Flytxt call.","since":"2026-09-25"},
+    {"id":"tz","kind":"review","label":"Decide on the Tanzania COO pack (Recruitment Matters)",
+     "why":"CV, one-pager and 186-word email drafted. Four false claims corrected against certificates.","since":"2026-09-25"},
+    {"id":"momo","kind":"review","label":"Prepare the answer on the MTN MoMo application",
+     "why":"You applied to MTN MoMo on 19 Sep. Its termination of d2c during your tenure as COO will come up.","since":"2026-09-19"},
+    {"id":"cf","kind":"ops","label":"Add the Cloudflare Access policy, subdomain *",
+     "why":"The persona library is deployed and publicly readable until this exists.","since":"2026-09-25"},
+    {"id":"spend","kind":"ops","label":"Clear the failed payments to Fly.io and Anthropic",
+     "why":"Five failed charges. This is why Fly refuses to create apps and why the daily routine will fail.","since":"2026-09-02"}
+  ],
+  "deadlines": [
+    {"label":"Sasol 60-day response window closes","at":"2026-11-22T09:00:00+02:00"}
+  ]
+}
+</script>
+
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var DAY = 86400000;
+  var KIND = {send:["p-send","send"], block:["p-block","blocked"],
+              review:["p-rev","review"], ops:["p-ops","ops"]};
+
+  function days(from, to) { return Math.floor((to - new Date(from)) / DAY); }
+  function fmt(d) {
+    return new Date(d).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+  }
+
+  // ---- bars: submissions per ISO week -----------------------------------
+  var byWeek = {};
+  D.submissions.forEach(function (s) {
+    var d = new Date(s.date);
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7));       // back to Monday
+    var k = d.toISOString().slice(0, 10);
+    byWeek[k] = (byWeek[k] || 0) + 1;
+  });
+  var weeks = Object.keys(byWeek).sort();
+  var wMax = Math.max.apply(null, weeks.map(function (k) { return byWeek[k]; }));
+  document.getElementById("c-weeks").innerHTML = weeks.map(function (k) {
+    var n = byWeek[k];
+    return '<div class="row"><span class="lbl">w/c ' + fmt(k) + '</span>' +
+      '<div class="track" title="Week of ' + fmt(k) + ' — ' + n +
+      (n === 1 ? ' application' : ' applications') + '"><div class="bar" style="width:' +
+      (n / wMax * 100) + '%;background:var(--s1)"></div></div>' +
+      '<span class="val">' + n + '</span></div>';
+  }).join("");
+
+  // ---- bars: inbound by source -----------------------------------------
+  var sMax = Math.max.apply(null, D.sources.map(function (s) { return s.n; }));
+  document.getElementById("c-src").innerHTML = D.sources.map(function (s) {
+    return '<div class="row"><span class="lbl">' + s.name.split(" ")[0] + '</span>' +
+      '<div class="track" title="' + s.name + ' — ' + s.n +
+      ' alert emails in 7 days"><div class="bar" style="width:' + (s.n / sMax * 100) +
+      '%;background:var(--s' + s.slot + ')"></div></div>' +
+      '<span class="val">' + s.n + '</span></div>';
+  }).join("");
+
+  // ---- tasks ------------------------------------------------------------
+  var done = {};
+  try { done = JSON.parse(localStorage.getItem("jsagi.done") || "{}"); } catch (e) { done = {}; }
+  var host = document.getElementById("tasks");
+  host.innerHTML = D.tasks.map(function (t) {
+    var k = KIND[t.kind] || KIND.ops;
+    return '<div class="task' + (done[t.id] ? " done" : "") + '" data-id="' + t.id + '">' +
+      '<input type="checkbox" id="cb-' + t.id + '"' + (done[t.id] ? " checked" : "") +
+      ' aria-label="mark done">' +
+      '<label class="t" for="cb-' + t.id + '"><span class="pill ' + k[0] + '">' + k[1] +
+      '</span><b>' + t.label + '</b><span class="why">' + t.why + '</span></label>' +
+      '<span class="age" data-since="' + t.since + '"></span></div>';
+  }).join("");
+  host.addEventListener("change", function (e) {
+    if (e.target.type !== "checkbox") return;
+    var row = e.target.closest(".task");
+    done[row.dataset.id] = e.target.checked;
+    row.classList.toggle("done", e.target.checked);
+    try { localStorage.setItem("jsagi.done", JSON.stringify(done)); } catch (err) {}
+  });
+
+  // ---- queue ------------------------------------------------------------
+  var BADGE = {none:["b-none","no reply"], window:["b-wait","window open"], live:["b-live","live"]};
+  document.getElementById("queue").innerHTML = D.submissions.map(function (s) {
+    var b = BADGE[s.resp] || BADGE.none;
+    return "<tr><td><b>" + s.co + "</b></td><td>" + s.role + "</td>" +
+      '<td class="num">' + fmt(s.date) + "</td>" +
+      '<td class="num" data-silent="' + s.date + '"></td>' +
+      "<td>" + s.via + "</td>" +
+      '<td><span class="badge ' + b[0] + '">' + b[1] + "</span></td></tr>";
+  }).join("");
+
+  // ---- the ticker -------------------------------------------------------
+  var started = Date.now();
+  function tick() {
+    var now = new Date();
+    document.querySelectorAll("[data-since]").forEach(function (el) {
+      var d = days(el.dataset.since, now);
+      el.textContent = d === 0 ? "today" : d + "d open";
+    });
+    document.querySelectorAll("[data-silent]").forEach(function (el) {
+      el.textContent = days(el.dataset.silent, now) + "d";
+    });
+    var oldest = D.submissions.map(function (s) { return days(s.date, now); });
+    document.getElementById("t-old").textContent = Math.max.apply(null, oldest) + "d";
+    document.getElementById("t-sub").textContent = D.submissions.length;
+    var el = Math.floor((Date.now() - started) / 1000);
+    document.getElementById("uptime").textContent =
+      String(Math.floor(el / 60)).padStart(2, "0") + ":" + String(el % 60).padStart(2, "0");
+    document.getElementById("asof").textContent =
+      new Date(D.asOf).toLocaleString("en-GB", {day:"numeric", month:"short", year:"numeric",
+        hour:"2-digit", minute:"2-digit", timeZone:"UTC"}) + " UTC";
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
