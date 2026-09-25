@@ -1,0 +1,72 @@
+{
+  "_comment": "Career relationship graph. Every edge should carry evidence naming its source; edges without it are marked ASSERTED in reports. Weights are confidence in [0,1].",
+  "nodes": [
+    {"id": "travis",     "type": "person", "label": "Travis Paul Mulenga"},
+    {"id": "tpcl",       "type": "org",    "label": "Travis Paul Consulting Ltd"},
+    {"id": "d2c",        "type": "org",    "label": "d2c Telcare Ltd"},
+
+    {"id": "mtn_group",  "type": "org",    "label": "MTN Group"},
+    {"id": "mtn_momo",   "type": "org",    "label": "MTN Mobile Money Ltd",
+     "sensitivity": "terminated",
+     "note": "terminated d2c's outbound contract 6 May 2026, effective 5 Jun, citing non-performance - during the COO tenure"},
+    {"id": "mtn_zambia", "type": "org",    "label": "MTN Zambia"},
+    {"id": "momo_md",    "type": "person", "label": "MD, MTN Mobile Money",
+     "sensitivity": "referee",
+     "note": "named referee for the 2024-25 consulting work; ask before listing, especially to an MTN supplier"},
+
+    {"id": "bongohive_ed", "type": "person", "label": "Executive Director, BongoHive",
+     "sensitivity": "referee",
+     "note": "signed recommendation letter; the referee to lead with outside MTN"},
+
+    {"id": "flytxt",      "type": "org", "label": "Flytxt.ai"},
+    {"id": "talent_hire", "type": "org", "label": "Talent Hire IT Solutions"},
+
+    {"id": "sanlam",  "type": "org", "label": "Sanlam", "sensitivity": "confidential",
+     "note": "cl. 8.3.3 requires consent each time before naming"},
+    {"id": "rdg",     "type": "org", "label": "RDG", "sensitivity": "confidential",
+     "note": "cl. 8.2 covers commercial information"},
+    {"id": "sunking", "type": "org", "label": "Sun King", "sensitivity": "confidential",
+     "note": "MSA cl. 7.1-7.2"},
+
+    {"id": "multichoice", "type": "org", "label": "MultiChoice"},
+    {"id": "airtel",      "type": "org", "label": "Airtel Zambia"},
+    {"id": "betway",      "type": "org", "label": "Emerald Bay (Betway)"},
+    {"id": "nielsen",     "type": "org", "label": "The Nielsen Company"}
+  ],
+  "edges": [
+    {"src": "travis", "dst": "d2c",  "type": "officer_of", "weight": 1.0,
+     "evidence": "CV; Consultant & COO, Oct 2025-present"},
+    {"src": "travis", "dst": "tpcl", "type": "principal_of", "weight": 1.0,
+     "evidence": "CV"},
+
+    {"src": "d2c", "dst": "mtn_momo", "type": "served", "weight": 1.0,
+     "evidence": "MSA; outbound contract to Apr 2026"},
+    {"src": "mtn_momo", "dst": "d2c", "type": "terminated", "weight": 1.0,
+     "evidence": "termination letter, 6 May 2026"},
+    {"src": "mtn_group", "dst": "mtn_momo",   "type": "parent_of", "weight": 1.0,
+     "evidence": "public group structure"},
+    {"src": "mtn_group", "dst": "mtn_zambia", "type": "parent_of", "weight": 1.0,
+     "evidence": "public group structure"},
+    {"src": "momo_md", "dst": "mtn_momo", "type": "officer_of", "weight": 1.0,
+     "evidence": "signed reference letter letterhead"},
+    {"src": "momo_md", "dst": "travis", "type": "referee_for", "weight": 1.0,
+     "evidence": "signed reference letter"},
+    {"src": "bongohive_ed", "dst": "travis", "type": "referee_for", "weight": 1.0,
+     "evidence": "signed recommendation letter, 20 Aug 2025"},
+
+    {"src": "flytxt", "dst": "mtn_group", "type": "supplies", "weight": 0.95,
+     "evidence": "MTN Group selected Flytxt, 2014"},
+    {"src": "flytxt", "dst": "mtn_zambia", "type": "live_in", "weight": 0.9,
+     "evidence": "Flytxt live in 3 MTN operations incl. Zambia"},
+    {"src": "talent_hire", "dst": "flytxt", "type": "recruits_for", "weight": 0.5},
+
+    {"src": "d2c", "dst": "sanlam",  "type": "serves", "weight": 1.0, "evidence": "MSA"},
+    {"src": "d2c", "dst": "rdg",     "type": "serves", "weight": 1.0, "evidence": "MSA"},
+    {"src": "d2c", "dst": "sunking", "type": "serves", "weight": 1.0, "evidence": "MSA"},
+
+    {"src": "travis", "dst": "multichoice", "type": "employed_at", "weight": 1.0, "evidence": "CV"},
+    {"src": "travis", "dst": "airtel",      "type": "employed_at", "weight": 1.0, "evidence": "CV"},
+    {"src": "travis", "dst": "betway",      "type": "employed_at", "weight": 1.0, "evidence": "CV"},
+    {"src": "travis", "dst": "nielsen",     "type": "employed_at", "weight": 1.0, "evidence": "CV"}
+  ]
+}
