@@ -139,3 +139,48 @@ time-critical item in the report.
 Keep the window to `7d` and report only where something scored 4 or better. A run
 that finds nothing worth surfacing says so in one line and stops. Do not pad, and
 do not re-report a thread already carrying `Label_25` or `Label_26`.
+
+## 6. Notifications (ntfy → iOS)
+
+`notify.sh` pushes an event to ntfy. It needs `NTFY_URL` (the full topic URL) in
+the environment, and optionally `NTFY_TOKEN`. Without `NTFY_URL` it exits 78 and
+the run continues — a missing push must never fail a sweep.
+
+```sh
+./notify.sh match "Head: Performance, Data & Transformation — Absa" \
+  "Johannesburg · scored 5/5 · data & transformation leadership" \
+  "https://www.linkedin.com/jobs/view/4470400753/"
+```
+
+Fire on exactly three events, once each. Deduplicate on the LinkedIn job id, or on
+the Gmail thread id where there is no job id — a scheduled sweep re-reads the same
+window and must not re-notify.
+
+| Event | Fires when | Priority |
+|---|---|---|
+| `match` | a role new to this sweep scores 4 or better | default |
+| `application` | an application is submitted, or an ATS acknowledges one | default |
+| `reply` | a named human replies about a role | high |
+
+**Detecting a reply.** Application acknowledgements and recruiter replies both land
+in the inbox, and only the second is worth waking someone for. A reply qualifies
+only when the sender is a *named human* — not `noreply`, `no-reply`, `jobs-noreply`,
+`jobalerts-noreply`, `donotreply`, or an ATS robot at `myworkday.com`,
+`successfactors.com`, `greenhouse.io`, `lever.co` or `workable.com`. Those are
+`application` events at most.
+
+```
+newer_than:2d -from:noreply -from:no-reply -from:donotreply
+  -from:jobalerts-noreply@linkedin.com -from:jobs-noreply@linkedin.com
+  (subject:application OR subject:interview OR subject:role OR subject:opportunity
+   OR subject:CV OR subject:candidate)
+```
+
+Read each candidate thread before notifying. A `reply` push carries the sender's
+name, the role, and a link to the thread — never the message body, which can hold
+compensation detail and reaches the lock screen.
+
+**The topic is the secret.** On ntfy.sh anyone who knows the topic string reads
+every notification on it, and these disclose that a search is underway, which
+roles, and which recruiters. Use a long random topic, or a server with access
+control. Never commit the topic, and never log it.
