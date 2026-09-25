@@ -1,5 +1,11 @@
 # Deploying to Cloudflare Pages, privately
 
+**Live:** https://tpm-persona-library.pages.dev/personas/ — project
+`tpm-persona-library`, first deployed 26 Sep 2026, 400 files. Verified loading.
+
+**Access is not yet configured, so it is public.** Until the policy below exists,
+treat the URL as readable by anyone who has it.
+
 This is the one free-and-private combination among the hosts tried: Pages is
 free, and Cloudflare Access is free for small teams. It beats Fly (private but
 blocked by an overdue invoice), Vercel (private is paid) and Replit (private and
@@ -35,7 +41,10 @@ It never prints success on an unverified deployment.
 
 1. https://one.dash.cloudflare.com → **Access** → **Applications**
 2. **Add an application** → **Self-hosted**
-3. Application domain: the `*.pages.dev` hostname the script printed
+3. Application domain: `tpm-persona-library.pages.dev`, with subdomain `*`.
+   The wildcard is not optional: every deployment gets its own hash prefix
+   (the first was `b4d809cd`), so protecting only the bare hostname leaves
+   every preview URL open.
 4. Add a policy: **Action = Allow**, **Include → Emails → travis.mulenga@gmail.com**
 5. Save, then re-run the script to confirm it now redirects
 
