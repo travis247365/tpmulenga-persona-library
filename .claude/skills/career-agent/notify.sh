@@ -20,7 +20,16 @@
 
 set -euo pipefail
 
-[[ -n "${NTFY_URL:-}" ]] || { echo "notify.sh: NTFY_URL is not set" >&2; exit 78; }
+# Fall back to ntfy.conf beside this script. It is gitignored because the
+# topic string is the only thing protecting these notifications.
+if [[ -z "${NTFY_URL:-}" ]]; then
+  conf="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/ntfy.conf"
+  # shellcheck source=/dev/null
+  [[ -r "$conf" ]] && source "$conf"
+fi
+
+[[ -n "${NTFY_URL:-}" ]] || {
+  echo "notify.sh: no NTFY_URL in the environment or ntfy.conf" >&2; exit 78; }
 
 event=${1:?event required}
 title=${2:?title required}
