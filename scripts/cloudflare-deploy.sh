@@ -44,6 +44,40 @@ else
   fi
 fi
 
+# --- account id ------------------------------------------------------------
+# A token scoped to "Cloudflare Pages: Edit" cannot LIST accounts - that needs
+# "Account Settings: Read". Rather than widen the token, name the account
+# explicitly. Checked here, before the build, so a missing value costs seconds
+# rather than a full install-and-build cycle.
+say "Account"
+ID_FILE="$HOME/.config/cloudflare-account-id"
+if [ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+  echo "using CLOUDFLARE_ACCOUNT_ID from the environment"
+elif [ -r "$ID_FILE" ]; then
+  CLOUDFLARE_ACCOUNT_ID=$(tr -d '[:space:]' < "$ID_FILE")
+  export CLOUDFLARE_ACCOUNT_ID
+  echo "using the account id saved in $ID_FILE"
+else
+  cat <<'TXT'
+Your Cloudflare account id is needed. Find it either way:
+
+  * open https://dash.cloudflare.com - the id is in the URL:
+      https://dash.cloudflare.com/<THIS BIT>/...
+  * or: dashboard -> Workers & Pages -> "Account ID" in the right sidebar
+
+It is 32 hex characters. It is an identifier, not a secret.
+TXT
+  printf 'Account id: '
+  read -r ACCT
+  ACCT=$(printf '%s' "$ACCT" | tr -d '[:space:]')
+  printf '%s' "$ACCT" | grep -qE '^[0-9a-f]{32}$' \
+    || die "that does not look like an account id (expected 32 hex characters)"
+  mkdir -p "$(dirname "$ID_FILE")"
+  printf '%s\n' "$ACCT" > "$ID_FILE"
+  export CLOUDFLARE_ACCOUNT_ID="$ACCT"
+  echo "saved to $ID_FILE so this is asked only once"
+fi
+
 # --- source and build ------------------------------------------------------
 say "Source"
 if [ -d "$WORKDIR/.git" ]; then
