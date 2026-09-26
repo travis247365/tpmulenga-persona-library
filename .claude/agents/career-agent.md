@@ -119,8 +119,13 @@ Versioning: new version as a new file. Never overwrite; move superseded drafts t
 Validate every rendered document before it goes anywhere:
 
 ```sh
+# tools/setup.sh builds this venv. Run packcheck THROUGH it: the container's
+# system python3 cannot import pypdf at all - it dies on _cffi_backend - so
+# invoking the script directly makes the mandatory pack validation fail rather
+# than pass, which is the one check that must not be skippable by accident.
 VP=/tmp/claude-0/ca-venv/bin/python
-.claude/skills/career-agent/tools/packcheck.py --pages 2 --family "Poppins" CV.docx
+"$VP" .claude/skills/career-agent/tools/packcheck.py \
+      --pages 2 --family "Poppins" CV.docx
 ```
 
 It checks page count, catches fallback fonts caused by a missing glyph, and

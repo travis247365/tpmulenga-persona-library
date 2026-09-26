@@ -11,16 +11,20 @@ CREATE TABLE IF NOT EXISTS alerts (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   account_id  INTEGER NOT NULL REFERENCES accounts(id),
   job_id      TEXT,
+  dedup_key   TEXT NOT NULL,
   subject     TEXT,
   sender      TEXT,
   received_at INTEGER NOT NULL
 );
 
--- Dedup: the same role appears in several digests over a week. A partial index
--- keeps the uniqueness only where there is an id to be unique on, so rows
--- without one are still stored.
+-- Dedup: the same role appears in several digests over a week. The key is the
+-- job id where there is one, and a hash of sender+subject+day where there is
+-- not. It is NOT NULL on purpose: the previous partial index covered only rows
+-- WHERE job_id IS NOT NULL, so every alert without an id - which is every
+-- alert whose links we failed to decode - slipped past dedup entirely and was
+-- re-counted on each re-send.
 CREATE UNIQUE INDEX IF NOT EXISTS alerts_unique
-  ON alerts(account_id, job_id) WHERE job_id IS NOT NULL;
+  ON alerts(account_id, dedup_key);
 CREATE INDEX IF NOT EXISTS alerts_recent ON alerts(account_id, received_at DESC);
 
 -- Mail that reached a valid address from an unrecognised sender. Kept rather

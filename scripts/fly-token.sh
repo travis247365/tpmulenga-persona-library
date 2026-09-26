@@ -27,9 +27,26 @@ fi
 mkdir -p "$(dirname "$OUT")"
 umask 077                      # the file is created 0600, never briefly world-readable
 
-# Capture straight to the file. The token is never assigned to a shell variable
+# Capture straight to a file. The token is never assigned to a shell variable
 # and never written to stdout, so it cannot be scrolled back to or echoed.
-fly tokens create deploy -a "$APP" --name "jobsearch-agi-deploy" > "$OUT"
+#
+# Write to a TEMP file, not to $OUT: `> "$OUT"` truncates the destination the
+# moment the redirect is set up, which is before flyctl runs. A network blip or
+# an expired session therefore destroyed a perfectly good saved token and left
+# an empty file - and under `set -e` the non-zero exit skipped the check below
+# that was supposed to say so. Only a run that actually produced bytes replaces
+# what was already there.
+TMP=$(mktemp); chmod 600 "$TMP"
+trap 'rm -f "$TMP"' EXIT
+if ! fly tokens create deploy -a "$APP" --name "jobsearch-agi-deploy" > "$TMP"; then
+  echo "flyctl failed - your previously saved token, if any, is untouched" >&2
+  exit 1
+fi
+if [ ! -s "$TMP" ]; then
+  echo "flyctl produced no output - nothing was saved" >&2
+  exit 1
+fi
+mv "$TMP" "$OUT"
 chmod 600 "$OUT"
 
 if [ ! -s "$OUT" ]; then

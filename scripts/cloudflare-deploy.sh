@@ -121,7 +121,10 @@ say "Deploying to Cloudflare Pages"
 LOG=$(mktemp)
 npx --yes wrangler@4 pages deploy dist/public \
     --project-name "$PROJECT" --branch main --commit-dirty=true 2>&1 | tee "$LOG"
-URL=$(grep -oE 'https://[a-z0-9.-]*\.pages\.dev' "$LOG" | tail -1)
+# `|| true`: under `set -euo pipefail` a grep that matches nothing exits 1 and
+# takes the script with it - before this line's own error message, before the
+# log is cleaned up, and before the Access probe that is the whole point.
+URL=$(grep -oE 'https://[a-z0-9.-]*\.pages\.dev' "$LOG" | tail -1 || true)
 rm -f "$LOG"
 [ -n "$URL" ] || die "deploy produced no *.pages.dev URL — see wrangler's output above"
 

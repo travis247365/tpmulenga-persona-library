@@ -82,14 +82,48 @@ def read_docx(path):
         props = re.search(r"<w:rPr>.*?</w:rPr>", run, re.S)
         if props:
             p = props.group(0)
-            white = re.search(r'<w:color[^>]*w:val="(F{2}[F\d]{4}|FFFFFF)"', p, re.I)
+            white = _is_white(p)
             if "<w:vanish" in p or white:
                 txt = "".join(re.findall(r"<w:t[^>]*>(.*?)</w:t>", run, re.S))
                 if txt.strip():
                     hidden.append(txt.strip())
 
-    text = re.sub(r"<[^>]+>", " ", xml)
-    return text, hidden
+    return _flatten(xml), hidden
+
+
+def _is_white(props: str) -> bool:
+    """True when a run's colour is white or near-white.
+
+    The obvious pattern F{2}[F\d]{4} also matches FF0000, FF6600 and FFCC00 -
+    ordinary red and amber - so every emphasised heading was reported as hidden
+    ATS text. Parse the hex and require all three channels to be light instead.
+    """
+    m = re.search(r'<w:color[^>]*w:val="([0-9A-F]{6})"', props, re.I)
+    if not m:
+        return False
+    v = m.group(1)
+    r, g, b = (int(v[i:i + 2], 16) for i in (0, 2, 4))
+    return r >= 0xF0 and g >= 0xF0 and b >= 0xF0
+
+
+def _flatten(xml: str) -> str:
+    """Document text with run boundaries closed up, paragraphs kept apart.
+
+    Replacing every tag with a space breaks the scan: Word splits a word into
+    separate runs on any formatting change - a stray italic, a spellcheck mark,
+    a tracked edit - so a forbidden client name routinely sits in the file as
+    "San" + "lam". With spaces inserted between runs it reads as "San lam" and
+    matches no rule, and the document ships. Joining runs with nothing and
+    breaking only on paragraph and table-cell ends gives the text a reader
+    actually sees.
+    """
+    # Paragraph and cell ends become newlines so separate fields cannot merge
+    # into a word that was never written.
+    xml = re.sub(r"</w:(p|tc|tr)>", "\n", xml, flags=re.I)
+    xml = re.sub(r"<w:br[^>]*/?>", "\n", xml, flags=re.I)
+    xml = re.sub(r"<w:tab[^>]*/?>", "\t", xml, flags=re.I)
+    # Everything else closes up: run boundaries are not word boundaries.
+    return re.sub(r"<[^>]+>", "", xml)
 
 
 def read_pdf(path):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build a weighted graph of career relationships and surface risk paths.
 
-    graphify.py --graph corpus.json [--target "Flytxt"] [--emit cortex.json]
+    graphify.py --graph corpus.json [--target flytxt-ai] [--emit cortex.json]
 
 The point is not the picture. It is that exposures nobody thought to look for
 are paths in a graph. The MTN finding in the Flytxt application was four hops:

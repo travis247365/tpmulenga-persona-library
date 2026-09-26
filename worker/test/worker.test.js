@@ -14,8 +14,11 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import emailWorker from "../src/email.js";
-import apiWorker from "../src/api.js";
+import worker from "../src/index.js";
+const emailWorker = worker;
+const apiWorker = worker;
+
+assert.ok(globalThis.crypto?.subtle, "these tests need WebCrypto (node 18+)");
 
 const here = dirname(fileURLToPath(import.meta.url));
 const SCHEMA = readFileSync(join(here, "..", "schema.sql"), "utf8");
@@ -149,6 +152,62 @@ describe("email worker", () => {
     assert.equal(r.length, 1);
     assert.equal(r[0].sender, "attacker@evil.example");
     assert.equal(r[0].subject, "urgent role");
+  });
+
+  // A substring check accepts this: the attacker registers
+  // linkedin.com.evil.tld, so the mail passes SPF and DKIM on its own domain
+  // and arrives fully authenticated.
+  test("a lookalike sender domain cannot inject a role", async () => {
+    await emailWorker.email(message({
+      to: `jobs+${TOKEN_A}@example.com`,
+      from: "jobalerts-noreply@linkedin.com.evil.tld",
+      raw: digest(["313131313"]),
+    }), env);
+    assert.equal(rows(env, "SELECT * FROM alerts").length, 0);
+    assert.equal(rows(env, "SELECT * FROM rejected").length, 1);
+  });
+
+  test("a display-name From still resolves to the address", async () => {
+    await emailWorker.email(message({
+      to: `jobs+${TOKEN_A}@example.com`,
+      from: "LinkedIn Job Alerts <jobalerts-noreply@linkedin.com>",
+      raw: digest(["323232323"]),
+    }), env);
+    assert.equal(rows(env, "SELECT * FROM alerts").length, 1);
+  });
+
+  // Alert mail is quoted-printable more often than not, and a wrapped URL
+  // arrives as ...jobs/vie=\r\nw/12345. Matching raw bytes loses the id.
+  test("quoted-printable soft breaks do not hide a job id", async () => {
+    const raw = [
+      "From: LinkedIn Job Alerts",
+      "Subject: jobs for you",
+      "Content-Transfer-Encoding: quoted-printable",
+      "",
+      'a href=3D"https://www.linkedin.com/comm/jobs/vie=',
+      'w/454545454/?trk=3Dx"Role',
+    ].join("\r\n");
+    await emailWorker.email(message({
+      to: `jobs+${TOKEN_A}@example.com`,
+      from: "jobalerts-noreply@linkedin.com",
+      raw,
+    }), env);
+    const a = rows(env, "SELECT * FROM alerts");
+    assert.equal(a.length, 1);
+    assert.equal(a[0].job_id, "454545454");
+  });
+
+  // Rows without a job id used to escape the partial unique index entirely.
+  test("a re-sent no-job-id alert is not counted twice", async () => {
+    const m = () => message({
+      to: `jobs+${TOKEN_A}@example.com`,
+      from: "info@executiveplacements.com",
+      subject: "A role you may like",
+      raw: "From: EP\r\nSubject: A role you may like\r\n\r\nno links here",
+    });
+    await emailWorker.email(m(), env);
+    await emailWorker.email(m(), env);
+    assert.equal(rows(env, "SELECT * FROM alerts").length, 1);
   });
 
   test("no-job-id alert still stored", async () => {

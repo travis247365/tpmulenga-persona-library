@@ -1,5 +1,5 @@
 name = "jobsearch-ingest"
-main = "src/email.js"
+main = "src/index.js"
 compatibility_date = "2026-09-01"
 
 # Email Routing delivers forwarded alerts to the email() handler. Configure the

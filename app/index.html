@@ -106,11 +106,10 @@
 
   <div class="step">
     <h2><span class="num">02</span>Your CV</h2>
-    <p class="hint">Paste the text, or load a .txt or .md file. PDFs are not parsed here —
-      open the PDF, select all, and paste, which keeps everything client-side.</p>
+    <p class="hint">Paste the text, or load a PDF, Word document, .txt or .md file. Everything is parsed in this browser — the file itself is never uploaded anywhere.</p>
     <textarea id="cv" placeholder="Paste your CV…" spellcheck="false"></textarea>
     <div class="filerow">
-      <input type="file" id="file" accept=".txt,.md,.markdown,text/plain">
+      <input type="file" id="file" accept=".pdf,.docx,.txt,.md,.markdown,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
       <span id="fileinfo"></span>
     </div>
     <div class="row"><button id="go" type="button">Build my personas</button></div>
@@ -166,16 +165,111 @@ $("forget").addEventListener("click", function () {
 });
 keyState();
 
-// ---- file load ----------------------------------------------------------
-$("file").addEventListener("change", function (e) {
+// ---- resume ingestion ---------------------------------------------------
+// A CV is a PDF far more often than it is anything else, and "open the PDF,
+// select all, paste" is the step people give up at. Both parsers run entirely
+// in this page: the bytes are read with FileReader and never leave the
+// browser, which is the same promise the rest of the app makes about the key.
+// The libraries load on demand, so someone pasting text never pays for them.
+// Served from this origin, not a CDN. A page whose whole claim is that the CV
+// never leaves the browser should not announce "someone is parsing a CV right
+// now" to a third party on load, and a self-hosted copy cannot be swapped
+// under us. Versions are pinned by what is committed in app/vendor/.
+//   pdfjs-dist 4.10.38 · mammoth 1.12.3
+// The "./" is load-bearing: a dynamic import() of "vendor/pdf.min.mjs" is a
+// BARE specifier, not a relative path, and fails with "Failed to resolve
+// module specifier" rather than a 404.
+var LIBS = {
+  pdf: "./vendor/pdf.min.mjs",
+  pdfWorker: "./vendor/pdf.worker.min.mjs",
+  docx: "./vendor/mammoth.browser.min.js",
+};
+
+var _pdfjs = null;
+async function pdfLib() {
+  if (!_pdfjs) {
+    _pdfjs = await import(LIBS.pdf);
+    _pdfjs.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
+  }
+  return _pdfjs;
+}
+
+function loadScript(src) {
+  return new Promise(function (ok, fail) {
+    var el = document.createElement("script");
+    el.src = src;
+    el.onload = ok;
+    el.onerror = function () { fail(new Error("could not load the .docx parser")); };
+    document.head.appendChild(el);
+  });
+}
+
+function readAs(file, how) {
+  return new Promise(function (ok, fail) {
+    var r = new FileReader();
+    r.onload = function () { ok(r.result); };
+    r.onerror = function () { fail(new Error("could not read that file")); };
+    how === "buffer" ? r.readAsArrayBuffer(file) : r.readAsText(file);
+  });
+}
+
+async function extractText(file) {
+  var name = (file.name || "").toLowerCase();
+
+  if (name.endsWith(".pdf")) {
+    var pdfjs = await pdfLib();
+    var doc = await pdfjs.getDocument({ data: await readAs(file, "buffer") }).promise;
+    var out = [];
+    for (var i = 1; i <= doc.numPages; i++) {
+      var content = await (await doc.getPage(i)).getTextContent();
+      // Join items with a space but respect the PDF's own line breaks, or the
+      // whole CV arrives as one run-on line and the model reads the dates as
+      // part of the job titles.
+      var line = "", page = [];
+      content.items.forEach(function (it) {
+        line += it.str;
+        if (it.hasEOL) { page.push(line); line = ""; }
+      });
+      if (line) page.push(line);
+      out.push(page.join("\n"));
+    }
+    var text = out.join("\n\n").trim();
+    if (!text) {
+      throw new Error("That PDF has no text layer — it is probably a scan. " +
+        "Export a text PDF from the original, or paste the text.");
+    }
+    return text;
+  }
+
+  if (name.endsWith(".docx")) {
+    if (!window.mammoth) await loadScript(LIBS.docx);
+    var res = await window.mammoth.extractRawText({
+      arrayBuffer: await readAs(file, "buffer"),
+    });
+    return (res.value || "").trim();
+  }
+
+  if (name.endsWith(".doc")) {
+    throw new Error("Old .doc files are not readable here. Save as .docx or PDF.");
+  }
+
+  return String(await readAs(file, "text")).trim();
+}
+
+$("file").addEventListener("change", async function (e) {
   var f = e.target.files && e.target.files[0];
   if (!f) return;
-  var r = new FileReader();
-  r.onload = function () {
-    $("cv").value = r.result;
-    $("fileinfo").textContent = f.name + " — " + Math.round(f.size / 1024) + " KB loaded";
-  };
-  r.readAsText(f);
+  var info = $("fileinfo");
+  info.textContent = "reading " + f.name + "…";
+  try {
+    var text = await extractText(f);
+    if (!text) throw new Error("that file had no readable text in it");
+    $("cv").value = text;
+    info.textContent = f.name + " — " + text.length.toLocaleString() + " characters";
+  } catch (err) {
+    info.textContent = "";
+    say($("s1"), err.message, "err");
+  }
 });
 
 function say(el, msg, cls) {
@@ -218,11 +312,18 @@ async function ask(system, user, schema) {
   }
 
   var data = await res.json();
-  // Always check stop_reason before reading content.
+  // Always check stop_reason before reading content. A refusal has no JSON to
+  // parse; a max_tokens cut-off has HALF the JSON, which is worse - it reaches
+  // JSON.parse and surfaces to the user as "Unexpected end of JSON input",
+  // which reads like a bug in this page rather than a CV that ran long.
   if (data.stop_reason === "refusal") {
     throw new Error("The model declined this request" +
       (data.stop_details && data.stop_details.category
         ? " (" + data.stop_details.category + ")." : "."));
+  }
+  if (data.stop_reason === "max_tokens") {
+    throw new Error("The reply was cut off before it finished (max_tokens). " +
+      "Trim the CV to the career history and try again.");
   }
   var text = (data.content || []).filter(function (b) { return b.type === "text"; })
                                  .map(function (b) { return b.text; }).join("");
