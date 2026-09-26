@@ -40,7 +40,11 @@ const ONLY_HTML = new Set(["personas"]);
 // nothing, so it gets a generated copy beside it and references it locally.
 // Generated, gitignored, one source - the copy cannot drift from the original
 // the way the two checked-in dashboards did.
-const TOKENS_COPIES = [["dashboard", "tokens.css"]];
+const TOKENS_COPIES = [["dashboard", "tokens.css"], ["personas", "tokens.css"]];
+
+// tokens.css references brand/tpc_*.png relatively, so every page that gets a
+// copy of the tokens needs the marks beside it too. Generated and gitignored.
+const BRAND_COPIES = ["dashboard", "personas"];
 
 for (const [src, dest] of PAGES) {
   const from = join(root, src);
@@ -65,4 +69,14 @@ for (const [dir, name] of TOKENS_COPIES) {
   await cp(join(root, "app", "tokens.css"), join(publicDir, dir, name));
   await cp(join(root, "app", "tokens.css"), join(root, dir, name));
   console.log(`sync-static: app/tokens.css -> ${dir}/${name}`);
+}
+
+for (const dir of BRAND_COPIES) {
+  for (const base of [join(publicDir, dir), join(root, dir)]) {
+    await mkdir(join(base, "brand"), { recursive: true });
+    for (const f of ["tpc_black.png", "tpc_white.png"]) {
+      await cp(join(root, "app", "brand", f), join(base, "brand", f));
+    }
+  }
+  console.log(`sync-static: app/brand/ -> ${dir}/brand/`);
 }

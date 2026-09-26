@@ -27,3 +27,18 @@ Say what did not happen, in the same breath as what did.
 
 ## Brand
 Travis Paul Consulting work is set in Poppins. Personal work is Trebuchet MS.
+
+## Getting files into a cloud session
+This session runs in a cloud container. It has no `/Users`, no view of the Mac,
+and no access to iCloud or a local folder — only git, the connectors, and the
+network. Claude Design's "send to Claude Code" seeds a **local** workspace, so
+from claude.ai/code it delivers the file list as text and nothing else. Four
+routes were tried on the TPCL export and all came back empty; putting it in a
+repo worked in seconds.
+
+**So: anything that has to reach a cloud session goes into a git repo.** Say so
+at the first sign of a local path rather than hunting. If the work must happen
+against files that cannot leave the Mac, run Claude Code on the Mac instead.
+
+`scripts/ingest-design-system.sh` takes a repo directly for this reason:
+`owner/repo`, `owner/repo@branch --path sub/dir`, or a git URL.

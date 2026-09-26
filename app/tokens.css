@@ -1,90 +1,165 @@
 /* ==========================================================================
    TPCL Design System — token layer
+   Travis Paul Consulting Ltd · v1.0
+   Source: travis247365/tpcl-design-system, project/tokens.css + README.md
    --------------------------------------------------------------------------
-   This is the ONLY file that carries design values. Every rule in the app
-   consumes these variables and holds no literal colour, font or radius, so
-   the authoritative design.claude.ai export replaces this file wholesale
-   and nothing else has to be touched.
+   Two blocks, and the split matters.
 
-   Provenance of what is here now:
-     TYPOGRAPHY  verified. Standing instruction: all Travis Paul Consulting
-                 work is set in Poppins (personal work uses Trebuchet MS).
-                 One family throughout, so the label layer is Poppins at
-                 small size with letterspacing rather than a second face.
-                 The monospace slot is reserved for API keys and code, where
-                 character alignment is functional, not decorative.
-     COLOUR      PROVISIONAL. The TPCL export was not reachable from this
-                 container, so these are neutral greys plus a single accent.
-                 They are deliberately unbranded rather than a guessed TPCL
-                 palette. Replace on arrival of the export.
+   PART 1 is the TPCL core, copied verbatim from the export. It is the brand,
+   and it is replaced wholesale when the design system moves.
+
+   PART 2 maps that core onto the semantic names these pages already read, so
+   the pages hold no brand value of their own. Changing the brand is a PART 1
+   edit; changing what a page does with it is a PART 2 edit.
+
+   Every contrast figure in the export's README was re-measured before use and
+   all eight matched exactly (charcoal/white 11.37:1, cyan-on-white 2.30:1,
+   amber-on-white 1.63:1, cyan-on-charcoal 4.95:1, amber-on-charcoal 6.98:1,
+   ink-muted 5.10:1, blue-gray 1.75:1). The spec is accurate; it is followed
+   here rather than reinterpreted.
    ========================================================================== */
 
+/* ---------- PART 1 · TPCL core (verbatim) ---------- */
+:root {
+  /* Brand core */
+  --tp-charcoal:      #3A3A3A;  /* primary dark bg + light-mode body text */
+  --tp-charcoal-deep: #2B2B2B;  /* layering / recessed panels on dark */
+  --tp-charcoal-soft: #4A4A4A;  /* raised panels on dark, hairlines */
+  --tp-white:         #FFFFFF;  /* light-mode bg + dark-mode text */
+  --tp-bluegray:      #B8C5D6;  /* split panels, index chips, accent cards */
+  --tp-cyan:          #00BCD4;  /* DARK-mode accent */
+  --tp-amber:         #FFC107;  /* LIGHT-mode accent */
+
+  /* Derived neutrals */
+  --tp-ink:        #3A3A3A;
+  --tp-ink-muted:  #6E6E6E;   /* 5.10:1 on white — AA body */
+  --tp-ink-faint:  #9A9A9A;   /* decorative / disabled only */
+  --tp-rule:       #E4E6EA;
+  --tp-surface:    #F5F6F8;
+  --tp-on-dark-muted: rgba(255,255,255,.66);
+
+  /* Client-overlay slot. Override per engagement; never replaces the TPCL
+     core, only tints one accent surface. */
+  --tp-client:      var(--tp-cyan);
+  --tp-client-ink:  var(--tp-charcoal);
+
+  /* Type — Poppins in exactly the three weights TPCL owns: 400 / 500 / 700 */
+  --tp-font: "Poppins", "Century Gothic", "Futura", "Avenir Next",
+             -apple-system, "Segoe UI", sans-serif;
+
+  /* Spacing — 8px base */
+  --tp-1: 4px;  --tp-2: 8px;  --tp-3: 12px; --tp-4: 16px;
+  --tp-5: 24px; --tp-6: 32px; --tp-7: 48px; --tp-8: 64px;
+  --tp-9: 96px; --tp-10: 128px;
+
+  /* Geometry — TPCL is square. Radius is the exception, not the rule. */
+  --tp-radius: 0px;
+  --tp-radius-pill: 999px;
+  --tp-hairline: 1px;
+  --tp-rule-weight: 3px;
+}
+
+/* ---------- PART 2 · mapping onto what the pages read ---------- */
 :root{
   color-scheme:light;
 
-  /* --- surfaces & ink ---------------------------------------------------- */
-  --ink:#14181c;          /* primary text, hard rules                       */
-  --slate:#5b6570;        /* secondary text                                 */
-  --paper:#f6f7f8;        /* page ground                                    */
-  --raised:#ffffff;       /* cards sitting above the page                   */
-  --sunken:#eef0f2;       /* inputs, wells                                  */
-  --rule:#dde1e5;         /* hairlines                                      */
+  --ink:    var(--tp-charcoal);
+  --slate:  var(--tp-ink-muted);
+  --paper:  var(--tp-white);
+  --raised: var(--tp-white);
+  --sunken: var(--tp-surface);
+  --rule:   var(--tp-rule);
 
-  /* --- accent ------------------------------------------------------------ */
-  --accent:#1c5fa8;
-  --accent-soft:#e2ebf5;
+  /* The accent splits in two, because in this system it has to.
+     --accent is the GRAPHIC accent: blocks, rules, borders, fills. On white
+     that is amber, which measures 1.63:1 and is therefore unusable as text.
+     --accent-ink is the accent-coloured TEXT slot, and on white it resolves
+     to charcoal. Collapsing these two into one variable is what produced
+     unreadable labels, and it is the single rule this system is most
+     explicit about. */
+  --accent:      var(--tp-amber);
+  --accent-ink:  var(--tp-charcoal);
+  --accent-soft: var(--tp-surface);
 
-  /* --- status (reserved; never reused as a series colour) ----------------
-     Stepped to clear 4.5:1 on --paper, because these are worn by status TEXT
-     and by 1px borders, not by fills. The obvious mid-tones do not: the
-     bright amber measured 2.02:1 and the bright red 3.69:1 against this
-     ground, which reads as legible only to someone who already knows what
-     the message says. Dark mode keeps its own lighter steps below. */
-  --good:#127f58;
-  --warn:#8f6200;
-  --crit:#c02c2b;
+  /* Status. TPCL reserves green/red for deltas and gives no text-safe amber,
+     so the warn step is darkened until it clears 4.5:1 on white. Measured:
+     5.35 / 5.36 / 7.33. */
+  --good:#1E7A46;
+  --warn:#8F6200;
+  --crit:#B00020;
 
+  /* Chart series. TPCL charts are "one cyan stroke, terminal dot, no
+     gridlines" - a single series. Where a categorical set is genuinely
+     needed the brand offers only cyan, amber and blue-gray, all of which are
+     graphic-only on white, so these carry direct labels and a legend and
+     never encode meaning by colour alone. */
+  --s1: var(--tp-cyan);
+  --s2: var(--tp-amber);
+  --s3: var(--tp-bluegray);
 
-  /* --- chart series (categorical; assigned in fixed order, never cycled) ---
-     Validated with the dataviz checker against this surface: lightness band,
-     chroma floor, CVD separation and normal-vision floor all pass in both
-     modes. A 4th series is not a generated hue - it folds into "Other" or the
-     chart becomes small multiples. --s3 sits at 2.74:1 on the light ground, so
-     any chart using it carries direct labels or a table view, never colour
-     alone. */
-  --s1:#2a78d6;
-  --s2:#eb6834;
-  --s3:#1baf7a;
+  --display: var(--tp-font);
+  --body:    var(--tp-font);
+  --label:   var(--tp-font);
+  --mono:    ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 
-  /* --- type -------------------------------------------------------------- */
-  --display:"Poppins","Helvetica Neue",Arial,sans-serif;
-  --body:"Poppins","Helvetica Neue",Arial,sans-serif;
-  --label:"Poppins","Helvetica Neue",Arial,sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-
-  /* --- geometry ---------------------------------------------------------- */
-  --r-xs:3px;   /* chart marks: swatches, track ends */
-  --r-sm:4px;
-  --r-md:6px;
-  --r-lg:10px;
+  /* Square. All three radius slots resolve to 0 - they are kept as names so
+     a future system that is not square has somewhere to land. */
+  --r-xs: var(--tp-radius);
+  --r-sm: var(--tp-radius);
+  --r-md: var(--tp-radius);
+  --r-lg: var(--tp-radius);
 }
 
-/* Dark mode is selected, not an inversion: each step is chosen against the
-   dark ground so ink keeps its contrast and the accent keeps its chroma. */
+/* Dark mode is the charcoal half of the two-mode system, not an inversion.
+   Here cyan becomes legal as text (4.95:1) and amber too (6.98:1), which is
+   exactly why the accent flips: on charcoal the accent can speak, on white it
+   can only mark. */
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   color-scheme:dark;
-  --ink:#e9ecef; --slate:#97a2ad;
-  --paper:#11151a; --raised:#181d23; --sunken:#0d1116; --rule:#28303a;
-  --accent:#6aa9e8; --accent-soft:#16283c;
-  --good:#199e70; --warn:#c98500; --crit:#e66767;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --ink:    var(--tp-white);
+  --slate:  var(--tp-on-dark-muted);
+  --paper:  var(--tp-charcoal);
+  --raised: var(--tp-charcoal-soft);
+  --sunken: var(--tp-charcoal-deep);
+  --rule:   var(--tp-charcoal-soft);
+  --accent:      var(--tp-cyan);
+  --accent-ink:  var(--tp-cyan);
+  --accent-soft: var(--tp-charcoal-deep);
+  --good:#4CC98A; --warn:#FFC107; --crit:#FF8A8A;
 }}
 
 :root[data-theme="dark"]{
   color-scheme:dark;
-  --ink:#e9ecef; --slate:#97a2ad;
-  --paper:#11151a; --raised:#181d23; --sunken:#0d1116; --rule:#28303a;
-  --accent:#6aa9e8; --accent-soft:#16283c;
-  --good:#199e70; --warn:#c98500; --crit:#e66767;
-  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --ink:    var(--tp-white);
+  --slate:  var(--tp-on-dark-muted);
+  --paper:  var(--tp-charcoal);
+  --raised: var(--tp-charcoal-soft);
+  --sunken: var(--tp-charcoal-deep);
+  --rule:   var(--tp-charcoal-soft);
+  --accent:      var(--tp-cyan);
+  --accent-ink:  var(--tp-cyan);
+  --accent-soft: var(--tp-charcoal-deep);
+  --good:#4CC98A; --warn:#FFC107; --crit:#FF8A8A;
 }
+
+/* ---------- PART 3 · the motif these pages use ---------- */
+/* M1, the top-left accent block: amber on white, cyan on charcoal, ~2.8:1.
+   Present on internal pages, absent from covers - its absence is what makes a
+   cover a cover. */
+.tp-accent{width:56px;height:20px;display:block;background:var(--accent);}
+
+/* M3, the signature. Bottom-LEFT on dark, bottom-RIGHT on light, at a locked
+   1.924:1 ratio with clear space of 45% of its height on all four sides -
+   about double what most people leave by eye.
+   Black on white and white on charcoal, never the full-colour master: its
+   caps cyan #59D1E2 sits close to the layout cyan #00BCD4 without matching,
+   so the colour cut is barred from any surface carrying a cyan accent. */
+.tp-mark{display:block;aspect-ratio:760/395;height:34px;width:auto;
+         background-repeat:no-repeat;background-size:contain;
+         background-image:url("brand/tpc_black.png");}
+:root[data-theme="dark"] .tp-mark,
+.tp-on-dark .tp-mark{background-image:url("brand/tpc_white.png");}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tp-mark{
+  background-image:url("brand/tpc_white.png");}}
+.tp-sign{display:flex;justify-content:flex-end;padding-top:var(--tp-7);}
+.tp-sign--dark{justify-content:flex-start;}

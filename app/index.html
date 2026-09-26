@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Persona Forge</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="tokens.css">
 <style>
   body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
@@ -10,7 +10,7 @@
   .wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:0 72px;}
   header{padding-block:48px 28px;border-bottom:2px solid var(--ink);}
   .eyebrow{font-family:var(--label);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
-           color:var(--accent);margin:0 0 14px;}
+           color:var(--accent-ink);margin:0 0 14px;}
   h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5.5vw,3.1rem);
      line-height:1.05;letter-spacing:-.022em;margin:0;text-wrap:balance;}
   .lede{font-size:1.04rem;color:var(--slate);max-width:60ch;margin:18px 0 0;}
@@ -18,14 +18,14 @@
   .privacy{display:flex;gap:14px;align-items:flex-start;margin-top:26px;padding:16px 18px;
            background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 var(--r-sm) var(--r-sm) 0;}
   .privacy .k{font-family:var(--label);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
-              color:var(--accent);white-space:nowrap;padding-top:3px;}
+              color:var(--accent-ink);white-space:nowrap;padding-top:3px;}
   .privacy p{margin:0;font-size:.92rem;max-width:72ch;}
 
   .step{margin-top:34px;background:var(--raised);border:1px solid var(--rule);
         border-radius:var(--r-md);padding:22px;}
-  .step h2{font-family:var(--display);font-weight:600;font-size:1.12rem;margin:0 0 4px;
+  .step h2{font-family:var(--display);font-weight:500;font-size:1.12rem;margin:0 0 4px;
            display:flex;align-items:baseline;gap:10px;}
-  .num{font-family:var(--label);font-size:.76rem;color:var(--accent);}
+  .num{font-family:var(--label);font-size:.76rem;color:var(--accent-ink);}
   .hint{font-size:.89rem;color:var(--slate);margin:0 0 14px;max-width:70ch;}
   label{display:block;font-family:var(--label);font-size:.68rem;letter-spacing:.08em;
         text-transform:uppercase;color:var(--slate);margin:14px 0 6px;}
@@ -75,7 +75,7 @@
 
   footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--rule);
          font-size:.85rem;color:var(--slate);}
-  footer a{color:var(--accent);}
+  footer a{color:var(--accent-ink);}
   code.addr{font-family:var(--mono);font-size:.82rem;background:var(--sunken);
             border:1px solid var(--rule);border-radius:var(--r-sm);padding:9px 11px;
             word-break:break-all;flex:1;min-width:0;}
@@ -85,12 +85,13 @@
   .feedrow .when{font-family:var(--label);font-size:.68rem;color:var(--slate);
                  white-space:nowrap;}
   .feedrow .what{flex:1;min-width:0;}
-  .feedrow .what a{color:var(--accent);}
+  .feedrow .what a{color:var(--accent-ink);}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
 
 <div class="wrap">
   <header>
+    <span class="tp-accent" aria-hidden="true"></span>
     <p class="eyebrow">Persona Forge · bring your own key</p>
     <h1>Your CV, read properly</h1>
     <p class="lede">Paste a CV and get five working personas — each a usable system prompt,
@@ -178,6 +179,7 @@
     not to invent credentials, employers or figures, and to leave a claim out rather than
     guess — a portfolio gets tested before it gets believed. Verify every generated line
     against your own documents before using it anywhere.</p>
+      <div class="tp-sign"><span class="tp-mark" role="img" aria-label="Travis Paul Consulting"></span></div>
   </footer>
 </div>
 

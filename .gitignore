@@ -124,3 +124,6 @@ client/public/app/
 client/public/dashboard/
 client/public/personas/
 dashboard/tokens.css
+personas/tokens.css
+dashboard/brand/
+personas/brand/
