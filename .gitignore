@@ -123,3 +123,4 @@ __pycache__/
 client/public/app/
 client/public/dashboard/
 client/public/personas/
+dashboard/tokens.css

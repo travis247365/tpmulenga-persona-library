@@ -44,6 +44,18 @@
   --warn:#8f6200;
   --crit:#c02c2b;
 
+
+  /* --- chart series (categorical; assigned in fixed order, never cycled) ---
+     Validated with the dataviz checker against this surface: lightness band,
+     chroma floor, CVD separation and normal-vision floor all pass in both
+     modes. A 4th series is not a generated hue - it folds into "Other" or the
+     chart becomes small multiples. --s3 sits at 2.74:1 on the light ground, so
+     any chart using it carries direct labels or a table view, never colour
+     alone. */
+  --s1:#2a78d6;
+  --s2:#eb6834;
+  --s3:#1baf7a;
+
   /* --- type -------------------------------------------------------------- */
   --display:"Poppins","Helvetica Neue",Arial,sans-serif;
   --body:"Poppins","Helvetica Neue",Arial,sans-serif;
@@ -51,6 +63,7 @@
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
 
   /* --- geometry ---------------------------------------------------------- */
+  --r-xs:3px;   /* chart marks: swatches, track ends */
   --r-sm:4px;
   --r-md:6px;
   --r-lg:10px;
@@ -64,6 +77,7 @@
   --paper:#11151a; --raised:#181d23; --sunken:#0d1116; --rule:#28303a;
   --accent:#6aa9e8; --accent-soft:#16283c;
   --good:#199e70; --warn:#c98500; --crit:#e66767;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
 }}
 
 :root[data-theme="dark"]{
@@ -72,4 +86,5 @@
   --paper:#11151a; --raised:#181d23; --sunken:#0d1116; --rule:#28303a;
   --accent:#6aa9e8; --accent-soft:#16283c;
   --good:#199e70; --warn:#c98500; --crit:#e66767;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
 }

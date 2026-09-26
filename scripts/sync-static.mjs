@@ -35,6 +35,13 @@ const PAGES = [
 // itself is published.
 const ONLY_HTML = new Set(["personas"]);
 
+// app/tokens.css is the single design source. The dashboard also deploys
+// STANDALONE to its own Pages subdomain, where "../app/tokens.css" resolves to
+// nothing, so it gets a generated copy beside it and references it locally.
+// Generated, gitignored, one source - the copy cannot drift from the original
+// the way the two checked-in dashboards did.
+const TOKENS_COPIES = [["dashboard", "tokens.css"]];
+
 for (const [src, dest] of PAGES) {
   const from = join(root, src);
   const to = join(publicDir, dest);
@@ -52,4 +59,10 @@ for (const [src, dest] of PAGES) {
     },
   });
   console.log(`sync-static: ${src}/ -> client/public/${dest}/`);
+}
+
+for (const [dir, name] of TOKENS_COPIES) {
+  await cp(join(root, "app", "tokens.css"), join(publicDir, dir, name));
+  await cp(join(root, "app", "tokens.css"), join(root, dir, name));
+  console.log(`sync-static: app/tokens.css -> ${dir}/${name}`);
 }
