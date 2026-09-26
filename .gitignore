@@ -127,3 +127,5 @@ dashboard/tokens.css
 personas/tokens.css
 dashboard/brand/
 personas/brand/
+app/config.json
+client/public/app/config.json

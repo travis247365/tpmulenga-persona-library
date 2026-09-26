@@ -318,10 +318,17 @@ $("file").addEventListener("change", async function (e) {
 });
 
 // ---- step 4: the autonomous feed ----------------------------------------
-// The worker's origin. Left blank until it is deployed, and the UI says so
-// rather than failing at the first click with a network error the user cannot
-// act on. Set it once, here, when `wrangler deploy` prints the URL.
+// The worker's origin, read at runtime from config.json, which the deploy
+// script writes. It used to be a constant edited by hand after every deploy -
+// which is the kind of step that gets forgotten once and then ships a page
+// whose feed button does nothing. Absent or blank, the UI says the worker is
+// not deployed rather than failing at the first click with a network error
+// nobody can act on.
 var WORKER = "";
+var CONFIG_READY = fetch("config.json", { cache: "no-store" })
+  .then(function (r) { return r.ok ? r.json() : {}; })
+  .catch(function () { return {}; })
+  .then(function (c) { WORKER = (c && c.worker) || ""; return c; });
 
 // The token is the account: no password, no recovery. It lives in this
 // browser's localStorage only, which is also why the UI is blunt about what
@@ -359,6 +366,7 @@ function feedRender(alerts) {
 }
 
 async function feedLoad() {
+  await CONFIG_READY;
   var t = tokenGet();
   if (!t || !WORKER) return;
   try {
@@ -384,9 +392,10 @@ function feedShow(address) {
 }
 
 $("feedBtn").addEventListener("click", async function () {
+  await CONFIG_READY;
   if (!WORKER) {
-    say($("s3"), "The ingest worker is not deployed yet — set WORKER in this page " +
-                 "to the URL wrangler printed.", "err");
+    say($("s3"), "The job feed is not switched on for this site yet — " +
+                 "the ingest worker has not been deployed.", "err");
     return;
   }
   $("feedBtn").disabled = true;
@@ -431,7 +440,9 @@ $("feedCopy").addEventListener("click", async function () {
   }
 });
 
-// A returning visitor should find their feed already there.
+// A returning visitor should find their feed already there - but only once
+// config.json has answered, or feedLoad() would run against a blank WORKER.
+CONFIG_READY.then(function () { if (tokenGet()) feedLoad(); });
 if (tokenGet()) {
   $("feedState").textContent = "active on this device";
   $("feedBtn").hidden = true;
