@@ -177,7 +177,5 @@
 .tp-on-dark .tp-mark{background-image:url("brand/tpc_white.png");}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tp-mark{
   background-image:url("brand/tpc_white.png");}}
-.tp-sign{display:flex;align-items:center;gap:var(--tp-3);
-         justify-content:flex-end;padding-top:var(--tp-7);}
-.tp-by{font-size:11px;letter-spacing:.04em;color:var(--slate);}
+.tp-sign{display:flex;justify-content:flex-end;padding-top:var(--tp-7);}
 .tp-sign--dark{justify-content:flex-start;}
