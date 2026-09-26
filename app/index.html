@@ -1,11 +1,23 @@
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#3A3A3A">
+<!-- iOS ignores the manifest's icons for the home screen and reads this one. -->
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Persona Forge">
 <title>Persona Forge</title>
 <link rel="stylesheet" href="tokens.css">
 <style>
   body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
        -webkit-font-smoothing:antialiased;}
-  .wrap{max-width:900px;margin:0 auto;padding-inline:20px;padding-block:0 72px;}
+  .wrap{max-width:900px;margin:0 auto;
+        padding-inline:calc(20px + env(safe-area-inset-left)) calc(20px + env(safe-area-inset-right));
+        padding-block:env(safe-area-inset-top) calc(72px + env(safe-area-inset-bottom));}
+  .install{display:none;margin-top:14px;padding:12px 14px;background:var(--sunken);
+           border-left:var(--tp-rule-weight) solid var(--accent);font-size:.86rem;}
+  .install.on{display:block;}
   header{padding-block:48px 28px;border-bottom:2px solid var(--ink);}
   .eyebrow{font-family:var(--label);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
            color:var(--accent-ink);margin:0 0 14px;}
@@ -153,6 +165,7 @@
     </div>
 
     <div class="status" id="s3"></div>
+    <p class="install" id="install"></p>
 
     <div class="out" id="feedSetup" hidden>
       <p class="hint" style="margin-top:0">Forward your job alerts to this address:</p>
@@ -448,6 +461,57 @@ if (tokenGet()) {
   $("feedBtn").hidden = true;
   $("feedForget").hidden = false;
   feedLoad();
+}
+
+// ---- install to the home screen -----------------------------------------
+// Two different worlds. Chromium fires beforeinstallprompt and gives a button.
+// iOS Safari fires nothing and has no API at all - the only route is Share >
+// Add to Home Screen - so the honest thing is to say so rather than show a
+// button that cannot work.
+var deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", function (e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  var el = $("install");
+  el.className = "install on";
+  el.innerHTML = '<b>Install this.</b> It opens from your home screen and works offline. ';
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "ghost"; b.textContent = "Install";
+  b.addEventListener("click", async function () {
+    b.disabled = true;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    el.className = "install";
+  });
+  el.appendChild(b);
+});
+
+(function iosHint() {
+  var standalone = window.matchMedia("(display-mode: standalone)").matches
+                || window.navigator.standalone === true;
+  if (standalone) return;                       // already installed
+  var ua = navigator.userAgent;
+  // iPadOS reports as Macintosh, so touch points are the tell.
+  var ios = /iPad|iPhone|iPod/.test(ua)
+         || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  if (!ios || !/Safari/.test(ua) || /CriOS|FxiOS/.test(ua)) return;
+  var el = $("install");
+  el.className = "install on";
+  el.innerHTML = "<b>Add this to your home screen.</b> Tap Share, then " +
+    "<b>Add to Home Screen</b>. It then opens full screen and works without a " +
+    "connection \u2014 iOS has no install button, so this is the only route.";
+})();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function (e) {
+      // A failed registration must never break the page: everything here works
+      // online without it.
+      console.warn("service worker did not register:", e.message);
+    });
+  });
 }
 
 function say(el, msg, cls) {
