@@ -74,9 +74,7 @@ for (const [dir, name] of TOKENS_COPIES) {
 for (const dir of BRAND_COPIES) {
   for (const base of [join(publicDir, dir), join(root, dir)]) {
     await mkdir(join(base, "brand"), { recursive: true });
-    for (const f of ["tpc_black.png", "tpc_white.png"]) {
-      await cp(join(root, "app", "brand", f), join(base, "brand", f));
-    }
+    await cp(join(root, "app", "brand"), join(base, "brand"), { recursive: true });
   }
   console.log(`sync-static: app/brand/ -> ${dir}/brand/`);
 }

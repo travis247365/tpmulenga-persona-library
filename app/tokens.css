@@ -1,3 +1,19 @@
+/* ---------- PART 0 · Poppins, self-hosted ----------
+   From the design system repo (src/assets/fonts), SIL Open Font License 1.1 -
+   the licence text travels with the files in brand/fonts/OFL.txt.
+
+   Served from this origin rather than Google Fonts for the same reason the CV
+   parsers are: a page whose whole claim is that nothing leaves the browser
+   should not open a connection to a third party just to draw its own type.
+   It also means the exact three weights TPCL owns are what renders, instead of
+   whatever a CDN request happens to return. */
+@font-face{font-family:"Poppins";src:url("brand/fonts/poppins-400.woff2") format("woff2");
+           font-weight:400;font-style:normal;font-display:swap;}
+@font-face{font-family:"Poppins";src:url("brand/fonts/poppins-500.woff2") format("woff2");
+           font-weight:500;font-style:normal;font-display:swap;}
+@font-face{font-family:"Poppins";src:url("brand/fonts/poppins-700.woff2") format("woff2");
+           font-weight:700;font-style:normal;font-display:swap;}
+
 /* ==========================================================================
    TPCL Design System — token layer
    Travis Paul Consulting Ltd · v1.0
@@ -161,5 +177,7 @@
 .tp-on-dark .tp-mark{background-image:url("brand/tpc_white.png");}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tp-mark{
   background-image:url("brand/tpc_white.png");}}
-.tp-sign{display:flex;justify-content:flex-end;padding-top:var(--tp-7);}
+.tp-sign{display:flex;align-items:center;gap:var(--tp-3);
+         justify-content:flex-end;padding-top:var(--tp-7);}
+.tp-by{font-size:11px;letter-spacing:.04em;color:var(--slate);}
 .tp-sign--dark{justify-content:flex-start;}
