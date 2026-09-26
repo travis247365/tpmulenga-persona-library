@@ -36,3 +36,16 @@ CREATE TABLE IF NOT EXISTS rejected (
   subject    TEXT,
   at         INTEGER NOT NULL
 );
+
+-- Self-service signup. An account is created by the app, not by hand, so the
+-- system scales past one user without anyone touching the database.
+--
+-- There is no password: the token IS the account. It addresses the inbound
+-- mail and authorises the feed read, so it is generated with the CSPRNG and
+-- is long enough that guessing is not a strategy.
+CREATE TABLE IF NOT EXISTS signups (
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip      TEXT NOT NULL,
+  at      INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS signups_ip ON signups(ip, at);

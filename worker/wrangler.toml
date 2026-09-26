@@ -13,3 +13,8 @@ database_id = "REPLACE_AFTER_CREATE"
 
 [vars]
 DASHBOARD_ORIGIN = "https://dashboard.tpm-persona-library.pages.dev"
+APP_ORIGIN = "https://tpm-persona-library.pages.dev"
+# The domain Email Routing accepts mail on. Signup hands users
+# jobs+<token>@INGEST_DOMAIN, so a wrong value here mints addresses that
+# silently never receive anything.
+INGEST_DOMAIN = "REPLACE_WITH_YOUR_EMAIL_ROUTING_DOMAIN"

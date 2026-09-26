@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Persona Forge</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
@@ -74,6 +76,16 @@
   footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--rule);
          font-size:.85rem;color:var(--slate);}
   footer a{color:var(--accent);}
+  code.addr{font-family:var(--mono);font-size:.82rem;background:var(--sunken);
+            border:1px solid var(--rule);border-radius:var(--r-sm);padding:9px 11px;
+            word-break:break-all;flex:1;min-width:0;}
+  .feedrow{display:flex;gap:12px;align-items:baseline;padding:11px 0;
+           border-top:1px solid var(--rule);}
+  .feedrow:first-child{border-top:0;}
+  .feedrow .when{font-family:var(--label);font-size:.68rem;color:var(--slate);
+                 white-space:nowrap;}
+  .feedrow .what{flex:1;min-width:0;}
+  .feedrow .what a{color:var(--accent);}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
 </style>
 
@@ -126,6 +138,39 @@
     <div class="row"><button id="scoreBtn" type="button" disabled>Score it</button></div>
     <div class="status" id="s2"></div>
     <div class="out" id="scoreOut"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">04</span>Turn on the job feed</h2>
+    <p class="hint">From here on it runs without you. You get one forwarding address and
+      add one filter in whatever mail client you already use; every job alert that arrives
+      is parsed, de-duplicated and stacked below. No Google sign-in, no permissions to
+      grant, nothing to revoke later except the filter itself.</p>
+
+    <div class="row">
+      <button id="feedBtn" type="button">Create my feed</button>
+      <button id="feedForget" type="button" class="ghost" hidden>Forget this feed</button>
+      <span class="sv" id="feedState">not set up</span>
+    </div>
+
+    <div class="status" id="s3"></div>
+
+    <div class="out" id="feedSetup" hidden>
+      <p class="hint" style="margin-top:0">Forward your job alerts to this address:</p>
+      <div class="row">
+        <code class="addr" id="feedAddr"></code>
+        <button id="feedCopy" type="button" class="ghost">Copy</button>
+      </div>
+      <p class="hint"><strong>In Gmail:</strong> Settings → Filters and Blocked Addresses →
+        Create a new filter. Put <code>jobalerts-noreply@linkedin.com</code> in
+        <em>From</em>, choose <em>Forward it to</em>, and pick the address above. Repeat for
+        any other job board you subscribe to.</p>
+      <p class="hint"><strong>Keep the address.</strong> It is the whole credential — there
+        is no password and no recovery. Anyone who has it can post into your feed, and
+        losing it means starting a new one.</p>
+    </div>
+
+    <div class="out" id="feedList"></div>
   </div>
 
   <footer>
@@ -271,6 +316,128 @@ $("file").addEventListener("change", async function (e) {
     say($("s1"), err.message, "err");
   }
 });
+
+// ---- step 4: the autonomous feed ----------------------------------------
+// The worker's origin. Left blank until it is deployed, and the UI says so
+// rather than failing at the first click with a network error the user cannot
+// act on. Set it once, here, when `wrangler deploy` prints the URL.
+var WORKER = "";
+
+// The token is the account: no password, no recovery. It lives in this
+// browser's localStorage only, which is also why the UI is blunt about what
+// losing it means. Wrapped because storage throws outright in a private window
+// with site data blocked, and a page that cannot remember a token should still
+// render.
+function tokenGet() {
+  try { return localStorage.getItem("pf.feed.token") || ""; } catch (e) { return ""; }
+}
+function tokenSet(v) {
+  try { v ? localStorage.setItem("pf.feed.token", v)
+          : localStorage.removeItem("pf.feed.token"); } catch (e) {}
+}
+
+function feedRender(alerts) {
+  var box = $("feedList");
+  if (!alerts.length) {
+    box.className = "out on";
+    box.innerHTML = '<p class="hint" style="margin:0">Nothing forwarded yet. ' +
+      'The first alert usually lands within a day of adding the filter.</p>';
+    return;
+  }
+  box.className = "out on";
+  box.innerHTML = alerts.map(function (a) {
+    var when = new Date(a.received_at).toLocaleDateString(undefined,
+      { day: "numeric", month: "short" });
+    var title = String(a.subject || "(no subject)");
+    var link = a.job_id
+      ? '<a href="https://www.linkedin.com/jobs/view/' + encodeURIComponent(a.job_id) +
+        '" target="_blank" rel="noopener noreferrer">' + esc(title) + "</a>"
+      : esc(title);
+    return '<div class="feedrow"><span class="when">' + esc(when) + "</span>" +
+           '<span class="what">' + link + "</span></div>";
+  }).join("");
+}
+
+async function feedLoad() {
+  var t = tokenGet();
+  if (!t || !WORKER) return;
+  try {
+    var res = await fetch(WORKER + "/feed/" + t, { cache: "no-store" });
+    if (res.status === 404) {
+      say($("s3"), "That feed no longer exists on the server. Create a new one.", "err");
+      return;
+    }
+    if (!res.ok) throw new Error("the feed returned " + res.status);
+    feedRender((await res.json()).alerts || []);
+  } catch (e) {
+    say($("s3"), "Could not reach the feed: " + e.message, "err");
+  }
+}
+
+function feedShow(address) {
+  $("feedAddr").textContent = address;
+  $("feedSetup").hidden = false;
+  $("feedSetup").className = "out on";
+  $("feedState").textContent = "active";
+  $("feedBtn").hidden = true;
+  $("feedForget").hidden = false;
+}
+
+$("feedBtn").addEventListener("click", async function () {
+  if (!WORKER) {
+    say($("s3"), "The ingest worker is not deployed yet — set WORKER in this page " +
+                 "to the URL wrangler printed.", "err");
+    return;
+  }
+  $("feedBtn").disabled = true;
+  say($("s3"), "Creating your feed…");
+  try {
+    var res = await fetch(WORKER + "/signup", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ label: "" }),
+    });
+    var body = await res.json();
+    if (!res.ok) throw new Error(body.error || "signup returned " + res.status);
+    tokenSet(body.token);
+    feedShow(body.address);
+    say($("s3"), "Feed created. Add the filter below and it fills itself.", "ok");
+    feedLoad();
+  } catch (e) {
+    say($("s3"), e.message, "err");
+  } finally {
+    $("feedBtn").disabled = false;
+  }
+});
+
+$("feedForget").addEventListener("click", function () {
+  tokenSet("");
+  $("feedSetup").hidden = true;
+  $("feedList").innerHTML = "";
+  $("feedList").className = "out";
+  $("feedState").textContent = "not set up";
+  $("feedBtn").hidden = false;
+  $("feedForget").hidden = true;
+  say($("s3"), "Forgotten on this device. Mail already forwarded is still stored " +
+               "server-side under that address.", "ok");
+});
+
+$("feedCopy").addEventListener("click", async function () {
+  try {
+    await navigator.clipboard.writeText($("feedAddr").textContent);
+    say($("s3"), "Address copied.", "ok");
+  } catch (e) {
+    say($("s3"), "Could not copy — select the address and copy it manually.", "err");
+  }
+});
+
+// A returning visitor should find their feed already there.
+if (tokenGet()) {
+  $("feedState").textContent = "active on this device";
+  $("feedBtn").hidden = true;
+  $("feedForget").hidden = false;
+  feedLoad();
+}
 
 function say(el, msg, cls) {
   el.className = "status on" + (cls ? " " + cls : "");

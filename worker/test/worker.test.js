@@ -78,6 +78,14 @@ function message({ to, from, subject = "jobs for you", raw = digest(["101010101"
 
 const rows = (env, sql, ...a) => env.DB.raw.prepare(sql).all(...a);
 
+/** A Request with a Cloudflare client-IP header, as the edge would send. */
+const post = (path, body, ip = "203.0.113.9") =>
+  new Request(`https://w.example${path}`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "cf-connecting-ip": ip },
+    body: JSON.stringify(body ?? {}),
+  });
+
 describe("email worker", () => {
   let env;
   beforeEach(() => { env = makeEnv(); });
@@ -280,5 +288,93 @@ describe("feed api", () => {
     const wrong = await get(`/feed/${"c".repeat(32)}`);
     assert.equal(bad.status, wrong.status);
     assert.equal(await bad.text(), await wrong.text());
+  });
+});
+
+
+describe("signup", () => {
+  let env;
+  beforeEach(() => {
+    env = makeEnv();
+    env.INGEST_DOMAIN = "jobs.example";
+  });
+
+  test("creates an account and returns a usable address", async () => {
+    const res = await worker.fetch(post("/signup", { label: "travis" }), env);
+    assert.equal(res.status, 201);
+    const body = await res.json();
+    assert.match(body.token, /^[a-z0-9]{32}$/);
+    assert.equal(body.address, `jobs+${body.token}@jobs.example`);
+    assert.equal(body.feed, `/feed/${body.token}`);
+    const row = env.DB.raw.prepare("SELECT * FROM accounts WHERE token=?").get(body.token);
+    assert.ok(row);
+    assert.equal(row.label, "travis");
+  });
+
+  test("two signups never collide", async () => {
+    const a = await (await worker.fetch(post("/signup"), env)).json();
+    const b = await (await worker.fetch(post("/signup"), env)).json();
+    assert.notEqual(a.token, b.token);
+  });
+
+  test("a missing body is fine", async () => {
+    const res = await worker.fetch(new Request("https://w.example/signup", {
+      method: "POST", headers: { "cf-connecting-ip": "203.0.113.1" } }), env);
+    assert.equal(res.status, 201);
+  });
+
+  test("GET does not create an account", async () => {
+    const res = await worker.fetch(
+      new Request("https://w.example/signup"), env);
+    assert.equal(res.status, 405);
+    assert.equal(rows(env, "SELECT * FROM accounts").length, 2);  // only the fixtures
+  });
+
+  test("one IP cannot mint feeds forever", async () => {
+    for (let i = 0; i < 5; i++) {
+      assert.equal((await worker.fetch(post("/signup", null, "198.51.100.7"), env)).status, 201);
+    }
+    const sixth = await worker.fetch(post("/signup", null, "198.51.100.7"), env);
+    assert.equal(sixth.status, 429);
+  });
+
+  test("the cap is per IP, not global", async () => {
+    for (let i = 0; i < 5; i++) {
+      await worker.fetch(post("/signup", null, "198.51.100.7"), env);
+    }
+    const other = await worker.fetch(post("/signup", null, "198.51.100.8"), env);
+    assert.equal(other.status, 201);
+  });
+
+  // The point of the whole design: sign up, forward one alert, read it back,
+  // with no OAuth anywhere in the path.
+  test("sign up -> forward an alert -> read it from the feed", async () => {
+    const { token, address } = await (await worker.fetch(post("/signup"), env)).json();
+
+    await worker.email(message({
+      to: address,
+      from: "jobalerts-noreply@linkedin.com",
+      subject: "jobs for you",
+      raw: digest(["717171717"]),
+    }), env);
+
+    const feed = await worker.fetch(new Request(`https://w.example/feed/${token}`), env);
+    assert.equal(feed.status, 200);
+    const body = await feed.json();
+    assert.equal(body.alerts.length, 1);
+    assert.equal(body.alerts[0].job_id, "717171717");
+  });
+
+  test("preflight never answers with a wildcard origin", async () => {
+    env.APP_ORIGIN = "https://app.example";
+    const res = await worker.fetch(new Request("https://w.example/signup",
+      { method: "OPTIONS" }), env);
+    assert.equal(res.status, 204);
+    assert.equal(res.headers.get("access-control-allow-origin"), "https://app.example");
+
+    delete env.APP_ORIGIN;
+    const bare = await worker.fetch(new Request("https://w.example/signup",
+      { method: "OPTIONS" }), env);
+    assert.equal(bare.headers.get("access-control-allow-origin"), null);
   });
 });
