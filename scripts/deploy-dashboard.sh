@@ -15,12 +15,11 @@ set -euo pipefail
 PROJECT=${PROJECT:-job-search-agentic-ai}
 WORKDIR=${WORKDIR:-$HOME/dev/tpmulenga-persona-library}
 
-[ -n "${CLOUDFLARE_API_TOKEN:-}" ] || export CLOUDFLARE_API_TOKEN=$(pbpaste 2>/dev/null || true)
-[ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ] || \
-  CLOUDFLARE_ACCOUNT_ID=$(tr -d '[:space:]' < "$HOME/.config/cloudflare-account-id" 2>/dev/null || true)
-export CLOUDFLARE_ACCOUNT_ID
-[ -n "${CLOUDFLARE_API_TOKEN:-}" ] || { echo "no token on the clipboard"; exit 1; }
-[ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ] || { echo "no account id saved"; exit 1; }
+# Was: demand a token off the clipboard and exit without one. That made this
+# the only script still forcing a token to exist, which is worth nothing when
+# a browser login does the same job with no secret to keep.
+. "$(dirname "$0")/lib-cf-auth.sh"
+echo "auth $AUTH"
 
 cd "$WORKDIR"
 git fetch --quiet origin claude/epic-thompson-hgbsmp

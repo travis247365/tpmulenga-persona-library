@@ -15,7 +15,7 @@ deployment both paid).
 # 1. create a token: Account > Cloudflare Pages > Edit
 #    https://dash.cloudflare.com/profile/api-tokens
 # 2. copy it to the clipboard
-bash scripts/cloudflare-deploy.sh
+bash scripts/deploy-all.sh
 ```
 
 ## Pages alone is public — Access is the private half

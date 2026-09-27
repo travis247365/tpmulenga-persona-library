@@ -17,49 +17,16 @@ die(){ printf '\033[31m!! %s\033[0m\n' "$*" >&2; exit 1; }
 INGEST_DOMAIN="${INGEST_DOMAIN:-}"
 WR="npx --yes wrangler@4"
 
-# --- how you are authenticated ---------------------------------------------
-# Two routes, and the browser one is better for a person at a keyboard.
-#
-#   wrangler login  - OAuth in the browser. No secret to create, paste, or
-#                     store; it is scoped to your account and revocable from
-#                     the Cloudflare dashboard. It also lets wrangler resolve
-#                     the account id itself, so nothing has to be typed.
-#   CLOUDFLARE_API_TOKEN - for CI, or a machine with no browser. A Pages:Edit
-#                     token cannot list accounts, which is why the account id
-#                     has to be supplied alongside it.
-#
-# Neither is assumed: if there is no token AND no login, the script says which
-# one to do rather than failing somewhere in the middle with a 403.
-if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
-  AUTH="api token"
-  : "${CLOUDFLARE_ACCOUNT_ID:?CLOUDFLARE_API_TOKEN is set, so CLOUDFLARE_ACCOUNT_ID is needed too - a Pages:Edit token cannot list accounts}"
-elif WHO=$($WR whoami 2>&1) && printf '%s' "$WHO" | grep -qiE 'account id|you are logged in'; then
-  # `wrangler whoami` exits 0 whether or not you are signed in - it prints
-  # "You are not authenticated" and succeeds - so the exit code proves nothing
-  # and the output has to be read. Trusting the status here reported a browser
-  # login that did not exist, and the run then failed several steps later with
-  # a token error instead of at the door.
-  AUTH="browser login"
-else
-  cat >&2 <<'MSG'
-Not signed in to Cloudflare, and no API token set. Pick one:
+# Auth: browser login or an API token. See scripts/lib-cf-auth.sh.
+. "$(dirname "$0")/lib-cf-auth.sh"
 
-  npx wrangler login          <- simplest. Opens your browser, no token to
-                                 create or keep. Then re-run this script.
-
-  export CLOUDFLARE_API_TOKEN=...      for CI or a headless machine
-  export CLOUDFLARE_ACCOUNT_ID=...     (needed with a token: a Pages:Edit
-                                        token cannot list accounts)
-MSG
-  exit 1
-fi
+WORKER_NAME="${WORKER_NAME:-jobsearch-ingest}"
 PROJECT="${PROJECT:-job-search-agentic-ai}"
 # Derived, never typed twice. The Pages project name IS the subdomain, so the
 # CORS origins follow from it; keeping them as separate literals is how the
 # worker ends up allowlisting a site that no longer exists.
 APP_ORIGIN="https://${PROJECT}.pages.dev"
 DASHBOARD_ORIGIN="https://dashboard.${PROJECT}.pages.dev"
-WORKER_NAME="${WORKER_NAME:-jobsearch-ingest}"
 
 # ---------- 1. worker: database, schema, deploy -----------------------------
 echo "auth     $AUTH"
