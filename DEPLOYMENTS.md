@@ -20,6 +20,37 @@ what is missing and asserts each step, so re-running it is safe.
 
 ---
 
+## 2026-09-27 · ingest domain set, third deploy
+
+Branch at `fe8a361`. Auth: browser login.
+
+- **`INGEST_DOMAIN=jobs.travispaulconsulting.co`** — the worker now holds a real
+  domain instead of the placeholder, so signup mints addresses rather than
+  refusing. Worker version `00f9b5e8-c4c3-4034-bc4a-3c3a0fa442d7`.
+- Pages: 1 file changed, 433 already uploaded — `config.json` only.
+- Router verified; D1 reused.
+- Alias https://8c249d2a.job-search-agentic-ai.pages.dev
+
+**Privacy probe: PUBLIC**, reported correctly. The widened window worked — this
+run got a real answer instead of the `000` timeout the fresh hostname produced.
+
+**Two things this deploy did NOT include**
+
+1. `b1f91d7` was not pulled, so the deployed app is still the version where
+   *Build my personas* is live with no key and only fails on press. Pull and
+   re-run to pick it up.
+2. Email Routing has no rule yet, so nothing forwards to the worker. Signup now
+   hands out a *plausible* address that still receives nothing until the
+   catch-all exists — better than the placeholder, not yet working.
+
+**Worth checking when adding the rule:** Cloudflare Email Routing is enabled per
+zone. If only `travispaulconsulting.co` is a zone, the address that actually
+receives may be `jobs+<token>@travispaulconsulting.co`, not the `jobs.`
+subdomain. Whatever the Routes page accepts is the truth; if it is the apex,
+re-run with `INGEST_DOMAIN=travispaulconsulting.co`.
+
+---
+
 ## 2026-09-27 · old project deleted, browser login in use
 
 Branch at `a9d062a`. Auth: **browser login** (`npx wrangler login`), first use
