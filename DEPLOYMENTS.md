@@ -20,6 +20,26 @@ what is missing and asserts each step, so re-running it is safe.
 
 ---
 
+## 2026-09-27 · old project deleted, browser login in use
+
+Branch at `a9d062a`. Auth: **browser login** (`npx wrangler login`), first use
+of the OAuth path — no token involved.
+
+- `tpm-persona-library` **deleted**. It was still serving the whole site at its
+  old URL with no Access policy over it, which a rename leaves behind: not an
+  idle resource but a second live copy nobody is watching.
+- Confirmed by the listing the script prints afterwards — `job-search-agentic-ai`
+  is the only project on the account.
+- The API token created for the first two deploys is now redundant and should
+  be deleted from the Cloudflare profile. An unused credential is a liability
+  with no upside.
+
+**Still open**
+- Access policy on `job-search-agentic-ai` — the site is public until it exists.
+- `INGEST_DOMAIN` unset, so signup mints addresses that receive nothing.
+
+---
+
 ## 2026-09-27 · renamed project, second deploy
 
 Branch `claude/epic-thompson-hgbsmp` at `13cf38a`. Auth: API token.
