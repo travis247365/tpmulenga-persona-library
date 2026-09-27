@@ -21,9 +21,38 @@ export function newToken() {
   return [...bytes].map((b) => b.toString(36).padStart(2, "0")).join("").slice(0, 32);
 }
 
+/**
+ * Is the ingest domain real, or still a placeholder?
+ *
+ * Getting this wrong is silent, which is what makes it worth a check. An
+ * account created against an unconfigured domain hands someone
+ * jobs+<token>@REPLACE_WITH_YOUR_EMAIL_ROUTING_DOMAIN, the signup reports
+ * success, they add a mail filter forwarding to it, and nothing ever arrives.
+ * They have no way to tell that from "no jobs matched this week".
+ */
+export function ingestDomain(env) {
+  const d = String(env.INGEST_DOMAIN || "").trim().toLowerCase();
+  if (!d) return null;
+  if (d.startsWith("replace")) return null;          // the shipped placeholder
+  if (d.endsWith(".invalid") || d.endsWith(".example")) return null;
+  if (d === "example.com" || d === "localhost") return null;
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(d)) return null;   // not a hostname
+  return d;
+}
+
 export async function handleSignup(request, env) {
   if (request.method !== "POST") {
     return new Response("method not allowed", { status: 405 });
+  }
+
+  // Refuse rather than mint an address that cannot receive mail. 503, because
+  // this is the operator's configuration missing, not the caller's fault.
+  const domain = ingestDomain(env);
+  if (!domain) {
+    return json({
+      error: "The job feed is not switched on for this site yet — its mail " +
+             "domain has not been configured. Nothing was created.",
+    }, 503);
   }
 
   // Creating a row costs us nothing and costs the caller nothing, which is
@@ -53,7 +82,6 @@ export async function handleSignup(request, env) {
     env.DB.prepare("INSERT INTO signups (ip, at) VALUES (?,?)").bind(ip, Date.now()),
   ]);
 
-  const domain = env.INGEST_DOMAIN || "example.invalid";
   return json({
     token,
     address: `jobs+${token}@${domain}`,

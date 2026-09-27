@@ -420,6 +420,15 @@ $("feedBtn").addEventListener("click", async function () {
       body: JSON.stringify({ label: "" }),
     });
     var body = await res.json();
+    // 503 is the worker saying its mail domain is not configured. That is an
+    // operator problem, not the visitor's, and it is the one failure where a
+    // retry will never help - so it reads as a state of the site rather than
+    // an error the person did something to cause.
+    if (res.status === 503) {
+      say($("s3"), body.error || "The job feed is not switched on for this " +
+                                 "site yet. Nothing was created.", "err");
+      return;
+    }
     if (!res.ok) throw new Error(body.error || "signup returned " + res.status);
     tokenSet(body.token);
     feedShow(body.address);

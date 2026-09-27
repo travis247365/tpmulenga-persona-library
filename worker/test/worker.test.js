@@ -296,7 +296,7 @@ describe("signup", () => {
   let env;
   beforeEach(() => {
     env = makeEnv();
-    env.INGEST_DOMAIN = "jobs.example";
+    env.INGEST_DOMAIN = "jobs.travispaulconsulting.co";
   });
 
   test("creates an account and returns a usable address", async () => {
@@ -304,11 +304,39 @@ describe("signup", () => {
     assert.equal(res.status, 201);
     const body = await res.json();
     assert.match(body.token, /^[a-z0-9]{32}$/);
-    assert.equal(body.address, `jobs+${body.token}@jobs.example`);
+    assert.equal(body.address, `jobs+${body.token}@jobs.travispaulconsulting.co`);
     assert.equal(body.feed, `/feed/${body.token}`);
     const row = env.DB.raw.prepare("SELECT * FROM accounts WHERE token=?").get(body.token);
     assert.ok(row);
     assert.equal(row.label, "travis");
+  });
+
+  // The failure this guards is silent: an address minted against an
+  // unconfigured domain looks like a working signup, and the person only finds
+  // out weeks later when nothing has ever arrived.
+  for (const [label, value] of [
+    ["the shipped placeholder", "REPLACE_WITH_YOUR_EMAIL_ROUTING_DOMAIN"],
+    ["unset", undefined],
+    ["empty", ""],
+    ["example.invalid", "example.invalid"],
+    ["example.com", "example.com"],
+    ["not a hostname", "not a domain"],
+  ]) {
+    test(`refuses to mint an address when the domain is ${label}`, async () => {
+      const e = makeEnv();
+      if (value === undefined) delete e.INGEST_DOMAIN; else e.INGEST_DOMAIN = value;
+      const res = await worker.fetch(post("/signup"), e);
+      assert.equal(res.status, 503);
+      // and nothing was written: a refused signup must not leave an account
+      assert.equal(rows(e, "SELECT * FROM accounts").length, 2);  // fixtures only
+      assert.equal(rows(e, "SELECT * FROM signups").length, 0);
+    });
+  }
+
+  test("a real domain is accepted", async () => {
+    env.INGEST_DOMAIN = "jobs.travispaulconsulting.co";
+    const body = await (await worker.fetch(post("/signup"), env)).json();
+    assert.equal(body.address, `jobs+${body.token}@jobs.travispaulconsulting.co`);
   });
 
   test("two signups never collide", async () => {

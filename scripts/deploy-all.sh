@@ -15,6 +15,16 @@ say(){ printf '\n\033[1m== %s\033[0m\n' "$*"; }
 die(){ printf '\033[31m!! %s\033[0m\n' "$*" >&2; exit 1; }
 
 INGEST_DOMAIN="${INGEST_DOMAIN:-}"
+# Catch a typo or a reserved domain here rather than after it has been baked
+# into the worker. The worker refuses to mint addresses against these anyway,
+# but failing at the door says why.
+case "$INGEST_DOMAIN" in
+  "") : ;;
+  *.invalid|*.example|example.com|localhost|REPLACE*)
+    echo "INGEST_DOMAIN=$INGEST_DOMAIN cannot receive mail - use a real domain on Email Routing" >&2; exit 1 ;;
+  *.*) : ;;
+  *) echo "INGEST_DOMAIN=$INGEST_DOMAIN is not a domain name" >&2; exit 1 ;;
+esac
 WR="npx --yes wrangler@4"
 
 # Auth: browser login or an API token. See scripts/lib-cf-auth.sh.
