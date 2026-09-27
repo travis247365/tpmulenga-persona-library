@@ -115,9 +115,14 @@
 
   <div class="step">
     <h2><span class="num">01</span>Your Anthropic API key</h2>
-    <p class="hint">From <a href="https://console.anthropic.com/settings/keys" target="_blank"
-      rel="noopener">console.anthropic.com</a>. Kept in this browser's local storage and sent
-      only to Anthropic. Generating five personas from a two-page CV costs a few cents.</p>
+    <p class="hint">Tap <a href="https://console.anthropic.com/settings/keys" target="_blank"
+      rel="noopener">console.anthropic.com/settings/keys</a> → <b>Create key</b> → copy → paste
+      below. Entered once; this browser remembers it. Five personas from a two-page CV costs a
+      few cents on your own account.</p>
+    <p class="hint">There is no "sign in with Claude" for this: a claude.ai subscription and an
+      API key are separate products, and no website can call the API on your behalf from a
+      login. A key is also what keeps this page honest — it has no server, so your CV goes
+      straight from this browser to Anthropic and nowhere else.</p>
     <label for="key">sk-ant-…</label>
     <input id="key" type="password" autocomplete="off" spellcheck="false"
            placeholder="sk-ant-api03-…">
@@ -136,6 +141,7 @@
       <span id="fileinfo"></span>
     </div>
     <div class="row"><button id="go" type="button">Build my personas</button></div>
+    <p class="install" id="needkey">Add your API key in step 1 above, then this button works.</p>
     <div class="status" id="s1"></div>
     <div class="out" id="personas"></div>
   </div>
@@ -209,8 +215,23 @@ let personas = [];
 // ---- key, kept only in this browser -------------------------------------
 try { $("key").value = localStorage.getItem("pf.key") || ""; } catch (e) {}
 function keyState() {
-  var has = !!$("key").value.trim();
-  $("keystate").textContent = has ? "saved in this browser only" : "not saved";
+  var v = $("key").value.trim();
+  var has = !!v;
+  // An sk-ant- key is long; anything short is a half-paste, which is worth
+  // catching before it becomes a 401 the person has to interpret.
+  var looksRight = /^sk-ant-/.test(v) && v.length > 40;
+  $("keystate").textContent = !has ? "no key yet"
+    : looksRight ? "saved in this browser only"
+    : "that does not look like a full key";
+
+  // Gate the two buttons that spend the key, and say why on the button rather
+  // than after it is pressed. Pressing Build with no key used to be a dead end
+  // reached only after pasting a whole CV.
+  var go = $("go");
+  go.disabled = !looksRight;
+  go.title = looksRight ? "" : "Add your API key in step 1 first";
+  var need = $("needkey");
+  if (need) need.className = looksRight ? "install" : "install on";
 }
 $("key").addEventListener("input", function () {
   try { localStorage.setItem("pf.key", $("key").value.trim()); } catch (e) {}
