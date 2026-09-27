@@ -94,16 +94,29 @@ rm -f "$LOG"
 # ---------- 3. the assertion that matters -----------------------------------
 say "Is it private?"
 echo "probing $URL"
+# A brand-new Pages hostname does not resolve immediately. The first deploy of
+# a new project returned 000 on every attempt of a 5x10s loop - not a failure,
+# just DNS that had not propagated - and "inconclusive" on a fresh project is
+# the least useful thing this check can say, because that is exactly when you
+# most need to know whether it is public. So: longer, and it reports waiting
+# rather than going quiet.
 CODE=000
-for i in 1 2 3 4 5; do
-  read -r CODE CHAIN <<<"$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' -L --max-redirs 0 "$URL" || echo '000 ')"
+for i in $(seq 1 12); do
+  read -r CODE CHAIN <<<"$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' -L --max-redirs 0 --connect-timeout 10 "$URL" || echo '000 ')"
   [ "$CODE" != "000" ] && break
+  [ "$i" = 1 ] && printf 'waiting for DNS'
+  printf '.'
   sleep 10
 done
+[ "$CODE" = "000" ] || echo
 case "$CODE" in
   302|403) echo "Access is in front of it." ;;
   200) printf '\033[33m!! PUBLIC — anyone with the URL can read this.\033[0m\n'
        echo "   Add a Cloudflare Access policy for $PROJECT, subdomain *, before sharing it." ;;
+  000) printf '\033[33m!! Could not reach it after two minutes.\033[0m\n'
+       echo "   A new hostname can take longer than that to resolve. This says"
+       echo "   NOTHING about whether it is private - open $URL yourself, and"
+       echo "   if it loads without a Cloudflare login screen, it is public." ;;
   *)   echo "inconclusive (HTTP $CODE) — check it yourself before sharing" ;;
 esac
 
