@@ -1,5 +1,5 @@
 /**
- * Service worker for Persona Forge.
+ * Service worker for the Job Search Agentic AI Engine.
  *
  * The app shell is cached so the thing opens from the home screen without a
  * connection - which on a phone is the difference between a tool and a
@@ -16,7 +16,7 @@
  * straight from the page, and a worker sitting in that path would be exactly
  * the interception the page promises does not happen.
  */
-const VERSION = "pf-v1";
+const VERSION = "jsae-v2";
 const SHELL = [
   "./",
   "./index.html",

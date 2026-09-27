@@ -6,8 +6,9 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Persona Forge">
-<title>Persona Forge</title>
+<!-- Kept short on purpose: iOS truncates a home-screen label past ~12 characters. -->
+<meta name="apple-mobile-web-app-title" content="Job Search AI">
+<title>TP Consulting.Co Job Search Agentic AI Engine</title>
 <link rel="stylesheet" href="tokens.css">
 <style>
   body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
@@ -37,6 +38,21 @@
            display:flex;align-items:baseline;gap:10px;}
   .num{font-family:var(--label);font-size:.76rem;color:var(--accent-ink);}
   .hint{font-size:.89rem;color:var(--slate);margin:0 0 14px;max-width:70ch;}
+
+  /* The note is closed by default: someone who already has a key should not
+     have to scroll past six steps to reach the input. */
+  .howto{margin:0 0 14px;background:var(--sunken);border:1px solid var(--rule);
+         border-radius:var(--r-sm);}
+  .howto > summary{font-family:var(--label);font-size:.72rem;letter-spacing:.06em;
+         text-transform:uppercase;padding:11px 14px;cursor:pointer;color:var(--ink);}
+  .howto > summary::marker{color:var(--accent-ink);}
+  .howto ol{margin:0;padding:0 18px 14px 34px;font-size:.89rem;color:var(--slate);
+            max-width:66ch;}
+  .howto li{margin:0 0 8px;}
+  .howto li:last-child{margin-bottom:0;}
+  .howto .warn{margin:2px 18px 14px;padding:10px 12px;background:var(--raised);
+               border-left:var(--tp-rule-weight) solid var(--accent);
+               font-size:.86rem;color:var(--ink);max-width:66ch;}
   label{display:block;font-family:var(--label);font-size:.68rem;letter-spacing:.08em;
         text-transform:uppercase;color:var(--slate);margin:14px 0 6px;}
   textarea,input[type=password],input[type=text]{
@@ -102,7 +118,7 @@
 <div class="wrap">
   <header>
     <span class="tp-accent" aria-hidden="true"></span>
-    <p class="eyebrow">Persona Forge · bring your own key</p>
+    <p class="eyebrow">TP Consulting.Co Job Search Agentic AI Engine</p>
     <h1>Your CV, read properly</h1>
     <p class="lede">Paste a CV and get five working personas — each a usable system prompt,
       each backed by the engagement it came from. Then score any job advert against them.</p>
@@ -123,6 +139,25 @@
       API key are separate products, and no website can call the API on your behalf from a
       login. A key is also what keeps this page honest — it has no server, so your CV goes
       straight from this browser to Anthropic and nowhere else.</p>
+    <details class="howto">
+      <summary>How to get your Anthropic key</summary>
+      <ol>
+        <li>Go to <a href="https://console.anthropic.com/" target="_blank"
+          rel="noopener">console.anthropic.com</a> and sign in, or create an account. This is
+          the developer console — separate from claude.ai, even with the same email.</li>
+        <li>Open <b>Billing</b> and add a payment method, then buy credit (the smallest
+          top-up is plenty — five personas from a two-page CV costs a few cents).</li>
+        <li>Open <b>API keys</b> → <b>Create key</b>. Give it any name, e.g.
+          <i>persona-forge</i>.</li>
+        <li>Copy the key the moment it appears. It starts <code>sk-ant-</code> and the
+          console will not show it again — if you lose it, delete it and create another.</li>
+        <li>Paste it in the field below. It is stored in this browser only, and you can
+          remove it any time with <b>Forget key</b>.</li>
+      </ol>
+      <p class="warn">A brand-new account has no credit, and a key on an account with no
+        credit fails on the first request. If step 2 is skipped, this page will tell you the
+        request was refused for credit — not that your key is wrong.</p>
+    </details>
     <label for="key">sk-ant-…</label>
     <input id="key" type="password" autocomplete="off" spellcheck="false"
            placeholder="sk-ant-api03-…">

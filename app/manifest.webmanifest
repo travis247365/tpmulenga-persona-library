@@ -1,6 +1,6 @@
 {
-  "name": "Persona Forge — Travis Paul Consulting",
-  "short_name": "Persona Forge",
+  "name": "TP Consulting.Co Job Search Agentic AI Engine",
+  "short_name": "Job Search AI",
   "description": "Turn a CV into five working personas, then score any job advert against them.",
   "start_url": "./index.html",
   "scope": "./",

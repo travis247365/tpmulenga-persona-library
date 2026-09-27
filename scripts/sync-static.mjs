@@ -8,7 +8,7 @@
  *      byte-identical copies, checked in separately and published by two
  *      different scripts. Editing one shipped stale content on the other, and
  *      nothing anywhere would have said so.
- *   2. `app/` (Persona Forge) sat outside vite's root AND outside its
+ *   2. `app/` (the Job Search engine) sat outside vite's root AND outside its
  *      publicDir, so it was in neither deploy target. The app was written,
  *      tested and committed, and was unreachable on every deployed surface.
  *
