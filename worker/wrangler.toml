@@ -12,8 +12,13 @@ database_name = "jobsearch"
 database_id = "REPLACE_AFTER_CREATE"
 
 [vars]
-DASHBOARD_ORIGIN = "https://dashboard.tpm-persona-library.pages.dev"
-APP_ORIGIN = "https://tpm-persona-library.pages.dev"
+# These are substituted by scripts/deploy-all.sh from the Pages project name,
+# not edited by hand. They are the CORS allowlist and the check is fail-closed,
+# so an origin that does not match the deployed site silently blocks signup and
+# the feed - renaming the Pages project without changing these is exactly the
+# kind of mismatch that looks like "the button does nothing".
+DASHBOARD_ORIGIN = "REPLACE_DASHBOARD_ORIGIN"
+APP_ORIGIN = "REPLACE_APP_ORIGIN"
 # The domain Email Routing accepts mail on. Signup hands users
 # jobs+<token>@INGEST_DOMAIN, so a wrong value here mints addresses that
 # silently never receive anything.

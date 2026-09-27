@@ -6,13 +6,13 @@
 # Cloudflare Pages gives every branch its own alias, so deploying the dashboard
 # folder as the ROOT of a branch named "dashboard" produces exactly that:
 #
-#   https://dashboard.tpm-persona-library.pages.dev/
+#   https://dashboard.job-search-agentic-ai.pages.dev/
 #
 # Deploying the folder itself (rather than dist/public) keeps the console at the
 # root of that subdomain instead of one level down at /dashboard/.
 
 set -euo pipefail
-PROJECT=${PROJECT:-tpm-persona-library}
+PROJECT=${PROJECT:-job-search-agentic-ai}
 WORKDIR=${WORKDIR:-$HOME/dev/tpmulenga-persona-library}
 
 [ -n "${CLOUDFLARE_API_TOKEN:-}" ] || export CLOUDFLARE_API_TOKEN=$(pbpaste 2>/dev/null || true)

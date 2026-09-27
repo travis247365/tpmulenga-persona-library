@@ -17,11 +17,20 @@ die(){ printf '\033[31m!! %s\033[0m\n' "$*" >&2; exit 1; }
 : "${CLOUDFLARE_API_TOKEN:?set CLOUDFLARE_API_TOKEN (Pages:Edit, Workers:Edit, D1:Edit)}"
 : "${CLOUDFLARE_ACCOUNT_ID:?set CLOUDFLARE_ACCOUNT_ID - a Pages:Edit token cannot list accounts, so it must be given}"
 INGEST_DOMAIN="${INGEST_DOMAIN:-}"
-PROJECT="${PROJECT:-tpm-persona-library}"
+PROJECT="${PROJECT:-job-search-agentic-ai}"
+# Derived, never typed twice. The Pages project name IS the subdomain, so the
+# CORS origins follow from it; keeping them as separate literals is how the
+# worker ends up allowlisting a site that no longer exists.
+APP_ORIGIN="https://${PROJECT}.pages.dev"
+DASHBOARD_ORIGIN="https://dashboard.${PROJECT}.pages.dev"
 WORKER_NAME="${WORKER_NAME:-jobsearch-ingest}"
 WR="npx --yes wrangler@4"
 
 # ---------- 1. worker: database, schema, deploy -----------------------------
+echo "project  $PROJECT"
+echo "app      $APP_ORIGIN"
+echo "feed CORS allows that origin and no other"
+
 say "D1 database"
 DB_ID=$($WR d1 list --json 2>/dev/null | node -e '
   let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
@@ -46,6 +55,8 @@ TOML=worker/wrangler.toml
 cp "$TOML" "$TOML.bak"
 trap 'mv -f "$TOML.bak" "$TOML" 2>/dev/null || true' EXIT
 sed -i.tmp "s|REPLACE_AFTER_CREATE|$DB_ID|" "$TOML"
+sed -i.tmp "s|REPLACE_APP_ORIGIN|$APP_ORIGIN|" "$TOML"
+sed -i.tmp "s|REPLACE_DASHBOARD_ORIGIN|$DASHBOARD_ORIGIN|" "$TOML"
 [ -n "$INGEST_DOMAIN" ] && sed -i.tmp "s|REPLACE_WITH_YOUR_EMAIL_ROUTING_DOMAIN|$INGEST_DOMAIN|" "$TOML"
 rm -f "$TOML.tmp"
 
@@ -95,6 +106,7 @@ esac
 
 say "Done"
 echo "Site   $URL"
+echo "Stable $APP_ORIGIN/app/"
 echo "Worker $WORKER_URL"
 if [ -z "$INGEST_DOMAIN" ]; then
   printf '\033[33mINGEST_DOMAIN was not set, so signup will mint addresses at example.invalid.\033[0m\n'

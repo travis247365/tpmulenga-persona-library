@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-PROJECT=${PROJECT:-tpm-persona-library}
+PROJECT=${PROJECT:-job-search-agentic-ai}
 BRANCH=claude/epic-thompson-hgbsmp
 REPO=https://github.com/travis247365/tpmulenga-persona-library
 WORKDIR=${WORKDIR:-$HOME/dev/tpmulenga-persona-library}
