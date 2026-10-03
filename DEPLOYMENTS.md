@@ -20,6 +20,57 @@ what is missing and asserts each step, so re-running it is safe.
 
 ---
 
+## 2026-10-03 · rename, the key note, and the gating fix all land
+
+Branch at `43bc661`, pulled from `fe8a361` — so this deploy carried four
+commits' worth of app changes at once. Auth: browser login. wrangler 4.147.0
+(was 4.141.0; it now prints a telemetry notice, which is noise, not a change).
+
+- Pages: **3 files uploaded**, 431 already there — `index.html`,
+  `manifest.webmanifest`, `sw.js`. Exactly the three the rename touches.
+- Worker version `3c53c885-f35d-4da9-8980-55780cc7dd9d`. Unchanged code;
+  re-deployed because the script always does. Bindings identical, including
+  `INGEST_DOMAIN=jobs.travispaulconsulting.co`.
+- Router verified; D1 reused.
+- Alias https://129a740a.job-search-agentic-ai.pages.dev
+
+**What is finally live**
+
+- `b1f91d7` — *Build my personas* is disabled until the key field holds
+  something that looks like a key. This was pending across two deploys; the
+  dead-end click is gone.
+- `e0eb9e0` — the page is the **TP Consulting.Co Job Search Agentic AI Engine**
+  in title, manifest and eyebrow (home-screen label stays `Job Search AI`
+  because iOS truncates), and step 01 carries the closed-by-default
+  *How to get your Anthropic key* note.
+- `43bc661` — tab icon, branded links, privacy box stacks on a phone.
+
+The service worker version went `pf-v1` → `jsae-v2` in this deploy. That is the
+only reason the rename reaches an already-installed home-screen app: the old
+shell was cached under the old key and would otherwise have kept serving the
+old title indefinitely.
+
+Verified before the deploy by driving the real files in Chromium at 390px —
+21 assertions, all passing, no console errors and no failed requests. Not
+verified against the live URL: this container's egress policy denies
+`pages.dev`, so every claim about the deployed site rests on the deploy output
+above, not on a fetch of it.
+
+**Privacy probe: PUBLIC.** Third consecutive deploy reporting this. Still no
+Access policy.
+
+**Still outstanding, both dashboard-only**
+
+1. Cloudflare Access policy on `job-search-agentic-ai`, subdomain `*`.
+2. Email Routing catch-all on `jobs.travispaulconsulting.co` → Worker
+   `jobsearch-ingest`. Signup hands out an address that still receives nothing.
+   Worth checking when adding it: Email Routing is enabled per zone, so if only
+   `travispaulconsulting.co` is a zone, the receiving address may need to be the
+   apex rather than the `jobs.` subdomain — which would mean a redeploy with
+   that value.
+
+---
+
 ## 2026-09-27 · ingest domain set, third deploy
 
 Branch at `fe8a361`. Auth: browser login.
