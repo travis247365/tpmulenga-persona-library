@@ -1,6 +1,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
+<!-- The tab/bookmark icon. Without it the browser asks for /favicon.ico at the
+     site root, 404s, and falls back to a generic globe. -->
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <meta name="theme-color" content="#3A3A3A">
 <!-- iOS ignores the manifest's icons for the home screen and reads this one. -->
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -32,12 +35,26 @@
               color:var(--accent-ink);white-space:nowrap;padding-top:3px;}
   .privacy p{margin:0;font-size:.92rem;max-width:72ch;}
 
+  /* The label is nowrap, so on a phone it eats half the row and squeezes the
+     text into a ~20-character column. Stack it instead. */
+  @media (max-width:560px){
+    .privacy{display:block;}
+    .privacy .k{display:block;padding:0 0 8px;}
+  }
+
   .step{margin-top:34px;background:var(--raised);border:1px solid var(--rule);
         border-radius:var(--r-md);padding:22px;}
   .step h2{font-family:var(--display);font-weight:500;font-size:1.12rem;margin:0 0 4px;
            display:flex;align-items:baseline;gap:10px;}
   .num{font-family:var(--label);font-size:.76rem;color:var(--accent-ink);}
   .hint{font-size:.89rem;color:var(--slate);margin:0 0 14px;max-width:70ch;}
+
+  /* No link rule existed, so every link rendered browser-default blue: off-brand
+     in light mode and barely legible on charcoal in dark. --accent-ink is the
+     text-safe side of the palette - charcoal on white, cyan on charcoal - and
+     the underline, not the colour, is what marks it as a link. */
+  a{color:var(--accent-ink);text-underline-offset:.18em;text-decoration-thickness:1px;}
+  a:hover{text-decoration-thickness:2px;}
 
   /* The note is closed by default: someone who already has a key should not
      have to scroll past six steps to reach the input. */
