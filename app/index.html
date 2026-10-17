@@ -243,6 +243,37 @@
     <div class="out" id="feedList"></div>
   </div>
 
+  <div class="step">
+    <h2><span class="num">05</span>Get a ranked pack by email</h2>
+    <p class="hint">Once this is on, every batch of alerts comes back as a pack — the roles
+      worth applying for, scored and explained, with the CV changes to make before you apply.
+      Markdown, Word and PDF, attached.</p>
+    <p class="hint">To rank anything it needs to know who you are. It never gets your CV.
+      Your browser reads the CV and writes a short <b>profile</b> from it — titles, skills,
+      seniority, years — and only that profile is uploaded, only when you press the button
+      below, and <b>only after you have read it</b>. The server refuses anything long enough
+      to be CV text, so this is a limit, not a promise.</p>
+
+    <div class="row">
+      <button id="profBtn" type="button">Read my CV and show me the profile</button>
+      <button id="profForget" type="button" class="ghost" hidden>Delete my profile</button>
+      <span class="sv" id="profState">no profile uploaded</span>
+    </div>
+    <p class="install" id="profNeed"></p>
+    <div class="status" id="s4"></div>
+
+    <div class="out" id="profPreview" hidden>
+      <p class="hint" style="margin-top:0"><b>This, and nothing else, is what gets uploaded.</b>
+        Read it. If a line is wrong, fix the CV and run it again — a wrong profile produces
+        confident, wrong rankings.</p>
+      <pre class="addr" id="profJson" style="white-space:pre-wrap"></pre>
+      <div class="row">
+        <button id="profSend" type="button">Upload this profile</button>
+        <button id="profCancel" type="button" class="ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     <p>Personas are generated from what the CV actually says. The prompt instructs the model
     not to invent credentials, employers or figures, and to leave a claim out rather than
@@ -775,6 +806,146 @@ $("scoreBtn").addEventListener("click", async function () {
     $("scoreBtn").disabled = false;
   }
 });
+
+// ---- step 05: the derived profile ---------------------------------------
+// The CV never leaves this browser. It is read here, a short profile is
+// written from it, the user is shown that profile in full, and only then -
+// on a second, separate press - is the profile uploaded. The two presses are
+// the point: an upload the user has not read is not consent.
+const PROFILE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["headline", "seniority", "titles", "skills"],
+  properties: {
+    headline:   { type: "string", maxLength: 200,
+                  description: "One line: what this person is, in their own terms." },
+    seniority:  { type: "string", maxLength: 60,
+                  description: "e.g. 'senior manager', 'executive', 'head of function'." },
+    years:      { type: "integer", minimum: 0, maximum: 60 },
+    titles:     { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    skills:     { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    sectors:    { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    locations:  { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    languages:  { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    certifications: { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    summary:    { type: "string", maxLength: 1200,
+                  description: "A short paragraph a screener could rank against." },
+  },
+};
+
+const PROFILE_SYSTEM = [
+  "Write a short, factual profile from this CV, for matching job adverts against.",
+  "",
+  "- Use only what the CV says. Never infer a qualification, employer, date or figure.",
+  "- A qualification is whatever the CV names it. Do not upgrade a diploma to a degree, or a certificate to a qualification it is not.",
+  "- Keep the CV's own status words. 'Led delivery of' and 'built' are different claims.",
+  "- Where the CV withholds a client or employer name, leave it withheld. Describe the sector instead.",
+  "- This is a SUMMARY, not an extract. Do not copy sentences out of the CV, and never reproduce contact details, addresses, ID numbers or referees.",
+  "- Omit a field entirely rather than guessing at it.",
+].join("\n");
+
+let derivedProfile = null;
+
+// .out is display:none until it also carries .on, so toggling the hidden
+// attribute alone leaves the panel invisible. Both, in one place.
+function showPreview(on) {
+  const el = $("profPreview");
+  el.hidden = !on;
+  el.className = on ? "out on" : "out";
+}
+
+function profileReady() {
+  const haveKey = /^sk-ant-/.test($("key").value.trim());
+  const haveCv = $("cv").value.trim().length > 40;
+  const haveFeed = Boolean(tokenGet());
+  return { haveKey, haveCv, haveFeed, ok: haveKey && haveCv && haveFeed };
+}
+
+function profileGate() {
+  const g = profileReady();
+  const missing = [];
+  if (!g.haveKey) missing.push("add your API key in step 1");
+  if (!g.haveCv) missing.push("paste or load your CV in step 2");
+  if (!g.haveFeed) missing.push("create your feed in step 4");
+  $("profBtn").disabled = !g.ok;
+  const need = $("profNeed");
+  need.textContent = missing.length ? "First: " + missing.join(", ") + "." : "";
+  need.className = missing.length ? "install on" : "install";
+}
+
+$("key").addEventListener("input", profileGate);
+$("cv").addEventListener("input", profileGate);
+
+$("profBtn").addEventListener("click", async function () {
+  const g = profileReady();
+  if (!g.ok) return;
+  $("profBtn").disabled = true;
+  showPreview(false);
+  say($("s4"), "Reading your CV in this browser…");
+  try {
+    const cv = $("cv").value.trim().slice(0, MAX_CV);
+    derivedProfile = await ask(PROFILE_SYSTEM, "CV:\n" + cv, PROFILE_SCHEMA);
+    $("profJson").textContent = JSON.stringify(derivedProfile, null, 2);
+    showPreview(true);
+    say($("s4"), "Nothing has been uploaded. Read it, then press Upload.", "ok");
+  } catch (err) {
+    say($("s4"), err.message, "err");
+  } finally {
+    profileGate();
+  }
+});
+
+$("profCancel").addEventListener("click", function () {
+  derivedProfile = null;
+  showPreview(false);
+  say($("s4"), "Discarded. Nothing left this browser.", "ok");
+});
+
+$("profSend").addEventListener("click", async function () {
+  if (!derivedProfile) return;
+  await CONFIG_READY;
+  if (!WORKER) { say($("s4"), "The ingest worker has not been deployed.", "err"); return; }
+  $("profSend").disabled = true;
+  say($("s4"), "Uploading the profile…");
+  try {
+    const res = await fetch(WORKER + "/profile/" + tokenGet(), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(derivedProfile),
+    });
+    const body = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(body.error || "the server returned " + res.status);
+    $("profState").textContent = "profile uploaded";
+    $("profForget").hidden = false;
+    showPreview(false);
+    say($("s4"), "Uploaded: " + (body.stored || []).join(", ") +
+      ". Packs will be ranked against this from the next batch of alerts.", "ok");
+  } catch (err) {
+    say($("s4"), err.message, "err");
+  } finally {
+    $("profSend").disabled = false;
+  }
+});
+
+$("profForget").addEventListener("click", async function () {
+  // Replacing it with the minimum the server accepts is the honest option
+  // available: there is no delete route, so claiming "deleted" would be a lie.
+  if (!confirm("Overwrite the stored profile with a blank one? Packs will stop being ranked.")) return;
+  try {
+    const res = await fetch(WORKER + "/profile/" + tokenGet(), {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ headline: "withdrawn" }),
+    });
+    if (!res.ok) throw new Error("the server returned " + res.status);
+    $("profState").textContent = "profile withdrawn";
+    $("profForget").hidden = true;
+    say($("s4"), "Overwritten. Nothing of your old profile remains in the row.", "ok");
+  } catch (err) {
+    say($("s4"), err.message, "err");
+  }
+});
+
+profileGate();
 
 function list(title, arr) {
   if (!arr || !arr.length) return "";
