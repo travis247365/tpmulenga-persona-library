@@ -23,3 +23,14 @@ APP_ORIGIN = "REPLACE_APP_ORIGIN"
 # jobs+<token>@INGEST_DOMAIN, so a wrong value here mints addresses that
 # silently never receive anything.
 INGEST_DOMAIN = "REPLACE_WITH_YOUR_EMAIL_ROUTING_DOMAIN"
+
+# Outbound mail for the job pack.
+#
+# Pinned to ONE destination on purpose. Cloudflare only delivers to addresses
+# verified in Email Routing, and naming the address here means the worker
+# cannot mail anyone else even if a bug or a bad row in reply_settings asks it
+# to. deploy-all.sh removes this block entirely when REPLY_TO is unset, so a
+# deploy that has not been told where to send simply has no way to send.
+[[send_email]]
+name = "SEND"
+destination_address = "REPLACE_REPLY_TO"

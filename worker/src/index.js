@@ -9,6 +9,7 @@
 import { handleEmail } from "./email.js";
 import { handleFetch } from "./api.js";
 import { handleSignup } from "./signup.js";
+import { handleProfile } from "./profile.js";
 
 export default {
   email: handleEmail,
@@ -26,6 +27,18 @@ export default {
         headers["vary"] = "origin";
       }
       return new Response(null, { status: 204, headers });
+    }
+
+    // The derived profile the ranking reads. Same CORS treatment as signup:
+    // named origin or no header at all, never "*".
+    const profile = url.pathname.match(/^\/profile\/([a-z0-9]{24,})$/);
+    if (profile) {
+      const res = await handleProfile(request, env, profile[1]);
+      if (env.APP_ORIGIN) {
+        res.headers.set("access-control-allow-origin", env.APP_ORIGIN);
+        res.headers.set("vary", "origin");
+      }
+      return res;
     }
 
     if (url.pathname === "/signup") {

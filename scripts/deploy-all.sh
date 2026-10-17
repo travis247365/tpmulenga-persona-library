@@ -25,6 +25,16 @@ case "$INGEST_DOMAIN" in
   *.*) : ;;
   *) echo "INGEST_DOMAIN=$INGEST_DOMAIN is not a domain name" >&2; exit 1 ;;
 esac
+# The worker tests run BEFORE anything is deployed. They were advisory while
+# this thing only wrote rows; now that a deploy can put mail in someone's
+# inbox, shipping past a red suite is not a trade worth making. SKIP_TESTS=1
+# exists for the case where you are deploying a hotfix and already know.
+if [ "${SKIP_TESTS:-}" != "1" ]; then
+  say "Worker tests"
+  node --test worker/test/worker.test.js worker/test/reply.test.js \
+    || die "worker tests failed - fix them or re-run with SKIP_TESTS=1"
+fi
+
 WR="npx --yes wrangler@4"
 
 # Auth: browser login or an API token. See scripts/lib-cf-auth.sh.
@@ -71,6 +81,17 @@ sed -i.tmp "s|REPLACE_AFTER_CREATE|$DB_ID|" "$TOML"
 sed -i.tmp "s|REPLACE_APP_ORIGIN|$APP_ORIGIN|" "$TOML"
 sed -i.tmp "s|REPLACE_DASHBOARD_ORIGIN|$DASHBOARD_ORIGIN|" "$TOML"
 [ -n "$INGEST_DOMAIN" ] && sed -i.tmp "s|REPLACE_WITH_YOUR_EMAIL_ROUTING_DOMAIN|$INGEST_DOMAIN|" "$TOML"
+
+# The send_email binding is dropped unless REPLY_TO names an address. A binding
+# left pointing at the placeholder would be rejected by wrangler, and - worse -
+# a binding pointing anywhere real that nobody chose is mail nobody asked for.
+if [ -n "${REPLY_TO:-}" ]; then
+  sed -i.tmp "s|REPLACE_REPLY_TO|$REPLY_TO|" "$TOML"
+  echo "reply pack  -> $REPLY_TO (must be a VERIFIED destination in Email Routing)"
+else
+  sed -i.tmp '/^\[\[send_email\]\]$/,/^destination_address/d' "$TOML"
+  echo "reply pack  off (set REPLY_TO=you@example.com to switch it on)"
+fi
 rm -f "$TOML.tmp"
 
 (cd worker && $WR d1 execute jobsearch --remote --file=schema.sql -y >/dev/null) \

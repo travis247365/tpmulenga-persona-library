@@ -9,10 +9,7 @@
  */
 import { test, describe, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { DatabaseSync } from "node:sqlite";
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { makeDB } from "./db.js";
 
 import worker from "../src/index.js";
 const emailWorker = worker;
@@ -20,34 +17,8 @@ const apiWorker = worker;
 
 assert.ok(globalThis.crypto?.subtle, "these tests need WebCrypto (node 18+)");
 
-const here = dirname(fileURLToPath(import.meta.url));
-const SCHEMA = readFileSync(join(here, "..", "schema.sql"), "utf8");
-
 const TOKEN_A = "a".repeat(32);
 const TOKEN_B = "b".repeat(32);
-
-/** Minimal D1 surface: prepare().bind().first()/run()/all(), and batch(). */
-function makeDB() {
-  const db = new DatabaseSync(":memory:");
-  db.exec(SCHEMA);
-  const prepare = (sql) => {
-    const stmt = db.prepare(sql);
-    const bound = (...args) => ({
-      first: async () => stmt.get(...args) ?? null,
-      run: async () => (stmt.run(...args), { success: true }),
-      all: async () => ({ results: stmt.all(...args) }),
-      // batch() replays the statement each time it was bound, so binding must
-      // return a fresh object rather than mutate shared state.
-      __exec: () => stmt.run(...args),
-    });
-    return { bind: bound };
-  };
-  return {
-    raw: db,
-    prepare,
-    batch: async (stmts) => stmts.map((s) => s.__exec()),
-  };
-}
 
 function makeEnv() {
   const DB = makeDB();

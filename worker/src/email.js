@@ -15,9 +15,10 @@
  * a known job-board sender past SPF and DKIM, which Email Routing checks before
  * this worker runs.
  */
-import { isAllowedSender, senderAddress, decodeBody, jobIds, dedupKey } from "./lib.js";
+import { isAllowedSender, senderAddress, decodeBody, jobIds, dedupKey, extractJobs } from "./lib.js";
+import { sendPack } from "./reply.js";
 
-export async function handleEmail(message, env) {
+export async function handleEmail(message, env, ctx, deps = {}) {
   const to = String(message.to || "").toLowerCase();
   const from = senderAddress(message.from);
 
@@ -25,7 +26,7 @@ export async function handleEmail(message, env) {
   if (!token) return;                       // not an ingest address; drop silently
 
   const account = await env.DB.prepare(
-    "SELECT id FROM accounts WHERE token = ?"
+    "SELECT id, label FROM accounts WHERE token = ?"
   ).bind(token).first();
   if (!account) return;                     // unknown token; drop silently
 
@@ -57,6 +58,47 @@ export async function handleEmail(message, env) {
     bound.push(stmt.bind(account.id, id, key, subject, from, at));
   }
   await env.DB.batch(bound);
+
+  // The roles themselves, as opposed to the fact that a digest arrived.
+  // Ranking needs titles: fifteen ids and one subject line is not something
+  // anyone can screen against.
+  const fresh = await storeJobs(env, account.id, extractJobs(decoded), from, at);
+
+  // Only the roles that are new to this account go into the pack. Re-sending
+  // yesterday's shortlist because the same digest arrived twice is the fastest
+  // way to make someone stop reading these.
+  return sendPack(env, account, fresh, deps);
+}
+
+/**
+ * Insert the extracted roles, and return the ones that were genuinely new.
+ *
+ * INSERT OR IGNORE cannot tell us which rows it ignored through D1's batch
+ * interface, so the existing keys are read first and the difference is taken
+ * here. Doing it the other way round - insert, then select everything from
+ * today - would re-send a role that merely arrived again.
+ */
+async function storeJobs(env, accountId, found, source, at) {
+  if (!found.length) return [];
+
+  const placeholders = found.map(() => "?").join(",");
+  const { results } = await env.DB.prepare(
+    `SELECT dedup_key FROM jobs WHERE account_id = ? AND dedup_key IN (${placeholders})`
+  ).bind(accountId, ...found.map((j) => j.key)).all();
+  const known = new Set((results || []).map((r) => r.dedup_key));
+
+  const fresh = found.filter((j) => !known.has(j.key));
+  if (!fresh.length) return [];
+
+  const ins = env.DB.prepare(
+    `INSERT OR IGNORE INTO jobs
+       (account_id, dedup_key, title, company, location, url, source, found_at)
+     VALUES (?,?,?,?,?,?,?,?)`
+  );
+  await env.DB.batch(fresh.map((j) =>
+    ins.bind(accountId, j.key, j.title, j.company, j.location, j.url, source, at)));
+
+  return fresh;
 }
 
 export default { email: handleEmail };

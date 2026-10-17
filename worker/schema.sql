@@ -49,3 +49,72 @@ CREATE TABLE IF NOT EXISTS signups (
   at      INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS signups_ip ON signups(ip, at);
+
+-- ---------------------------------------------------------------------------
+-- Reply pipeline
+--
+-- Everything below is additive and in its OWN tables rather than new columns
+-- on accounts. deploy-all.sh re-applies this whole file on every deploy, so
+-- CREATE TABLE IF NOT EXISTS is idempotent while ALTER TABLE ADD COLUMN would
+-- fail on the second run against a database that already has the column.
+-- ---------------------------------------------------------------------------
+
+-- Who gets a pack mailed back, and where.
+--
+-- Off for every account unless a row says otherwise, so a public signup never
+-- causes mail to be sent to anyone. deliver_to must also be a verified
+-- Email Routing destination on the Cloudflare side - the binding refuses
+-- anything else - which makes "we only mail verified addresses" a platform
+-- guarantee rather than a promise in code.
+CREATE TABLE IF NOT EXISTS reply_settings (
+  account_id INTEGER PRIMARY KEY REFERENCES accounts(id),
+  deliver_to TEXT    NOT NULL,
+  enabled    INTEGER NOT NULL DEFAULT 0,
+  max_per_day INTEGER NOT NULL DEFAULT 6,
+  updated    INTEGER NOT NULL
+);
+
+-- The derived profile the ranking reads. NOT the CV.
+--
+-- The app computes this in the browser from the CV and uploads it only when
+-- the user presses the button. Titles, skills, seniority, years - enough to
+-- rank an advert and spot a gap, and nothing that reconstructs the document.
+CREATE TABLE IF NOT EXISTS profiles (
+  account_id INTEGER PRIMARY KEY REFERENCES accounts(id),
+  json       TEXT    NOT NULL,
+  updated    INTEGER NOT NULL
+);
+
+-- One row per role seen, as opposed to one row per email.
+--
+-- alerts records that a digest arrived; this records what was inside it. The
+-- ranking needs titles, and a digest of fifteen roles was previously stored as
+-- fifteen ids and one subject line, which is not enough to rank anything.
+CREATE TABLE IF NOT EXISTS jobs (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  account_id INTEGER NOT NULL REFERENCES accounts(id),
+  dedup_key  TEXT    NOT NULL,
+  title      TEXT,
+  company    TEXT,
+  location   TEXT,
+  url        TEXT,
+  source     TEXT,
+  found_at   INTEGER NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS jobs_unique ON jobs(account_id, dedup_key);
+CREATE INDEX IF NOT EXISTS jobs_recent ON jobs(account_id, found_at DESC);
+
+-- An audit row per pack, written whether it succeeded or failed.
+--
+-- A run that sent nothing is a failed run, so the failure has to be visible
+-- somewhere other than a log line that expires. status is 'sent' or 'failed';
+-- detail carries the reason.
+CREATE TABLE IF NOT EXISTS digests (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  account_id INTEGER NOT NULL REFERENCES accounts(id),
+  at         INTEGER NOT NULL,
+  job_count  INTEGER NOT NULL DEFAULT 0,
+  status     TEXT    NOT NULL,
+  detail     TEXT
+);
+CREATE INDEX IF NOT EXISTS digests_recent ON digests(account_id, at DESC);
