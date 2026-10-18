@@ -42,3 +42,15 @@ against files that cannot leave the Mac, run Claude Code on the Mac instead.
 
 `scripts/ingest-design-system.sh` takes a repo directly for this reason:
 `owner/repo`, `owner/repo@branch --path sub/dir`, or a git URL.
+
+## Giving Travis commands to paste
+
+**Never put `#` comments in a block meant for pasting.** His shell is zsh, and
+interactive zsh does not treat `#` as a comment unless `interactive_comments`
+is set, which is not the default. Every commented line comes back as
+`zsh: command not found: #`. This has now happened three times in one project.
+Commands only; the explanation goes in the prose above the block.
+
+Related: a multi-line block pasted into zsh runs each line as it arrives, so a
+line that fails does not stop the ones after it. Keep paste blocks short enough
+that a failure is visible before the next command runs.
