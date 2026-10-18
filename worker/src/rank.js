@@ -100,31 +100,43 @@ export async function rankJobs(env, profile, jobs, fetchImpl = fetch) {
       null, 1),
   ].join("\n");
 
+  // Adaptive is the only thinking mode this model takes - a budget is a 400 -
+  // and its effort defaults to medium, so screening work that deserves more
+  // has to say so.
+  const base = {
+    model: MODEL,
+    max_tokens: 16000,
+    system: SYSTEM,
+    messages: [{ role: "user", content: user }],
+    thinking: { type: "adaptive" },
+    output_config: { effort: "high", format: { type: "json_schema", schema: SCHEMA } },
+  };
+
+  const call = (withFallback) => fetchImpl(API, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": env.ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+      // A policy decline would otherwise end the request with no pack. The
+      // server retries the same request on a fallback model inside the call.
+      ...(withFallback ? { "anthropic-beta": "server-side-fallback-2026-07-01" } : {}),
+    },
+    body: JSON.stringify(withFallback ? { ...base, fallbacks: "default" } : base),
+  });
+
   let res;
   try {
-    res = await fetchImpl(API, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        // A policy decline would otherwise end the request with no pack. The
-        // server retries the same request on a fallback model inside the call.
-        "anthropic-beta": "server-side-fallback-2026-07-01",
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 16000,
-        system: SYSTEM,
-        messages: [{ role: "user", content: user }],
-        // Adaptive is the only thinking mode this model takes - a budget is a
-        // 400 - and its effort defaults to medium, so screening work that
-        // deserves more has to say so.
-        thinking: { type: "adaptive" },
-        output_config: { effort: "high", format: { type: "json_schema", schema: SCHEMA } },
-        fallbacks: "default",
-      }),
-    });
+    res = await call(true);
+
+    // An account without that beta rejects the request outright, and the
+    // consequence would be silent: no ranking, ever, on every pack, with the
+    // reason buried in the digests table. The fallback is a nice-to-have; the
+    // ranking is the point. So a 400 is retried once without it.
+    if (res.status === 400) {
+      const body = await res.clone().text();
+      if (/fallback|beta/i.test(body)) res = await call(false);
+    }
   } catch (e) {
     return { ok: false, reason: `request failed: ${e.message}` };
   }

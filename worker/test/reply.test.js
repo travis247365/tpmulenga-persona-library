@@ -504,6 +504,42 @@ describe("ranking", () => {
     assert.equal(body.budget_tokens, undefined, "budget_tokens is a 400 on this model");
   });
 
+  test("a 400 about the fallback beta is retried once without it", async () => {
+    // Without this the consequence is silent: no ranking on any pack, ever,
+    // with the reason buried in the digests table.
+    const seen = [];
+    const out = await rankJobs({ ANTHROPIC_API_KEY: "sk-ant-x" }, { headline: "x" }, JOBS,
+      async (_u, init) => {
+        seen.push(JSON.parse(init.body));
+        if (seen.length === 1) {
+          return new Response(JSON.stringify({
+            error: { message: "unexpected beta: server-side-fallback-2026-07-01" },
+          }), { status: 400 });
+        }
+        return new Response(JSON.stringify({
+          stop_reason: "end_turn", content: [{ type: "text", text: '{"summary":"ok","ranked":[]}' }],
+        }), { status: 200 });
+      });
+    assert.equal(seen.length, 2, "the 400 should have been retried");
+    assert.equal(seen[0].fallbacks, "default");
+    assert.equal(seen[1].fallbacks, undefined, "the retry must drop the fallback");
+    assert.equal(out.ok, true);
+    assert.equal(out.data.summary, "ok");
+  });
+
+  test("a 400 that is NOT about the beta is not retried", async () => {
+    // Retrying a bad key or a malformed schema just spends money twice.
+    let calls = 0;
+    const out = await rankJobs({ ANTHROPIC_API_KEY: "sk-ant-x" }, { headline: "x" }, JOBS,
+      async () => {
+        calls++;
+        return new Response(JSON.stringify({ error: { message: "credit balance is too low" } }), { status: 400 });
+      });
+    assert.equal(calls, 1);
+    assert.equal(out.ok, false);
+    assert.match(out.reason, /credit balance is too low/);
+  });
+
   test("a network failure returns a reason instead of throwing", async () => {
     const out = await rankJobs({ ANTHROPIC_API_KEY: "sk-ant-x" }, { headline: "x" }, JOBS,
       async () => { throw new Error("socket hang up"); });
