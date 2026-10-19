@@ -54,3 +54,10 @@ Commands only; the explanation goes in the prose above the block.
 Related: a multi-line block pasted into zsh runs each line as it arrives, so a
 line that fails does not stop the ones after it. Keep paste blocks short enough
 that a failure is visible before the next command runs.
+
+## Bootstrap order
+
+A script that performs the `git pull` cannot be delivered *by* that pull. If a
+new script is the entry point, the handover must start with the pull that
+brings it, not with the script. Said another way: never hand over a command
+whose file only exists after the command runs.
