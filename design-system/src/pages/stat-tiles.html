@@ -1,0 +1,133 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Stat tiles &amp; KPI row</title>
+<!--TPCL_CORE-->
+<style>
+  .lab { font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+         color:var(--tp-ink-muted); margin: 0 0 10px; }
+  .kpi { display:grid; grid-template-columns:repeat(4,1fr); }
+  .kpi > div { padding: 26px 24px; border-left:1px solid var(--tp-rule); }
+  .kpi > div:first-child { border-left:0; padding-left:0; }
+  .tp-dark .kpi > div { border-left-color: var(--tp-charcoal-soft); }
+  .delta { font-size:13px; font-weight:500; display:inline-flex; align-items:center; gap:5px; }
+  .up { color:#1E7A46; } .down { color:#B00020; }
+  .tp-dark .up { color:#5BD68F; } .tp-dark .down { color:#FF8A80; }
+  .spark { display:block; margin-top:12px; }
+  .prov { font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:500;
+          padding:2px 6px; display:inline-block; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Stat tiles &amp; KPI row</h1>
+  <p class="tp-lede">Figures are the argument, so they get the largest type on the page and nothing
+     decorative around them. Tabular numerals, hairline separators, and a stated provenance.</p>
+
+  <div class="tp-sec">
+    <p class="lab">KPI row — light</p>
+    <div class="kpi">
+      <div class="tp-stat">
+        <span class="tp-stat-value">ZMW 128.9m</span>
+        <span class="tp-stat-label">Book reconciled</span>
+        <span class="delta up">▲ tied to source</span>
+      </div>
+      <div class="tp-stat">
+        <span class="tp-stat-value">48,120</span>
+        <span class="tp-stat-label">Accounts in scope</span>
+        <span class="delta up">▲ 4.2% vs June</span>
+      </div>
+      <div class="tp-stat">
+        <span class="tp-stat-value">31.4%</span>
+        <span class="tp-stat-label">PAR 30+</span>
+        <span class="delta down">▼ 1.8 pts</span>
+      </div>
+      <div class="tp-stat">
+        <span class="tp-stat-value">0</span>
+        <span class="tp-stat-label">Failed card checks</span>
+        <span class="delta up">▲ 116 of 116</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">KPI row — charcoal</p>
+    <div class="tp-dark" style="background:#3A3A3A;padding:30px">
+      <div class="kpi">
+        <div class="tp-stat">
+          <span class="tp-stat-value" style="color:#00BCD4">66</span>
+          <span class="tp-stat-label">Months of history</span></div>
+        <div class="tp-stat">
+          <span class="tp-stat-value">7</span>
+          <span class="tp-stat-label">Consulting personas</span></div>
+        <div class="tp-stat">
+          <span class="tp-stat-value">20</span>
+          <span class="tp-stat-label">Dashboard tabs</span></div>
+        <div class="tp-stat">
+          <span class="tp-stat-value">79</span>
+          <span class="tp-stat-label">Cards QA'd</span></div>
+      </div>
+    </div>
+    <p class="tp-note" style="margin-top:10px">Cyan is available as a figure colour on charcoal
+      (4.95:1). Use it on <strong>one</strong> tile — the hero number — never on all four.</p>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Single tile with trend</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div class="tp-card tp-card--accent">
+        <span class="tp-stat-label" style="color:var(--tp-ink-muted)">Collection rate</span>
+        <div class="tp-stat-value" style="margin-top:6px">72.6%</div>
+        <svg class="spark" viewBox="0 0 200 44" width="100%" height="44" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points="0,34 25,31 50,33 75,26 100,24 125,19 150,20 175,12 200,9"
+            fill="none" stroke="#00BCD4" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="delta up" style="margin-top:8px">▲ 6.1 pts over 8 months</span>
+      </div>
+      <div class="tp-card">
+        <span class="tp-stat-label" style="color:var(--tp-ink-muted)">Contact rate</span>
+        <div class="tp-stat-value" style="margin-top:6px">41.3%</div>
+        <svg class="spark" viewBox="0 0 200 44" width="100%" height="44" preserveAspectRatio="none" aria-hidden="true">
+          <polyline points="0,14 25,18 50,16 75,22 100,25 125,23 150,29 175,31 200,33"
+            fill="none" stroke="#6E6E6E" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="delta down" style="margin-top:8px">▼ 4.4 pts over 8 months</span>
+      </div>
+      <div class="tp-card tp-card--panel">
+        <span class="tp-stat-label">Forecast · FY27</span>
+        <div class="tp-stat-value" style="margin-top:6px">ZMW 41.2m</div>
+        <p class="tp-note" style="color:var(--tp-charcoal);margin-top:10px">
+          <span class="prov" style="background:var(--tp-charcoal);color:#fff">Modelled</span>
+          Base roll-forward, El Niño overlay. Not a measured figure.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Provenance chips — non-negotiable</h2>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      <span class="prov" style="background:var(--tp-cyan);color:var(--tp-charcoal)">Measured</span>
+      <span class="prov" style="background:var(--tp-charcoal);color:#fff">Modelled</span>
+      <span class="prov" style="background:var(--tp-surface);color:var(--tp-ink-muted);border:1px solid var(--tp-rule)">Assumed</span>
+    </div>
+    <p class="tp-note" style="max-width:70ch">Every figure carries one, or the source line under the
+      block does. <strong>A modelled number is never presented as measured.</strong> This is the single
+      rule in the system that overrides visual preference — if the chip crowds the layout, change the
+      layout.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Rules</h2>
+    <ul class="tp-note" style="padding-left:18px;max-width:70ch">
+      <li><strong>Four tiles maximum per row.</strong> Five means the row is doing a table's job.</li>
+      <li><strong>Value 44px Bold tabular · label 13px Medium uppercase +.06em.</strong> Label sits under the value, never above.</li>
+      <li><strong>Separators are 1px hairlines, not card borders.</strong> A KPI row is one object.</li>
+      <li>Round to the precision the decision needs — <span class="tp-code">ZMW 128.9m</span> on a slide, the exact kwacha in the appendix.</li>
+      <li>Deltas name the comparison (“vs June”), never a bare percentage.</li>
+      <li>Green/red deltas are the <em>only</em> non-brand colours in the system, and only on deltas. They are darkened on white (#1E7A46 / #B00020) and lightened on charcoal so both pass AA.</li>
+    </ul>
+  </div>
+</div>
+</body></html>

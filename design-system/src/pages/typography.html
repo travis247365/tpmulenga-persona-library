@@ -1,0 +1,97 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Typography</title>
+<!--TPCL_CORE-->
+<style>
+  .row { display:grid; grid-template-columns: 132px 1fr; gap: 20px; align-items: baseline;
+         padding: 18px 0; border-bottom: 1px solid var(--tp-rule); }
+  .row .spec { font-size: 11.5px; color: var(--tp-ink-muted); line-height:1.5;
+               font-family: ui-monospace,"SF Mono",Menlo,monospace; }
+  .wt { display:grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .wt > div { border:1px solid var(--tp-rule); padding: 20px; }
+  .wt .big { font-size: 40px; line-height:1; margin-bottom:10px; }
+  .cmp { display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--tp-rule); }
+  .cmp > div { padding: 34px; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Typography</h1>
+  <p class="tp-lede">Poppins, and only Poppins — set in the three weights TPCL owns and has licensed
+     locally: Regular&nbsp;400, Medium&nbsp;500, Bold&nbsp;700. No semibold, no light, no italic.
+     The scale below is the whole system.</p>
+
+  <div class="tp-sec">
+    <h2>The three weights</h2>
+    <div class="wt">
+      <div><div class="big" style="font-weight:400">Aa</div><div class="tp-h3" style="font-weight:400">Regular · 400</div>
+        <p class="tp-note" style="margin-top:6px">Body, light-mode titles, long-form. The default.</p></div>
+      <div><div class="big" style="font-weight:500">Aa</div><div class="tp-h3">Medium · 500</div>
+        <p class="tp-note" style="margin-top:6px">Eyebrows, labels, buttons, sub-heads. Carries tracking.</p></div>
+      <div><div class="big" style="font-weight:700">Aa</div><div class="tp-h3" style="font-weight:700">Bold · 700</div>
+        <p class="tp-note" style="margin-top:6px">Display, H2, stat figures, chip numerals. Nothing else.</p></div>
+    </div>
+    <p class="tp-note" style="margin-top:14px"><strong>Fallback stack:</strong>
+      <span class="tp-code">Poppins → Century Gothic → Futura → Avenir Next → system-ui</span>.
+      All geometric sans — the layout holds if Poppins is unavailable. Email is the exception; see the emailer template.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Scale</h2>
+    <div class="row"><div class="spec">tp-display<br>60 / 1.02 / 700<br>UPPERCASE · +.01em</div>
+      <div class="tp-display" style="font-size:52px">Evidence before<br>advice</div></div>
+    <div class="row"><div class="spec">tp-title<br>44 / 1.12 / 400<br>Sentence case · −.01em</div>
+      <div class="tp-title">Turning a group mandate into a defensible country plan</div></div>
+    <div class="row"><div class="spec">tp-h2<br>28 / 1.2 / 700</div>
+      <div class="tp-h2">What we found in the collections book</div></div>
+    <div class="row"><div class="spec">tp-h3<br>20 / 1.3 / 500</div>
+      <div class="tp-h3">Three drivers, ranked by contribution</div></div>
+    <div class="row"><div class="spec">tp-body-lg<br>18 / 1.6 / 400</div>
+      <div class="tp-body-lg">Lead paragraphs and pull-outs on content slides. Comfortable at roughly 60–75 characters a line.</div></div>
+    <div class="row"><div class="spec">tp-body<br>16 / 1.6 / 400</div>
+      <div class="tp-body">The working size for every body block, table cell and email paragraph. Set measure to 62 characters and let it breathe.</div></div>
+    <div class="row"><div class="spec">tp-eyebrow<br>12 / 1 / 500<br>UPPERCASE · +.16em</div>
+      <div class="tp-eyebrow">Customer value management</div></div>
+    <div class="row"><div class="spec">tp-caption<br>13 / 1.45 / 400</div>
+      <div class="tp-caption tp-muted">Source: RDG Zambia portfolio extract, July 2026. Measured, not modelled.</div></div>
+    <div class="row" style="border-bottom:0"><div class="spec">tp-num<br>700 · tabular</div>
+      <div class="tp-num" style="font-size:44px">ZMW&nbsp;128,890,976</div></div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>The case rule — this is the one people get wrong</h2>
+    <div class="cmp">
+      <div class="tp-dark" style="background:#3A3A3A">
+        <span class="tp-accent tp-accent--dark"></span>
+        <p class="tp-eyebrow" style="margin:20px 0 12px;color:#00BCD4">Dark mode</p>
+        <h3 class="tp-display" style="font-size:34px">The mandate<br>is the easy part</h3>
+        <p class="tp-note" style="color:rgba(255,255,255,.66);margin-top:16px">Bold · <strong style="color:#fff">ALL CAPS</strong> · white.
+          Openers, section breaks, statement slides.</p>
+      </div>
+      <div>
+        <span class="tp-accent"></span>
+        <p class="tp-eyebrow" style="margin:20px 0 12px;color:var(--tp-ink-muted)">Light mode</p>
+        <h3 class="tp-title" style="font-size:34px">The mandate is the easy part</h3>
+        <p class="tp-note" style="margin-top:16px">Regular · <strong>Sentence case</strong> · charcoal.
+          Content slides, bios, tables, everything else.</p>
+      </div>
+    </div>
+    <p class="tp-note" style="margin-top:14px">Do not enforce one case across the deck. The split
+      <em>is</em> the system — caps signals a break, sentence case signals substance.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Measure &amp; rhythm</h2>
+    <ul class="tp-note" style="padding-left:18px;max-width:70ch">
+      <li>Body measure: <strong>58–72 characters</strong>. On a 1080px social canvas that is roughly 820px at 32px type.</li>
+      <li>Line height: <strong>1.6 body · 1.2 headings · 1.02 display</strong>. Never tighter than 1.0.</li>
+      <li>Tracking: positive only on uppercase (<strong>+.16em eyebrow, +.01em display</strong>); negative only on large sentence-case titles (<strong>−.01em</strong>).</li>
+      <li>Figures in any column or KPI row use <span class="tp-code">font-variant-numeric: tabular-nums</span> so they align.</li>
+      <li>Never stretch, condense, outline or add a shadow to Poppins.</li>
+    </ul>
+  </div>
+</div>
+</body></html>

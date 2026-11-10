@@ -1,0 +1,152 @@
+<!-- @dsCard group="Templates · Email" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Email 600px</title>
+<!--TPCL_CORE-->
+<style>
+  body { background:#EDEEF0; margin:0; }
+  .wrap { padding:32px 4px 44px; }
+  .tag { font-family:var(--tp-font); font-size:13px; font-weight:500; letter-spacing:.14em;
+         text-transform:uppercase; color:#6E6E6E; margin:0 0 12px; width:600px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="tag tp-noexport">600px body · table-based · Outlook / Gmail / Apple Mail safe</p>
+
+<!-- ============================================================
+     COPY EVERYTHING FROM <table> TO </table> INTO YOUR EMAIL TOOL.
+     Rules baked in: tables not flexbox · inline styles only ·
+     no webfonts (Gmail strips @font-face) · no background-image ·
+     600px fixed · one column · 44px tap targets.
+     ============================================================ -->
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+       style="width:600px;border-collapse:collapse;background:#FFFFFF;
+              font-family:'Poppins','Century Gothic',Futura,Helvetica,Arial,sans-serif;color:#3A3A3A;">
+
+  <!-- Preheader: shows in the inbox list, hidden in the body -->
+  <tr><td style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+    Same agents, same script, a different order — and 6.1 points of collection rate.
+  </td></tr>
+
+  <!-- Masthead: charcoal band, white logo, cyan accent block -->
+  <tr><td style="background:#3A3A3A;padding:32px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+      <tr>
+        <td style="vertical-align:middle;">
+          <img src="{{LOGO_WHITE}}" width="150" alt="Travis Paul Consulting"
+               style="display:block;width:150px;height:auto;border:0;">
+        </td>
+        <td align="right" style="vertical-align:middle;">
+          <div style="width:44px;height:16px;background:#00BCD4;font-size:0;line-height:0;">&nbsp;</div>
+        </td>
+      </tr>
+    </table>
+  </td></tr>
+
+  <!-- Eyebrow + headline -->
+  <tr><td style="padding:40px 32px 0;">
+    <p style="margin:0;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#6E6E6E;">
+      Field note · 04 · August 2026</p>
+    <h1 style="margin:14px 0 0;font-size:32px;line-height:1.15;font-weight:400;letter-spacing:-.01em;color:#3A3A3A;">
+      Your collections book does not have a contact problem.
+      <b style="font-weight:700;">It has a sequencing problem.</b></h1>
+  </td></tr>
+
+  <!-- Body -->
+  <tr><td style="padding:24px 32px 0;font-size:16px;line-height:1.65;color:#3A3A3A;">
+    <p style="margin:0 0 16px;">Hi {{FIRST_NAME}},</p>
+    <p style="margin:0 0 16px;">We ranked 48,120 accounts by recency, frequency and size before a
+      single call was placed. Same agents. Same script. A different order.</p>
+    <p style="margin:0;">Eight months later, collection rate is up 6.1 points and calls per recovery
+      are down 18% — while <i>contact rate fell</i>. That last part is the interesting bit.</p>
+  </td></tr>
+
+  <!-- KPI strip: blue-gray panel, three columns as table cells -->
+  <tr><td style="padding:28px 32px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="border-collapse:collapse;background:#B8C5D6;">
+      <tr>
+        <td width="33.33%" style="padding:24px 16px;text-align:center;">
+          <div style="font-size:30px;font-weight:700;line-height:1;color:#3A3A3A;">+6.1</div>
+          <div style="font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:#3A3A3A;padding-top:8px;">Collection rate</div>
+        </td>
+        <td width="33.33%" style="padding:24px 16px;text-align:center;border-left:1px solid rgba(58,58,58,.25);">
+          <div style="font-size:30px;font-weight:700;line-height:1;color:#3A3A3A;">−18%</div>
+          <div style="font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:#3A3A3A;padding-top:8px;">Calls per recovery</div>
+        </td>
+        <td width="33.33%" style="padding:24px 16px;text-align:center;border-left:1px solid rgba(58,58,58,.25);">
+          <div style="font-size:30px;font-weight:700;line-height:1;color:#3A3A3A;">48,120</div>
+          <div style="font-size:10px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:#3A3A3A;padding-top:8px;">Accounts</div>
+        </td>
+      </tr>
+    </table>
+    <p style="margin:10px 0 0;font-size:12px;color:#6E6E6E;">Measured · RDG Zambia, Nov 2025 – Jul 2026.</p>
+  </td></tr>
+
+  <!-- Pull-quote: 3px cyan left rule -->
+  <tr><td style="padding:28px 32px 0;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+      <tr><td style="border-left:3px solid #00BCD4;padding:4px 0 4px 20px;font-size:18px;line-height:1.5;color:#3A3A3A;">
+        Contact rate measures effort. It moves when you add dialler capacity — not when the book gets healthier.
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- CTA: bulletproof-ish button. Cyan fill, CHARCOAL label (white fails at 2.30:1). -->
+  <tr><td style="padding:32px 32px 0;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+      <tr><td style="background:#00BCD4;">
+        <a href="https://example.com/diagnostic"
+           style="display:block;padding:15px 30px;font-size:15px;font-weight:500;letter-spacing:.02em;
+                  color:#3A3A3A;text-decoration:none;line-height:1.1;">Read the full field note &rarr;</a>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- Sign-off -->
+  <tr><td style="padding:32px 32px 0;font-size:16px;line-height:1.65;color:#3A3A3A;">
+    <p style="margin:0;">Travis</p>
+    <p style="margin:4px 0 0;font-size:13px;color:#6E6E6E;">Travis Mulenga · Principal Consultant</p>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="padding:36px 32px 32px;">
+    <div style="height:1px;background:#E4E6EA;font-size:0;line-height:0;">&nbsp;</div>
+    <p style="margin:20px 0 0;font-size:12px;line-height:1.6;color:#6E6E6E;">
+      Travis Paul Consulting Ltd · Lusaka, Zambia<br>
+      You are receiving this because you asked for the field note.
+      <a href="{{UNSUBSCRIBE_URL}}" style="color:#6E6E6E;text-decoration:underline;">Unsubscribe</a>
+      · <a href="{{PREFERENCES_URL}}" style="color:#6E6E6E;text-decoration:underline;">Update preferences</a>
+    </p>
+  </td></tr>
+</table>
+
+<div class="tp-noexport" style="width:600px;padding:28px 0 0;font-family:var(--tp-font);color:#3A3A3A">
+  <p style="font-size:15px;font-weight:500;margin:0 0 8px">600px · email newsletter</p>
+  <p style="font-size:13.5px;line-height:1.65;color:#6E6E6E;margin:0">
+    <strong style="color:#3A3A3A">Email is the one place the design system bends.</strong>
+    Gmail strips <span class="tp-code">@font-face</span>, so Poppins only renders for recipients who
+    already have it installed — the stack falls back to Century Gothic, then Helvetica/Arial. That is
+    expected; do not chase it with images of text.
+    <br><br>
+    <strong style="color:#3A3A3A">What is load-bearing here:</strong>
+    tables with <span class="tp-code">role="presentation"</span>, not flexbox or grid, because Outlook
+    on Windows renders through Word;
+    every style inline;
+    600px fixed width;
+    a single column;
+    no background images (Outlook drops them, and the charcoal masthead must survive);
+    the CTA is a padded <span class="tp-code">&lt;a&gt;</span> inside a coloured
+    <span class="tp-code">&lt;td&gt;</span> so the whole block is tappable at 44px+;
+    and the cyan button carries a <strong>charcoal</strong> label, because white on cyan is 2.30:1.
+    <br><br>
+    <strong style="color:#3A3A3A">Before sending:</strong> fill the preheader (it is the second line
+    in every inbox preview), replace <span class="tp-code">{{FIRST_NAME}}</span> and both footer URLs
+    with your ESP's merge tags, and confirm the source line under any figures says whether they are
+    measured or modelled.
+  </p>
+</div>
+</div>
+</body></html>

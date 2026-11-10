@@ -1,0 +1,106 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Tables, quotes &amp; tags</title>
+<!--TPCL_CORE-->
+<style>
+  .lab { font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+         color:var(--tp-ink-muted); margin: 0 0 10px; }
+  .tp-dark .lab { color: rgba(255,255,255,.55); }
+  .tp-dark .tp-table th { color: rgba(255,255,255,.6); border-bottom-color:#fff; }
+  .tp-dark .tp-table td { border-bottom-color: var(--tp-charcoal-soft); }
+  .bars { display:flex; gap:3px; align-items:flex-end; height:20px; }
+  .bars i { display:block; width:5px; background:var(--tp-bluegray); }
+  .scroll { overflow-x:auto; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Tables, quotes &amp; tags</h1>
+  <p class="tp-lede">The workhorses. A TPCL table has no vertical rules, no zebra stripes and no fill —
+     alignment and one heavy header rule do all the structuring.</p>
+
+  <div class="tp-sec">
+    <p class="lab">Data table</p>
+    <div class="scroll">
+      <table class="tp-table">
+        <thead><tr><th>Segment</th><th>Accounts</th><th>Book (ZMW)</th><th>PAR 30+</th><th>Trend</th><th>Provenance</th></tr></thead>
+        <tbody>
+          <tr><td>Champions</td><td class="tp-n">6,412</td><td class="tp-n">31,204,880</td><td class="tp-n">4.1%</td>
+              <td><span class="bars"><i style="height:6px"></i><i style="height:9px"></i><i style="height:8px"></i><i style="height:13px"></i><i style="height:17px"></i></span></td>
+              <td><span class="tp-tag tp-tag--cyan">Measured</span></td></tr>
+          <tr><td>Loyal payers</td><td class="tp-n">11,088</td><td class="tp-n">42,761,340</td><td class="tp-n">9.8%</td>
+              <td><span class="bars"><i style="height:11px"></i><i style="height:12px"></i><i style="height:10px"></i><i style="height:14px"></i><i style="height:13px"></i></span></td>
+              <td><span class="tp-tag tp-tag--cyan">Measured</span></td></tr>
+          <tr><td>At risk</td><td class="tp-n">14,905</td><td class="tp-n">36,918,204</td><td class="tp-n">38.6%</td>
+              <td><span class="bars"><i style="height:17px"></i><i style="height:15px"></i><i style="height:12px"></i><i style="height:9px"></i><i style="height:6px"></i></span></td>
+              <td><span class="tp-tag tp-tag--cyan">Measured</span></td></tr>
+          <tr><td>Dormant</td><td class="tp-n">15,715</td><td class="tp-n">18,006,552</td><td class="tp-n">71.2%</td>
+              <td><span class="bars"><i style="height:14px"></i><i style="height:11px"></i><i style="height:8px"></i><i style="height:5px"></i><i style="height:3px"></i></span></td>
+              <td><span class="tp-tag">Assumed</span></td></tr>
+          <tr><td><strong>Total</strong></td><td class="tp-n"><strong>48,120</strong></td>
+              <td class="tp-n"><strong>128,890,976</strong></td><td class="tp-n"><strong>31.4%</strong></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tp-note" style="margin-top:12px">Source: RDG Zambia portfolio extract, July 2026.
+      Total ties to the source ledger to the kwacha.</p>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Table on charcoal</p>
+    <div class="tp-dark" style="background:#3A3A3A;padding:28px 32px">
+      <table class="tp-table">
+        <thead><tr><th>Persona</th><th>Buyer</th><th>Drop it when</th></tr></thead>
+        <tbody>
+          <tr><td>Country / Market Operator</td><td>Group Exec, Country MD</td><td>Single-jurisdiction client</td></tr>
+          <tr><td>Data &amp; AI Product Builder</td><td>CIO, Head of Data</td><td>No system deliverable</td></tr>
+          <tr><td>Mentor / Coach</td><td>CHRO, Head of L&amp;D</td><td>No capability transfer in scope</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Quote &amp; statement</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <blockquote class="tp-quote">
+        The mandate was never the hard part. Making it defensible in a market the model has never seen — that is the work.
+        <footer style="margin-top:16px;font-size:14px;color:var(--tp-ink-muted);font-style:normal">
+          <strong style="color:var(--tp-ink);font-weight:500">Travis Mulenga</strong> · Principal Consultant
+        </footer>
+      </blockquote>
+      <div class="tp-dark" style="background:#3A3A3A;padding:34px">
+        <span class="tp-accent tp-accent--dark"></span>
+        <p class="tp-display" style="font-size:28px;margin-top:20px">Evidence<br>before advice</p>
+        <p class="tp-note" style="color:rgba(255,255,255,.66);margin-top:14px">
+          The statement page: accent block, three to six words in caps, nothing else. No body copy.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Tags</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span class="tp-tag">Neutral</span>
+      <span class="tp-tag tp-tag--cyan">Measured</span>
+      <span class="tp-tag tp-tag--amber">Action required</span>
+      <span class="tp-tag tp-tag--panel">Phase 2</span>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Rules</h2>
+    <ul class="tp-note" style="padding-left:18px;max-width:70ch">
+      <li><strong>No vertical rules, no zebra stripes, no cell fills.</strong> One 2px charcoal rule under the header, 1px hairlines between rows.</li>
+      <li><strong>Numbers right-aligned and tabular</strong>; text left-aligned. Never centre a column.</li>
+      <li><strong>Header labels are 12px Medium uppercase +.1em muted</strong> — quieter than the data, because the data is the point.</li>
+      <li><strong>Totals row is bold, no fill</strong>, and it must reconcile. A total that does not tie to source does not ship.</li>
+      <li>A source line sits under every table. If the data is modelled, the line says so.</li>
+      <li>Quotes take a 3px cyan left rule and no quotation marks. Attribution below, name in Medium.</li>
+    </ul>
+  </div>
+</div>
+</body></html>

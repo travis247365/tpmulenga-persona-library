@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>TPCL Brand Guidelines</title>
+<!--TPCL_CORE-->
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  body { background:#fff; }
+  .pg { width:297mm; height:210mm; position:relative; overflow:hidden;
+        page-break-after:always; break-after:page; background:#fff; }
+  .pg:last-child { page-break-after:auto; break-after:auto; }
+  /* bottom inset clears the footer, which sits at 9mm */
+  .pad { position:absolute; inset:14mm 18mm 20mm; display:flex; flex-direction:column; }
+  .dk { background:#3A3A3A; color:#fff; }
+  .acc { width:22mm; height:7.5mm; background:#FFC107; display:block; flex:0 0 auto; }
+  .dk .acc { background:#00BCD4; }
+  .eyeb { font-size:9pt; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
+          color:#6E6E6E; margin:0; }
+  .dk .eyeb { color:#00BCD4; }
+  h1.caps { font-size:34pt; line-height:1.0; font-weight:700; text-transform:uppercase;
+            letter-spacing:.01em; margin:0; }
+  h2.sent { font-size:24pt; line-height:1.1; font-weight:400; letter-spacing:-.015em; margin:0; }
+  h2.sent b { font-weight:700; }
+  h3 { font-size:12pt; font-weight:700; margin:0 0 2mm; }
+  p, li, td, th { font-size:8.8pt; line-height:1.5; }
+  .lede { font-size:12pt; line-height:1.5; color:#6E6E6E; max-width:60ch; margin:0; }
+  .dk .lede { color:rgba(255,255,255,.7); }
+  .chip { position:absolute; right:0; top:50%; transform:translateY(-50%); width:11mm; height:11mm;
+          background:#B8C5D6; color:#fff; font-weight:700; font-size:11pt; display:flex;
+          align-items:center; justify-content:center; }
+  .foot { position:absolute; left:18mm; right:18mm; bottom:9mm; display:flex;
+          justify-content:space-between; align-items:flex-end; font-size:7.5pt; color:#9A9A9A;
+          letter-spacing:.05em; }
+  .dk .foot { color:rgba(255,255,255,.42); }
+  .mk { height:9mm; }
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:9mm; }
+  .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; }
+  .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:4mm; }
+  .g6 { display:grid; grid-template-columns:repeat(6,1fr); gap:3.5mm; }
+  .sw { border:1px solid #E4E6EA; }
+  .sw .b { height:15mm; }
+  .sw .m { padding:2.2mm 2.6mm 2.8mm; }
+  .sw .hx { font-family:ui-monospace,Menlo,monospace; font-size:7.5pt; }
+  .sw .rl { font-size:7pt; color:#6E6E6E; line-height:1.35; margin-top:1.2mm; }
+  .pair { padding:2.6mm 3mm; font-size:8pt; }
+  .pair .r { font-size:7pt; letter-spacing:.08em; text-transform:uppercase; margin-top:1.5mm; opacity:.9 }
+  .vd { display:inline-block; font-size:6.5pt; font-weight:700; letter-spacing:.1em; padding:.6mm 1.6mm; }
+  .ok { background:#3A3A3A; color:#fff; } .no { background:#B00020; color:#fff; }
+  table.g { width:100%; border-collapse:collapse; }
+  table.g th { text-align:left; font-weight:500; font-size:7pt; letter-spacing:.1em;
+    text-transform:uppercase; color:#6E6E6E; padding:1.6mm 2.4mm; border-bottom:1.5pt solid #3A3A3A; }
+  table.g td { padding:1.5mm 2.4mm; border-bottom:.5pt solid #E4E6EA; font-size:8pt; }
+  table.g td.n { text-align:right; font-variant-numeric:tabular-nums; }
+  .dk table.g th { color:rgba(255,255,255,.6); border-bottom-color:#fff; }
+  .dk table.g td { border-bottom-color:#4A4A4A; }
+  .rule { border-left:2.5pt solid #00BCD4; padding-left:5mm; }
+  ul.t { padding-left:4.5mm; margin:0; } ul.t li { margin-bottom:1.2mm; }
+  .box { border:1.5pt solid #00BCD4; padding:4.5mm 5.5mm; }
+  .mini { border:1px solid #E4E6EA; aspect-ratio:16/9; position:relative; overflow:hidden; }
+  .mini .cp { position:absolute; bottom:2mm; left:2.5mm; font-size:6.5pt; letter-spacing:.08em;
+              text-transform:uppercase; color:#6E6E6E; }
+  .csdemo { position:relative; display:inline-block; background:#F5F6F8; }
+  .csdemo .gd { position:absolute; outline:1px dashed #F47321; }
+</style>
+</head>
+<body>
+
+<!-- ============ 01 · COVER ============ -->
+<section class="pg dk">
+  <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.45);width:80mm;height:52mm;top:-14mm;right:38mm"></span>
+  <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.3);width:34mm;height:34mm;bottom:-10mm;right:16mm"></span>
+  <div class="pad">
+    <div style="flex:1"></div>
+    <p class="eyeb">Travis Paul Consulting Ltd · Lusaka, Zambia</p>
+    <h1 class="caps" style="margin-top:6mm;font-size:44pt">Brand<br>guidelines</h1>
+    <p class="lede" style="margin-top:7mm;max-width:46ch">The identity, the two-mode layout system,
+      and the rules that keep every surface recognisably TPCL.</p>
+    <div style="flex:1"></div>
+    <span class="tp-mark tp-mark--white mk" style="height:12mm"></span>
+    <p style="font-size:8pt;color:rgba(255,255,255,.45);margin-top:4mm;letter-spacing:.06em">
+      Version 1.0 · August 2026</p>
+  </div>
+</section>
+
+<!-- ============ 02 · THE SYSTEM IN ONE PAGE ============ -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">01 · Overview</p>
+    <h2 class="sent" style="margin-top:3mm">The system in <b>one page.</b></h2>
+    <div class="g2" style="margin-top:8mm;flex:1">
+      <div>
+        <p style="margin:0 0 5mm">TPCL runs a <strong>two-mode</strong> system. Charcoal and white do
+          all the work. Dark mode carries openers, section breaks and statements. Light mode carries
+          content, data and bios. Everything else — the accents, the motifs, the type — hangs off that
+          one decision.</p>
+        <table class="g">
+          <thead><tr><th>Mode</th><th>Carries</th><th>Type</th><th>Accent</th></tr></thead>
+          <tbody>
+            <tr><td>Charcoal <strong>#3A3A3A</strong></td><td>Covers, breaks, statements</td>
+                <td>Bold, ALL CAPS</td><td>Cyan</td></tr>
+            <tr><td>White <strong>#FFFFFF</strong></td><td>Content, data, bios</td>
+                <td>Regular, sentence case</td><td>Amber</td></tr>
+          </tbody>
+        </table>
+        <div class="rule" style="margin-top:7mm">
+          <p style="margin:0"><strong>The case rule is the system.</strong> Caps on charcoal signals a
+            break; sentence case on white signals substance. Do not enforce one case across a deck.</p>
+        </div>
+      </div>
+      <div>
+        <h3>Non-negotiables</h3>
+        <ul class="t">
+          <li>Poppins only — Regular 400, Medium 500, Bold 700. Nothing else.</li>
+          <li>Pure white <span class="tp-code">#FFFFFF</span>. Never off-white.</li>
+          <li><strong>Radius 0.</strong> No shadows, no gradients, no glassmorphism. Depth comes from
+              tone, never elevation.</li>
+          <li>Where a dark and a light block meet in a split, <strong>they meet directly — there is
+              no divider line.</strong></li>
+          <li>Cyan and amber fills always carry <strong>charcoal</strong> labels, never white.</li>
+          <li>Every figure states its provenance: <strong>Measured · Modelled · Assumed.</strong></li>
+          <li>Every total reconciles to source, or the work is not finished.</li>
+        </ul>
+        <div class="g3" style="margin-top:7mm">
+          <div class="mini dk" style="background:#3A3A3A">
+            <span style="position:absolute;top:3mm;left:3mm;width:8mm;height:2.6mm;background:#00BCD4"></span>
+            <span style="position:absolute;left:3mm;top:11mm;width:60%;height:2mm;background:#fff"></span>
+            <span style="position:absolute;left:3mm;top:15mm;width:42%;height:2mm;background:#fff"></span>
+            <span class="cp" style="color:rgba(255,255,255,.5)">Dark opener</span></div>
+          <div class="mini" style="display:grid;grid-template-columns:1fr 1fr">
+            <span style="background:#3A3A3A"></span><span style="background:#B8C5D6"></span>
+            <span class="cp">Split</span></div>
+          <div class="mini">
+            <span style="position:absolute;top:3mm;left:3mm;width:8mm;height:2.6mm;background:#FFC107"></span>
+            <span style="position:absolute;left:3mm;top:11mm;width:64%;height:1.6mm;background:#3A3A3A"></span>
+            <span style="position:absolute;left:3mm;top:15mm;width:80%;height:1mm;background:#E4E6EA"></span>
+            <span style="position:absolute;left:3mm;top:18mm;width:72%;height:1mm;background:#E4E6EA"></span>
+            <span class="cp">Light content</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="chip">02</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--black" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 03 · LOGO ============ -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">02 · Identity</p>
+    <h2 class="sent" style="margin-top:3mm">The mark, and the <b>four ways it may appear.</b></h2>
+    <div class="g4" style="margin-top:6mm">
+      <div class="sw"><div class="b" style="display:flex;align-items:center;justify-content:center;background:#F5F6F8;height:20mm">
+          <span class="tp-mark tp-mark--colour" style="height:9mm"></span></div>
+        <div class="m"><strong style="font-size:9pt">Full colour</strong>
+          <div class="rl">Light surfaces with no competing colour. Covers, letterheads, footers.</div></div></div>
+      <div class="sw"><div class="b" style="display:flex;align-items:center;justify-content:center;height:20mm">
+          <span class="tp-mark tp-mark--black" style="height:9mm"></span></div>
+        <div class="m"><strong style="font-size:9pt">Black</strong>
+          <div class="rl">The default on white. Any surface already carrying an accent colour.</div></div></div>
+      <div class="sw"><div class="b" style="display:flex;align-items:center;justify-content:center;height:20mm">
+          <span class="tp-mark tp-mark--black" style="height:9mm;opacity:.6"></span></div>
+        <div class="m"><strong style="font-size:9pt">Tint · #57585A</strong>
+          <div class="rl">Watermarks, document grounds, partner walls. Never below 40%.</div></div></div>
+      <div class="sw"><div class="b" style="display:flex;align-items:center;justify-content:center;background:#3A3A3A;height:20mm">
+          <span class="tp-mark tp-mark--white" style="height:9mm"></span></div>
+        <div class="m"><strong style="font-size:9pt">Reversed white</strong>
+          <div class="rl">Charcoal and black surfaces. The deck-cover default.</div></div></div>
+    </div>
+
+    <div class="g2" style="margin-top:6mm;flex:1">
+      <div>
+        <h3>Clear space</h3>
+        <div style="display:flex;gap:8mm;align-items:center">
+          <div class="csdemo" style="padding:8mm">
+            <span class="tp-mark tp-mark--black" style="height:18mm"></span>
+            <span class="gd" style="inset:8mm"></span>
+          </div>
+          <p style="margin:0;font-size:8.5pt"><strong>45% of the logo height on all four sides</strong>
+            — equivalently 23.5% of its width. The padding is uniform, not proportional to the side.
+            Nothing enters it: no text, no rule, no accent block, no photo edge.
+            <br><br>Measured from the 2021 master <em>travis paul_logo_Clear&nbsp;Space.ai</em>
+            (bbox 232 × 121, padding 54–55px). This is roughly <strong>double</strong> what most
+            people leave by eye.</p>
+        </div>
+      </div>
+      <div>
+        <h3>Placement, sizing and co-branding</h3>
+        <ul class="t">
+          <li><strong>Dark surface → bottom LEFT. Light surface → bottom RIGHT</strong> — diagonally
+              opposite the top-left accent block. That diagonal is the TPCL page frame.</li>
+          <li>Ratio locked at <strong>1.93:1</strong>. Never stretch, condense, outline or shadow it.</li>
+          <li>Minimum: <strong>120px wide</strong> on screen, <strong>34px tall</strong> in a slide
+              footer, <strong>28mm wide</strong> in print.</li>
+          <li>Never on cyan or amber, never on a mid-tone below 4.5:1, never straddling two tones or
+              sitting on a busy photograph.</li>
+          <li><strong>Co-branding:</strong> TPCL left, client right, 1px rule between, heights matched
+              optically not by bounding box. On a client's own document the client mark leads and TPCL
+              is never the larger of the two.</li>
+          <li><strong>Consulting</strong> is the default on all client-facing work.
+              <strong>Holdings</strong> appears only on parent-entity material.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="chip">03</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--black" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 04 · LOGO COLOUR vs PALETTE ============ -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">03 · Identity</p>
+    <h2 class="sent" style="margin-top:3mm">The logo's colours are <b>not the layout palette.</b></h2>
+    <p class="lede" style="margin-top:5mm;font-size:10.5pt">Two eras, two colour sets. This page exists
+      because the near-miss between them is the easiest mistake to make in TPCL work.</p>
+
+    <div class="g2" style="margin-top:6mm">
+      <div>
+        <h3>The 2021 logo master</h3>
+        <div class="g3" style="margin-top:3mm">
+          <div class="pair" style="background:#085F89;color:#fff">Script<div class="r">#085F89</div></div>
+          <div class="pair" style="background:#59D1E2;color:#3A3A3A">Tracked caps<div class="r">#59D1E2</div></div>
+          <div class="pair" style="background:#57585A;color:#fff">Tint<div class="r">#57585A</div></div>
+        </div>
+        <p style="margin-top:4mm;font-size:8.5pt;color:#6E6E6E">Sampled from
+          <em>travis paul_Proper use of Colour.ai</em>. Black cut is pure
+          <span class="tp-code">#000000</span>.</p>
+      </div>
+      <div>
+        <h3>The layout system</h3>
+        <div class="g3" style="margin-top:3mm">
+          <div class="pair" style="background:#3A3A3A;color:#fff">Charcoal<div class="r">#3A3A3A</div></div>
+          <div class="pair" style="background:#00BCD4;color:#3A3A3A">Cyan<div class="r">#00BCD4</div></div>
+          <div class="pair" style="background:#FFC107;color:#3A3A3A">Amber<div class="r">#FFC107</div></div>
+        </div>
+        <p style="margin-top:4mm;font-size:8.5pt;color:#6E6E6E">Derived from the TPCL business-profile
+          deck and ground-truthed slide by slide.</p>
+      </div>
+    </div>
+
+    <div class="box" style="margin-top:6mm;border-color:#3A3A3A">
+      <h3 style="margin-bottom:3mm">The ruling</h3>
+      <p style="margin:0"><strong>The logo is a fixed asset and keeps its own colours — never recolour
+        it to match the palette.</strong> The layout keeps charcoal and system cyan. But because
+        <span class="tp-code">#59D1E2</span> and <span class="tp-code">#00BCD4</span> are close
+        without being equal, <strong>never place the full-colour logo on a surface that also carries a
+        cyan accent block.</strong> The near-miss reads as a production error rather than a choice.
+        Use the black or reversed-white cut there instead — which is why every template in this system
+        uses black-on-white and white-on-charcoal, and full colour appears only on plain grounds.</p>
+    </div>
+
+    <div style="flex:1"></div>
+    <div class="g2">
+      <div>
+        <p class="eyeb" style="color:#6E6E6E">Correct</p>
+        <div style="border:1px solid #E4E6EA;height:20mm;position:relative;margin-top:2.5mm">
+          <span style="position:absolute;top:4mm;left:4mm;width:11mm;height:3.6mm;background:#00BCD4"></span>
+          <span class="tp-mark tp-mark--black" style="height:7mm;position:absolute;right:4mm;bottom:4mm"></span>
+        </div>
+      </div>
+      <div>
+        <p class="eyeb" style="color:#B00020">Wrong — two cyans on one surface</p>
+        <div style="border:1px solid #E4E6EA;height:20mm;position:relative;margin-top:2.5mm">
+          <span style="position:absolute;top:4mm;left:4mm;width:11mm;height:3.6mm;background:#00BCD4"></span>
+          <span class="tp-mark tp-mark--colour" style="height:7mm;position:absolute;right:4mm;bottom:4mm"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="chip">04</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--black" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 05 · COLOUR ============ -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">04 · Colour</p>
+    <h2 class="sent" style="margin-top:3mm">Six tokens, and <b>the contrast maths that governs them.</b></h2>
+
+    <div class="g6" style="margin-top:6mm">
+      <div class="sw"><div class="b" style="background:#3A3A3A"></div><div class="m">
+        <strong style="font-size:9pt">Charcoal</strong> <span class="hx">#3A3A3A</span>
+        <div class="rl">Dark background · light-mode body text. The primary.</div></div></div>
+      <div class="sw"><div class="b" style="background:#fff;border-bottom:1px solid #E4E6EA"></div><div class="m">
+        <strong style="font-size:9pt">White</strong> <span class="hx">#FFFFFF</span>
+        <div class="rl">Light background · dark-mode text. Pure white, never off-white.</div></div></div>
+      <div class="sw"><div class="b" style="background:#B8C5D6"></div><div class="m">
+        <strong style="font-size:9pt">Blue-gray</strong> <span class="hx">#B8C5D6</span>
+        <div class="rl">Split panel, index chip, accent card. A surface, never a text colour.</div></div></div>
+      <div class="sw"><div class="b" style="background:#00BCD4"></div><div class="m">
+        <strong style="font-size:9pt">Cyan</strong> <span class="hx">#00BCD4</span>
+        <div class="rl">Dark-mode accent. Accent block, timeline, outline cards, primary button.</div></div></div>
+      <div class="sw"><div class="b" style="background:#FFC107"></div><div class="m">
+        <strong style="font-size:9pt">Amber</strong> <span class="hx">#FFC107</span>
+        <div class="rl">Light-mode accent. Top-left block on white. Used sparingly.</div></div></div>
+      <div class="sw"><div class="b" style="background:#6E6E6E"></div><div class="m">
+        <strong style="font-size:9pt">Ink muted</strong> <span class="hx">#6E6E6E</span>
+        <div class="rl">Secondary text, captions, table headers on white. 5.10:1 — passes AA.</div></div></div>
+    </div>
+
+    <div class="g2" style="margin-top:7mm;flex:1">
+      <div>
+        <h3>Measured contrast</h3>
+        <div class="g3" style="gap:2.5mm;margin-top:3mm">
+          <div class="pair" style="background:#3A3A3A;color:#fff">White on charcoal<div class="r">11.37:1 <span class="vd ok">AAA</span></div></div>
+          <div class="pair" style="background:#3A3A3A;color:#FFC107">Amber on charcoal<div class="r">6.98:1 <span class="vd ok">AA</span></div></div>
+          <div class="pair" style="background:#3A3A3A;color:#00BCD4">Cyan on charcoal<div class="r">4.95:1 <span class="vd ok">AA</span></div></div>
+          <div class="pair" style="background:#00BCD4;color:#3A3A3A">Charcoal on cyan<div class="r">4.95:1 <span class="vd ok">AA</span></div></div>
+          <div class="pair" style="background:#00BCD4;color:#fff">White on cyan<div class="r">2.30:1 <span class="vd no">FAIL</span></div></div>
+          <div class="pair" style="background:#fff;color:#FFC107;border:1px solid #E4E6EA">Amber on white<div class="r">1.63:1 <span class="vd no">FAIL</span></div></div>
+        </div>
+      </div>
+      <div>
+        <h3>The five rules that follow</h3>
+        <ul class="t">
+          <li><strong>Cyan and amber fills take charcoal labels, never white.</strong> White on cyan is 2.30:1 and fails.</li>
+          <li><strong>On white, cyan and amber are graphic-only</strong> — blocks, rules, dots, borders, fills behind dark text. Never body copy, never a link colour.</li>
+          <li><strong>On charcoal both are safe as text.</strong> This is why the cyan timeline and cyan hero figures live on dark surfaces.</li>
+          <li><strong>Blue-gray is a surface</strong> — 1.75:1 on white. It can never be read as text on white.</li>
+          <li><strong>One accent per surface.</strong> Cyan and amber do not share a page, except where amber is the accent block and cyan is a data mark.</li>
+        </ul>
+        <p style="margin-top:5mm;font-size:8.5pt;color:#6E6E6E"><strong>Client overlay:</strong> engagement
+          work tints exactly one variable, <span class="tp-code">--tp-client</span>, and swaps the
+          co-brand logo. Frame, type and motifs stay TPCL. Check any client colour against charcoal and
+          white before using it as text.</p>
+      </div>
+    </div>
+  </div>
+  <span class="chip">05</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--black" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 06 · TYPE ============ -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">05 · Typography</p>
+    <h2 class="sent" style="margin-top:3mm">Poppins, in <b>exactly three weights.</b></h2>
+
+    <div class="g3" style="margin-top:6mm">
+      <div style="border:1px solid #E4E6EA;padding:4mm">
+        <div style="font-size:20pt;font-weight:400;line-height:1">Aa</div>
+        <strong style="font-size:9.5pt;font-weight:400">Regular · 400</strong>
+        <p style="margin:1.5mm 0 0;font-size:8pt;color:#6E6E6E">Body, light-mode titles, long-form. The default.</p></div>
+      <div style="border:1px solid #E4E6EA;padding:4mm">
+        <div style="font-size:20pt;font-weight:500;line-height:1">Aa</div>
+        <strong style="font-size:9.5pt;font-weight:500">Medium · 500</strong>
+        <p style="margin:1.5mm 0 0;font-size:8pt;color:#6E6E6E">Eyebrows, labels, buttons, sub-heads. Carries the tracking.</p></div>
+      <div style="border:1px solid #E4E6EA;padding:4mm">
+        <div style="font-size:20pt;font-weight:700;line-height:1">Aa</div>
+        <strong style="font-size:9.5pt;font-weight:700">Bold · 700</strong>
+        <p style="margin:1.5mm 0 0;font-size:8pt;color:#6E6E6E">Display, H2, stat figures, chip numerals. Nothing else.</p></div>
+    </div>
+
+    <div class="g2" style="margin-top:6mm;flex:1">
+      <div>
+        <h3>Scale</h3>
+        <table class="g" style="margin-top:3mm">
+          <thead><tr><th>Style</th><th>Size / leading / weight</th><th>Case</th></tr></thead>
+          <tbody>
+            <tr><td>Display</td><td>60 / 1.02 / 700 · +.01em</td><td><strong>UPPERCASE</strong> — dark only</td></tr>
+            <tr><td>Title</td><td>44 / 1.12 / 400 · −.01em</td><td>Sentence — light only</td></tr>
+            <tr><td>H2</td><td>28 / 1.2 / 700</td><td>Sentence</td></tr>
+            <tr><td>H3</td><td>20 / 1.3 / 500</td><td>Sentence</td></tr>
+            <tr><td>Body</td><td>16 / 1.6 / 400</td><td>—</td></tr>
+            <tr><td>Eyebrow</td><td>12 / 1 / 500 · +.16em</td><td><strong>UPPERCASE</strong></td></tr>
+            <tr><td>Caption</td><td>13 / 1.45 / 400</td><td>—</td></tr>
+            <tr><td>Figures</td><td>700 · tabular-nums · −.02em</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:4mm;font-size:8.5pt;color:#6E6E6E">Fallback stack: Poppins → Century Gothic
+          → Futura → Avenir Next → system-ui. All geometric sans; the layout holds if Poppins is absent.</p>
+      </div>
+      <div>
+        <h3>The case rule</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid #E4E6EA;margin-top:3mm">
+          <div class="dk" style="background:#3A3A3A;padding:5mm">
+            <span style="width:11mm;height:3.6mm;background:#00BCD4;display:block"></span>
+            <p style="font-size:16pt;line-height:1;font-weight:700;text-transform:uppercase;margin:5mm 0 0">The mandate<br>is the easy<br>part</p>
+            <p style="font-size:7.5pt;color:rgba(255,255,255,.6);margin-top:4mm">Bold · CAPS · white</p>
+          </div>
+          <div style="padding:5mm">
+            <span style="width:11mm;height:3.6mm;background:#FFC107;display:block"></span>
+            <p style="font-size:16pt;line-height:1.1;font-weight:400;margin:5mm 0 0;letter-spacing:-.01em">The mandate is the <b style="font-weight:700">easy part</b></p>
+            <p style="font-size:7.5pt;color:#6E6E6E;margin-top:4mm">Regular · Sentence · charcoal</p>
+          </div>
+        </div>
+        <ul class="t" style="margin-top:5mm">
+          <li>In light mode, set <strong>Bold only on the phrase carrying the argument</strong> inside an otherwise Regular headline. That mixed weight is the light-mode signature.</li>
+          <li>Body measure <strong>58–72 characters</strong>.</li>
+          <li>Positive tracking only on uppercase; negative only on large sentence-case titles.</li>
+          <li>Figures in any column or KPI row use <strong>tabular numerals</strong> so they align.</li>
+          <li>Never stretch, condense, outline or shadow Poppins.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <span class="chip">06</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--black" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 07 · MOTIFS ============ -->
+<section class="pg dk">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">06 · Motifs</p>
+    <h1 class="caps" style="margin-top:4mm;font-size:26pt">The brand DNA</h1>
+    <p class="lede" style="margin-top:4mm">Five repeated elements. They are what make a page read as
+      TPCL when the logo is small and the colours are borrowed from a client.
+      <strong style="color:#fff">Use two or three per surface — never all five.</strong></p>
+
+    <div class="g3" style="margin-top:6mm;flex:1;align-content:start">
+      <div>
+        <div style="height:20mm;border:1px solid #4A4A4A;position:relative;display:flex;align-items:center;justify-content:center">
+          <span style="position:absolute;top:4mm;left:4mm;width:14mm;height:5mm;background:#00BCD4"></span>
+          <span style="position:absolute;bottom:4mm;right:4mm;width:14mm;height:5mm;background:#FFC107"></span>
+        </div>
+        <h3 style="margin-top:4mm;color:#fff">01 · Accent block</h3>
+        <p style="font-size:8pt;color:rgba(255,255,255,.66);margin:0">Upper-left corner, ~2.8:1 ratio.
+          Amber on white, cyan on charcoal. On every internal page and <strong style="color:#fff">absent
+          from covers</strong> — that absence is what makes a cover a cover. Placed first; everything
+          aligns to its margin.</p>
+      </div>
+      <div>
+        <div style="height:20mm;border:1px solid #4A4A4A;position:relative">
+          <span style="position:absolute;right:0;top:50%;transform:translateY(-50%);width:9mm;height:9mm;background:#B8C5D6;color:#fff;font-weight:700;font-size:9pt;display:flex;align-items:center;justify-content:center">07</span>
+        </div>
+        <h3 style="margin-top:4mm;color:#fff">02 · Index chip</h3>
+        <p style="font-size:8pt;color:rgba(255,255,255,.66);margin:0">34px blue-gray square, white
+          numeral, <strong style="color:#fff">flush to the right edge</strong>, vertically centred.
+          It bleeds off the edge; it is never inset. On a blue-gray panel it inverts to charcoal.</p>
+      </div>
+      <div>
+        <div style="height:20mm;border:1px solid #4A4A4A;position:relative">
+          <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.75);width:30mm;height:16mm;top:-4mm;right:8mm"></span>
+          <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.45);width:14mm;height:14mm;bottom:-4mm;left:5mm"></span>
+        </div>
+        <h3 style="margin-top:4mm;color:#fff">03 · Outline rectangles</h3>
+        <p style="font-size:8pt;color:rgba(255,255,255,.66);margin:0">2px cyan stroke, no fill. Texture
+          in the empty half of a dark page, or a frame around a statement. Keep them
+          <strong style="color:#fff">unequal, unaligned and bleeding off the margin</strong>.
+          On light pages the stroke turns charcoal.</p>
+      </div>
+      <div style="margin-top:4mm">
+        <div style="height:20mm;border:1px solid #4A4A4A;padding:4mm">
+          <ul class="tp-timeline" style="margin:0;padding-left:11mm">
+            <li style="padding-bottom:3mm"><span style="font-size:8pt;font-weight:700">Diagnose</span></li>
+            <li style="padding-bottom:3mm"><span style="font-size:8pt;font-weight:700">Model</span></li>
+            <li><span style="font-size:8pt;font-weight:700">Embed</span></li>
+          </ul>
+        </div>
+        <h3 style="margin-top:4mm;color:#fff">04 · Cyan timeline</h3>
+        <p style="font-size:8pt;color:rgba(255,255,255,.66);margin:0">2px vertical rule, 12px round dots
+          each ringed by a 4px halo in the background colour. The standard treatment for anything
+          sequential. <strong style="color:#fff">Every item carries a time label</strong> — a timeline
+          without dates is just a list.</p>
+      </div>
+      <div style="margin-top:4mm">
+        <div style="height:20mm;border:1px solid #4A4A4A;display:flex;align-items:center;justify-content:center;gap:4mm">
+          <span class="tp-step" style="width:10mm;height:10mm;font-size:9pt">1</span>
+          <span class="tp-step" style="width:10mm;height:10mm;font-size:9pt">2</span>
+          <span class="tp-step" style="width:10mm;height:10mm;font-size:9pt">3</span>
+        </div>
+        <h3 style="margin-top:4mm;color:#fff">05 · Step boxes</h3>
+        <p style="font-size:8pt;color:rgba(255,255,255,.66);margin:0">40px squares, 2px cyan stroke,
+          bold numeral — where a timeline would be too heavy. <strong style="color:#fff">Square,
+          because the circle is reserved for the timeline dot.</strong></p>
+      </div>
+      <div style="margin-top:4mm">
+        <div class="box" style="height:20mm;display:flex;align-items:center">
+          <p style="margin:0;font-size:8.5pt;color:#fff">Two motifs minimum.<br>Three maximum.</p>
+        </div>
+        <h3 style="margin-top:4mm;color:#fff">Combination rules</h3>
+        <p style="font-size:8pt;color:rgba(255,255,255,.66);margin:0">The signature sits diagonally
+          opposite the accent block. <strong style="color:#fff">Outline rectangles and the timeline
+          never share a page</strong> — both are cyan stroke work and they compete.
+          <strong style="color:#fff">And in a split layout there is no divider line.</strong></p>
+      </div>
+    </div>
+  </div>
+  <span class="chip" style="background:#00BCD4;color:#3A3A3A">07</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--white" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 08 · LAYOUT & CANVAS ============ -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">07 · Layout</p>
+    <h2 class="sent" style="margin-top:3mm">An 8px scale, a 12-column grid, and <b>square corners everywhere.</b></h2>
+
+    <div class="g2" style="margin-top:6mm;flex:1">
+      <div>
+        <h3>Spacing &amp; grid</h3>
+        <ul class="t">
+          <li>Scale in multiples of 8: <strong>4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128</strong>.</li>
+          <li><strong>Heading→body 16 · block→block 32 · section→section 64.</strong></li>
+          <li>12 columns, 24px gutter, 1200px content in a 1440px frame.</li>
+          <li><strong>Prefer 7/5 and 5/7 splits, not 6/6.</strong> Half-and-half is reserved for the
+              dark/light mode split, where the colour supplies the asymmetry.</li>
+          <li><strong>Radius is 0.</strong> Every card, chip, button, crop and accent block is square.
+              The only round things are the timeline dot and, where a UI needs one, a pill filter.</li>
+          <li>Strokes: 1px hairline · 2px outline · 3px accent rule. No shadows, no gradients.</li>
+        </ul>
+        <h3 style="margin-top:5mm">Data &amp; evidence</h3>
+        <ul class="t">
+          <li><strong>Every figure carries provenance</strong> — Measured, Modelled or Assumed. A
+              modelled number is never shown as measured. This rule overrides visual preference: if the
+              chip crowds the layout, change the layout.</li>
+          <li>Tables: <strong>no vertical rules, no zebra stripes, no fills.</strong> One 2px charcoal
+              rule under the header, hairlines between rows.</li>
+          <li>Numbers right-aligned and tabular; text left-aligned; never centre a column.</li>
+          <li><strong>Totals bold, unfilled, and they must reconcile to source.</strong></li>
+          <li>KPI rows: four tiles maximum. Deltas name the comparison ("vs June"), never a bare percentage.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Canvas sizes</h3>
+        <table class="g" style="margin-top:3mm">
+          <thead><tr><th>Surface</th><th>Pixels</th><th class="n">Margin</th></tr></thead>
+          <tbody>
+            <tr><td>Deck slide</td><td>1920 × 1080</td><td class="n">96</td></tr>
+            <tr><td>Instagram / Facebook square</td><td>1080 × 1080</td><td class="n">80</td></tr>
+            <tr><td>Instagram / LinkedIn portrait</td><td>1080 × 1350</td><td class="n">80</td></tr>
+            <tr><td>Story · Reel · WhatsApp Status</td><td>1080 × 1920</td><td class="n">80</td></tr>
+            <tr><td>LinkedIn image + link preview</td><td>1200 × 627</td><td class="n">64</td></tr>
+            <tr><td>LinkedIn personal banner</td><td>1584 × 396</td><td class="n">64</td></tr>
+            <tr><td>LinkedIn page cover</td><td>1128 × 191</td><td class="n">40</td></tr>
+            <tr><td>Email body</td><td>600 wide</td><td class="n">32</td></tr>
+            <tr><td>Website</td><td>1440 / 1200 content</td><td class="n">48</td></tr>
+          </tbody>
+        </table>
+        <div class="rule" style="margin-top:5mm">
+          <p style="margin:0;font-size:8pt"><strong>Safe zones.</strong> WhatsApp covers the top
+            ~260px and bottom ~320px of a Status with its own chrome; Instagram Stories cover ~250px
+            top and bottom. Background fills the full frame — only <em>content</em> respects the safe
+            area. A Reel cover is cropped to 1:1 in the profile grid.</p>
+        </div>
+        <div class="rule" style="margin-top:4mm;border-left-color:#FFC107">
+          <p style="margin:0;font-size:8pt"><strong>Email is the one place the system bends.</strong>
+            Gmail strips webfonts and both Gmail and Outlook drop embedded images — host the logo and
+            accept the Century Gothic fallback. Tables not flexbox, styles inline, 600px, one column.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="chip">08</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0</span><span class="tp-mark tp-mark--black" style="height:7mm"></span></div>
+</section>
+
+<!-- ============ 09 · CHECKLIST ============ -->
+<section class="pg dk">
+  <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.4);width:70mm;height:46mm;top:-12mm;right:30mm"></span>
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:7mm">08 · Before it ships</p>
+    <h1 class="caps" style="margin-top:4mm;font-size:26pt">Nine checks</h1>
+
+    <div class="g2" style="margin-top:8mm;flex:1;align-content:start">
+      <div>
+        <ol style="padding-left:5mm;margin:0;font-size:9.5pt;line-height:1.75">
+          <li>Two to three motifs — not one, not five.</li>
+          <li>Accent block top-left; signature diagonally opposite.</li>
+          <li>Case rule respected: CAPS on charcoal, sentence case on white.</li>
+          <li><strong style="color:#00BCD4">No divider line where a dark and light block meet.</strong></li>
+          <li>Charcoal labels on every cyan or amber fill.</li>
+        </ol>
+      </div>
+      <div>
+        <ol start="6" style="padding-left:5mm;margin:0;font-size:9.5pt;line-height:1.75">
+          <li>Square corners, no shadows, no gradients.</li>
+          <li>Logo clear space at 45% of its height, unbroken.</li>
+          <li><strong style="color:#00BCD4">Every figure tagged Measured, Modelled or Assumed.</strong></li>
+          <li><strong style="color:#00BCD4">Every total reconciles to source.</strong></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box" style="margin-top:4mm">
+      <p style="margin:0;font-size:10pt">The last two are not design rules. They are the reason the
+        design exists — TPCL sells evidence, and a modelled number presented as measured is the one
+        reputational mistake that cannot be walked back.</p>
+    </div>
+
+    <div style="height:6mm"></div>
+    <p style="font-size:8pt;color:rgba(255,255,255,.5);margin:0">
+      Full system, live templates and the prompt library:
+      <strong style="color:#fff">TPCL Design System v1.0</strong> ·
+      claude.ai Design project <strong style="color:#fff">"TPCL — Travis Paul Consulting"</strong></p>
+  </div>
+  <span class="chip" style="background:#00BCD4;color:#3A3A3A">09</span>
+  <div class="foot"><span>TPCL Brand Guidelines v1.0 · August 2026</span><span class="tp-mark tp-mark--white" style="height:7mm"></span></div>
+</section>
+
+</body></html>

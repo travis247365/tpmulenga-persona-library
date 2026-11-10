@@ -1,0 +1,177 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Logo &amp; lockups</title>
+<!--TPCL_CORE-->
+<style>
+  .frame { position:relative; height: 230px; border:1px solid var(--tp-rule); overflow:hidden; }
+  .frame .cap { position:absolute; top:12px; left:14px; font-size:11px; letter-spacing:.1em;
+                text-transform:uppercase; color:var(--tp-ink-muted); }
+  .tp-dark.frame .cap { color: rgba(255,255,255,.55); border-color: var(--tp-charcoal-soft); }
+  .clear { position:relative; display:inline-block; padding: 46px; background: var(--tp-surface); }
+  .clear .guide { position:absolute; inset:46px; outline:1px dashed #00BCD4; }
+  .clear .xh { position:absolute; background:rgba(0,188,212,.18); }
+  .dont { border:1px solid var(--tp-rule); padding:0; overflow:hidden; }
+  .dont .box { height:130px; display:flex; align-items:center; justify-content:center; }
+  .dont .lbl { padding:10px 14px; font-size:12.5px; border-top:1px solid var(--tp-rule);
+               display:flex; gap:8px; align-items:flex-start; line-height:1.45 }
+  .x { color:#B00020; font-weight:700; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Logo &amp; lockups</h1>
+  <p class="tp-lede">The mark is the handwritten <em>Travis Paul</em> script with
+     <strong>CONSULTING</strong> in tracked caps beneath it. Aspect ratio 1.93:1. Three cuts —
+     white, black, full colour. Consulting is the default on every client-facing artefact;
+     Holdings only appears on parent-entity material.</p>
+
+  <div class="tp-sec">
+    <h2>The three cuts</h2>
+    <div class="tp-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="frame tp-dark" style="background:#3A3A3A;display:flex;align-items:center;justify-content:center">
+        <span class="cap">White — on charcoal</span>
+        <img src="{{LOGO_WHITE}}" alt="Travis Paul Consulting" style="width:64%">
+      </div>
+      <div class="frame" style="display:flex;align-items:center;justify-content:center">
+        <span class="cap">Black — on white</span>
+        <img src="{{LOGO_BLACK}}" alt="Travis Paul Consulting" style="width:64%">
+      </div>
+      <div class="frame" style="display:flex;align-items:center;justify-content:center;background:var(--tp-surface)">
+        <span class="cap">Full colour</span>
+        <img src="{{LOGO_COLOUR}}" alt="Travis Paul Consulting" style="width:64%">
+      </div>
+    </div>
+    <p class="tp-note" style="margin-top:12px">Full colour is for light backgrounds with no competing
+      colour — covers, letterheads, the website footer. On any slide that already carries cyan or amber,
+      use black or white so the accent stays the only colour event.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>A fourth approved treatment — tint</h2>
+    <div style="display:flex;gap:36px;align-items:center;flex-wrap:wrap">
+      <div class="frame" style="height:150px;width:340px;display:flex;align-items:center;justify-content:center;flex:0 0 auto">
+        <img src="{{LOGO_BLACK}}" alt="" style="width:62%;opacity:.62">
+      </div>
+      <div style="max-width:48ch">
+        <p class="tp-note">The 2021 brand master approves <strong>four</strong> treatments, not three:
+          full colour, black, <strong>tint</strong>, and reversed white. The tint sets the script at
+          <span class="tp-code">#57585A</span> with the tracked caps at a lighter step —
+          for watermarks, document backgrounds, and partner walls where the mark must be present but
+          must not compete. <strong>Never use tint below 40% or the caps disappear.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>The logo's own colours vs the layout palette</h2>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+      <div style="background:#085F89;color:#fff;padding:14px 18px;min-width:170px">Logo deep blue
+        <div style="font-size:11px;letter-spacing:.08em;margin-top:6px;opacity:.85">#085F89</div></div>
+      <div style="background:#59D1E2;color:#3A3A3A;padding:14px 18px;min-width:170px">Logo caps cyan
+        <div style="font-size:11px;letter-spacing:.08em;margin-top:6px;opacity:.85">#59D1E2</div></div>
+      <div style="background:#57585A;color:#fff;padding:14px 18px;min-width:170px">Logo tint grey
+        <div style="font-size:11px;letter-spacing:.08em;margin-top:6px;opacity:.85">#57585A</div></div>
+      <div style="background:#00BCD4;color:#3A3A3A;padding:14px 18px;min-width:170px">System cyan
+        <div style="font-size:11px;letter-spacing:.08em;margin-top:6px;opacity:.85">#00BCD4</div></div>
+    </div>
+    <p class="tp-note" style="max-width:72ch"><strong>These are two different eras and they do not
+      match.</strong> The 2021 logo master is built on deep blue <span class="tp-code">#085F89</span>,
+      light cyan <span class="tp-code">#59D1E2</span> and pure black
+      <span class="tp-code">#000000</span>. The layout system derived from the business-profile deck
+      uses charcoal <span class="tp-code">#3A3A3A</span> and cyan
+      <span class="tp-code">#00BCD4</span>.
+      <br><br>
+      <strong>The ruling:</strong> the logo is a fixed asset and keeps its own colours — do not recolour
+      it to match the palette. The layout keeps charcoal and system cyan. But because
+      <span class="tp-code">#59D1E2</span> and <span class="tp-code">#00BCD4</span> are close without
+      being equal, <strong>never place the full-colour logo on the same surface as a cyan accent
+      block</strong> — the near-miss reads as a mistake. Use the black or white cut there instead.
+      That is why the deck templates use black-on-white and white-on-charcoal everywhere.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Placement</h2>
+    <div class="tp-grid" style="grid-template-columns:1fr 1fr">
+      <div class="frame tp-dark" style="background:#3A3A3A">
+        <span class="cap">Dark surface → bottom LEFT</span>
+        <span class="tp-accent tp-accent--dark" style="position:absolute;top:34px;left:34px"></span>
+        <img src="{{LOGO_WHITE}}" alt="" style="position:absolute;left:34px;bottom:28px;height:32px">
+        <span class="tp-chip" style="position:absolute;right:0;top:50%;transform:translateY(-50%)">04</span>
+      </div>
+      <div class="frame">
+        <span class="cap">Light surface → bottom RIGHT</span>
+        <span class="tp-accent" style="position:absolute;top:34px;left:34px"></span>
+        <img src="{{LOGO_BLACK}}" alt="" style="position:absolute;right:34px;bottom:28px;height:32px">
+        <span class="tp-chip" style="position:absolute;right:0;top:50%;transform:translateY(-50%)">05</span>
+      </div>
+    </div>
+    <p class="tp-note" style="margin-top:12px">The logo sits diagonally opposite the top-left accent
+      block. That diagonal — accent up-left, signature down-opposite, index chip on the right edge —
+      is the TPCL page frame.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Clear space &amp; minimum size</h2>
+    <div style="display:flex;gap:36px;align-items:flex-end;flex-wrap:wrap">
+      <div class="clear">
+        <img src="{{LOGO_BLACK}}" alt="" style="height:60px">
+        <span class="guide"></span>
+      </div>
+      <div style="max-width:44ch">
+        <p class="tp-note"><strong>Clear space = 45% of the logo height on all four sides</strong>
+          (equivalently 23.5% of its width — the padding is uniform, not proportional to the side).
+          Measured off the 2021 brand master <span class="tp-code">travis paul_logo_Clear Space.ai</span>:
+          logo bbox 232 × 121, padding 54–55px on every side. Nothing enters it — no text, no rule,
+          no accent block, no photo edge.</p>
+        <p class="tp-note" style="margin-top:12px">This is roughly <strong>double</strong> the clear
+          space most people leave by eye. At a 34px slide-footer logo that is 15px of protected space
+          all round; at 120px wide (62px tall) it is 28px.</p>
+        <p class="tp-note" style="margin-top:12px"><strong>Minimum sizes.</strong>
+          Screen / social: <strong>120px wide</strong>. Slide footer: <strong>34px tall</strong>.
+          Print: <strong>28mm wide</strong>. Below that the script closes up and the caps disappear —
+          use the initials-free charcoal wordmark instead, or drop the logo entirely.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Don't</h2>
+    <div class="tp-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="dont"><div class="box" style="background:#00BCD4"><img src="{{LOGO_WHITE}}" style="width:70%"></div>
+        <div class="lbl"><span class="x">✕</span> Place on cyan or amber. The accent is not a background.</div></div>
+      <div class="dont"><div class="box"><img src="{{LOGO_BLACK}}" style="width:70%;transform:scaleX(1.35)"></div>
+        <div class="lbl"><span class="x">✕</span> Stretch or condense. Ratio is locked at 1.93:1.</div></div>
+      <div class="dont"><div class="box" style="background:#8A8A8A"><img src="{{LOGO_BLACK}}" style="width:70%"></div>
+        <div class="lbl"><span class="x">✕</span> Use black on a mid-tone. Below ~4.5:1, switch to white.</div></div>
+      <div class="dont"><div class="box" style="background:linear-gradient(90deg,#3A3A3A,#B8C5D6)"><img src="{{LOGO_WHITE}}" style="width:70%"></div>
+        <div class="lbl"><span class="x">✕</span> Straddle two tones or sit on a busy photo. Add a solid pad.</div></div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Co-branding with a client</h2>
+    <div class="frame" style="height:150px;display:flex;align-items:center;justify-content:center;gap:34px">
+      <img src="{{LOGO_BLACK}}" alt="" style="height:38px">
+      <span style="width:1px;height:44px;background:var(--tp-rule)"></span>
+      <span style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--tp-ink-muted)">Client mark</span>
+    </div>
+    <p class="tp-note" style="margin-top:12px">Horizontal lockup, <strong>TPCL left, client right</strong>,
+      separated by a 1px rule at 44px tall. Optically match heights — do not match bounding boxes.
+      On proposals the client mark leads instead; TPCL never sits larger than the client's on the client's own document.</p>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Where the files live</h2>
+    <p class="tp-note">Durable copies (keep forever):
+      <span class="tp-code">~/.claude/projects/-Users-tpmulenga/memory/assets/tpcl_logos/</span> —
+      <span class="tp-code">tpc_{white,black,colour}.png</span> for Consulting,
+      <span class="tp-code">pthl_*</span> for Holdings.
+      Full library incl. .ai / .eps / .svg masters:
+      <span class="tp-code">iCloud Drive / TPCL PTHL LOGOS.zip</span>.
+      python-pptx embeds PNG/JPG only — rasterise vector masters before a deck build.</p>
+  </div>
+</div>
+</body></html>
