@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>TPCL Design System — Guide for claude.ai</title>
+<!--TPCL_CORE-->
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  body { background:#fff; }
+  .pg { width:210mm; height:297mm; position:relative; overflow:hidden;
+        page-break-after:always; break-after:page; background:#fff; }
+  .pg:last-child { page-break-after:auto; break-after:auto; }
+  .pad { position:absolute; inset:16mm 16mm 20mm; display:flex; flex-direction:column; }
+  .dk { background:#3A3A3A; color:#fff; }
+  .acc { width:18mm; height:6mm; background:#FFC107; display:block; flex:0 0 auto; }
+  .dk .acc { background:#00BCD4; }
+  .eyeb { font-size:8pt; font-weight:500; letter-spacing:.2em; text-transform:uppercase;
+          color:#6E6E6E; margin:0; }
+  .dk .eyeb { color:#00BCD4; }
+  h1.caps { font-size:30pt; line-height:1.0; font-weight:700; text-transform:uppercase;
+            letter-spacing:.01em; margin:0; }
+  h2.sent { font-size:19pt; line-height:1.12; font-weight:400; letter-spacing:-.015em; margin:0; }
+  h2.sent b { font-weight:700; }
+  h3 { font-size:11pt; font-weight:700; margin:0 0 2mm; }
+  h4 { font-size:8.5pt; font-weight:500; letter-spacing:.14em; text-transform:uppercase;
+       color:#6E6E6E; margin:6mm 0 2.5mm; padding-bottom:1.5mm; border-bottom:.5pt solid #E4E6EA; }
+  p, li, td, th { font-size:9pt; line-height:1.55; }
+  .lede { font-size:11pt; line-height:1.5; color:#6E6E6E; max-width:56ch; margin:0; }
+  .dk .lede { color:rgba(255,255,255,.7); }
+  .foot { position:absolute; left:16mm; right:16mm; bottom:8mm; display:flex;
+          justify-content:space-between; align-items:flex-end; font-size:7pt; color:#9A9A9A;
+          letter-spacing:.05em; }
+  .dk .foot { color:rgba(255,255,255,.42); }
+  ol.steps { counter-reset:s; list-style:none; padding:0; margin:0; }
+  ol.steps > li { counter-increment:s; position:relative; padding-left:12mm; margin-bottom:3.5mm; }
+  ol.steps > li::before { content:counter(s); position:absolute; left:0; top:-1mm;
+    width:8mm; height:8mm; border:1.5pt solid #00BCD4; display:flex; align-items:center;
+    justify-content:center; font-weight:700; font-size:9pt; }
+  .prompt { background:#F5F6F8; border-left:2.5pt solid #00BCD4; padding:4mm 5mm; margin:0 0 3.5mm;
+            font-size:8.5pt; line-height:1.55; }
+  .prompt .lbl { display:block; font-size:7pt; font-weight:500; letter-spacing:.14em;
+                 text-transform:uppercase; color:#6E6E6E; margin-bottom:2mm; }
+  table.g { width:100%; border-collapse:collapse; }
+  table.g th { text-align:left; font-weight:500; font-size:7pt; letter-spacing:.1em;
+    text-transform:uppercase; color:#6E6E6E; padding:2mm; border-bottom:1.5pt solid #3A3A3A; }
+  table.g td { padding:1.5mm 2mm; border-bottom:.5pt solid #E4E6EA; font-size:7.8pt; vertical-align:top; }
+  ul.t { padding-left:4.5mm; margin:0; } ul.t li { margin-bottom:1.8mm; }
+  .rule { border-left:2.5pt solid #00BCD4; padding-left:5mm; }
+  .amb { border-left-color:#FFC107; }
+  .callout { border:1.5pt solid #3A3A3A; padding:5mm 6mm; }
+</style>
+</head>
+<body>
+
+<!-- ===== PAGE 1 · COVER ===== -->
+<section class="pg dk">
+  <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.45);width:62mm;height:40mm;top:-10mm;right:26mm"></span>
+  <span style="position:absolute;border:1.5pt solid rgba(0,188,212,.28);width:26mm;height:26mm;bottom:-8mm;right:12mm"></span>
+  <div class="pad">
+    <div style="flex:1"></div>
+    <p class="eyeb">Travis Paul Consulting Ltd</p>
+    <h1 class="caps" style="margin-top:5mm;font-size:34pt">Design<br>system<br>guide</h1>
+    <p class="lede" style="margin-top:6mm">How to produce on-brand TPCL work in claude.ai without
+      writing a line of code — and the brand rules that decide whether it is right.</p>
+    <div style="flex:1"></div>
+    <div class="rule" style="border-left-color:#00BCD4">
+      <p style="margin:0;font-size:9pt;color:rgba(255,255,255,.82)">Read alongside
+        <strong style="color:#fff">TPCL_Brand_Guidelines_v1.0.pdf</strong>, in this pack.
+        This guide tells you <em>how to make it</em>; the guidelines tell you <em>what is correct</em>.</p>
+    </div>
+    <div style="height:8mm"></div>
+    <span class="tp-mark tp-mark--white" style="height:11mm"></span>
+    <p style="font-size:7.5pt;color:rgba(255,255,255,.45);margin-top:3mm;letter-spacing:.06em">
+      Version 1.0 · August 2026</p>
+  </div>
+</section>
+
+<!-- ===== PAGE 2 · WHAT'S IN THE PACK + SETUP ===== -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:6mm">01 · Start here</p>
+    <h2 class="sent" style="margin-top:3mm">Four files, and <b>one dropdown.</b></h2>
+
+    <h4>What is in this pack</h4>
+    <table class="g">
+      <thead><tr><th>File</th><th>What it is</th><th>When you need it</th></tr></thead>
+      <tbody>
+        <tr><td><strong>TPCL_Brand_Guidelines_v1.0.pdf</strong></td>
+            <td>The identity: logo, colour, type, motifs, layout, and the nine pre-flight checks.</td>
+            <td>Before approving anything. It is the authority on what is correct.</td></tr>
+        <tr><td><strong>TPCL_Design_System_Guide.pdf</strong></td>
+            <td>This document — setup, the prompt library, and how to brief Claude.</td>
+            <td>Every time you sit down to make something.</td></tr>
+        <tr><td><strong>tokens.css</strong></td>
+            <td>The machine-readable palette, type scale, spacing and components.</td>
+            <td>Hand to a developer or an agency. Nothing to do by hand.</td></tr>
+        <tr><td><strong>logos/</strong></td>
+            <td>Travis Paul Consulting marks — white, black, full colour.</td>
+            <td>Anywhere outside Claude. Inside Claude the logo is already embedded.</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Setting up in claude.ai — once</h4>
+    <ol class="steps" style="margin-top:3mm">
+      <li><strong>Go to claude.ai/design.</strong></li>
+      <li><strong>Open the "Design system" dropdown</strong> in the prompt bar. It reads <em>None</em> by default.</li>
+      <li><strong>Choose "TPCL — Travis Paul Consulting".</strong> Claude now reads the brand rules
+        before it draws anything.</li>
+      <li><strong>Leave "Template" on None.</strong> That picker holds Anthropic's own starter layouts.
+        The TPCL templates live inside the design system — you point at them by name in your prompt
+        ("use the WhatsApp Status template").</li>
+    </ol>
+
+    <div class="rule" style="margin-top:4mm">
+      <p style="margin:0"><strong>Everything is self-contained.</strong> The Poppins typeface and the
+        Travis Paul signature are embedded in the system, so your output is on-brand whether or not
+        the font is installed on your machine — or on the machine of whoever you send it to.</p>
+    </div>
+
+    <h4>What is already built for you</h4>
+    <table class="g">
+      <thead><tr><th>Group</th><th>Templates, at real export dimensions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Social</strong></td><td>Square 1080×1080 · Portrait 1080×1350 · Story/Reel 1080×1920 · <strong>WhatsApp Status 1080×1920</strong></td></tr>
+        <tr><td><strong>LinkedIn</strong></td><td>Single image 1200×627 · Carousel 1080×1350 · Personal banner 1584×396 + page cover 1128×191</td></tr>
+        <tr><td><strong>Email</strong></td><td>Newsletter, 600px, table-based and Outlook-safe</td></tr>
+        <tr><td><strong>Website</strong></td><td>Hero · Sections (services, statement, proof, CTA, footer)</td></tr>
+        <tr><td><strong>Deck</strong></td><td>Four 16:9 slide masters — cover, split, content, statement</td></tr>
+        <tr><td><strong>Reference</strong></td><td>Colour · Typography · Logo · Motifs · Layout · Buttons · Cards · Stat tiles · Timeline · Tables</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot"><span>TPCL Design System Guide v1.0 · page 2</span><span class="tp-mark tp-mark--black" style="height:6mm"></span></div>
+</section>
+
+<!-- ===== PAGE 3 · PROMPT LIBRARY ===== -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:6mm">02 · Prompt library</p>
+    <h2 class="sent" style="margin-top:3mm">Paste these in. <b>Replace the bold parts.</b></h2>
+
+    <h4>Social</h4>
+    <div class="prompt"><span class="lbl">Instagram / Facebook square</span>
+      Build an <strong>Instagram square, 1080×1080</strong> post using the TPCL dark statement layout.
+      Headline: <strong>"Three in ten accounts carry the arrears"</strong>. Hero figure:
+      <strong>31.4%, PAR 30+, July 2026</strong>. Source line: <strong>measured, portfolio extract</strong>.
+      Keep the headline to seven words or fewer.</div>
+
+    <div class="prompt"><span class="lbl">Portrait — the default for anything with data</span>
+      Build an <strong>Instagram/LinkedIn portrait, 1080×1350</strong> post in TPCL light mode on
+      <strong>[topic]</strong>. Three KPI tiles: <strong>[figure, figure, figure]</strong>. Include the
+      single-stroke cyan sparkline. Bold only the phrase that carries the argument.</div>
+
+    <div class="prompt"><span class="lbl">WhatsApp Status</span>
+      Build a <strong>WhatsApp Status, 1080×1920</strong>, TPCL light mode. One idea:
+      <strong>"[statement]"</strong>. Hero figure <strong>[figure]</strong>. Amber CTA reading
+      <strong>"[call to action]"</strong>. Respect the WhatsApp safe zones — top 260px and bottom 320px
+      stay clear — and delete the dashed guides before you show me the export.</div>
+
+    <h4>LinkedIn</h4>
+    <div class="prompt"><span class="lbl">Single image post</span>
+      Build a <strong>LinkedIn single image post, 1200×627</strong> using the TPCL split layout —
+      charcoal left with the claim, blue-gray right with the proof. Claim: <strong>"[claim]"</strong>.
+      Proof: <strong>[measured figures]</strong>. No divider line between the blocks.</div>
+
+    <div class="prompt"><span class="lbl">Carousel — delivered as a PDF</span>
+      Build a <strong>9-page LinkedIn carousel, 1080×1350</strong>, on <strong>[topic]</strong>.
+      Dark cover → light content pages → dark CTA. One idea per page, index chip on every page, no body
+      copy on the cover, no data on the CTA. Then give me the pages ready to combine into a PDF.</div>
+
+  </div>
+  <div class="foot"><span>TPCL Design System Guide v1.0 · page 3</span><span class="tp-mark tp-mark--black" style="height:6mm"></span></div>
+</section>
+
+<!-- ===== PAGE 4 · PROMPT LIBRARY (cont.) ===== -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:6mm">02 · Prompt library, continued</p>
+    <h2 class="sent" style="margin-top:3mm">Email, web, decks and <b>client-branded work.</b></h2>
+
+    <h4>Email, website, deck</h4>
+    <div class="prompt"><span class="lbl">Newsletter</span>
+      Build a <strong>TPCL email newsletter, 600px</strong>, table-based and Outlook-safe. Headline:
+      <strong>"[headline]"</strong>. Include the blue-gray three-up KPI strip, a cyan pull-quote and one
+      CTA. Remind me to swap the logo for a hosted https URL before I send.</div>
+
+    <div class="prompt"><span class="lbl">Slides</span>
+      Build <strong>TPCL slides at 1920×1080</strong> for <strong>[topic]</strong>, using the four
+      masters: dark cover, split dark/blue-gray, white content with a table and a "so what" card, and a
+      dark statement page for the commercial ask. Caps on charcoal, sentence case on white.</div>
+
+    <h4>Client-branded work</h4>
+    <div class="prompt"><span class="lbl">Engagement overlay</span>
+      Build <strong>[surface]</strong> for the <strong>[client]</strong> engagement. Use the TPCL system
+      with the client overlay: tint the client variable to <strong>[hex]</strong> and use the client
+      logo in the co-brand lockup — TPCL left, client right. Keep the charcoal/white frame, Poppins and
+      the motifs TPCL. Check the client colour's contrast against charcoal and white before using it as
+      text.</div>
+
+    <h4>Useful follow-ups</h4>
+    <p style="margin:0">"Show me the light-mode version." · "Strip the safe-zone guides and give me the
+      export-ready frame." · "Too many motifs — keep the accent block and the signature, drop the rest."
+      · "Tag every figure as measured, modelled or assumed." · "That total doesn't reconcile — recheck it."</p>
+  </div>
+  <div class="foot"><span>TPCL Design System Guide v1.0 · page 4</span><span class="tp-mark tp-mark--black" style="height:6mm"></span></div>
+</section>
+
+<!-- ===== PAGE 5 · RULES + LIMITS ===== -->
+<section class="pg">
+  <div class="pad">
+    <span class="acc"></span>
+    <p class="eyeb" style="margin-top:6mm">03 · Judging the output</p>
+    <h2 class="sent" style="margin-top:3mm">Claude will get it close. <b>You decide if it is right.</b></h2>
+
+    <p style="margin-top:5mm">The full rules are in <strong>TPCL_Brand_Guidelines_v1.0.pdf</strong>.
+      These are the ones that decide most reviews:</p>
+
+    <h4>The nine pre-flight checks</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8mm">
+      <ol style="padding-left:5mm;margin:0;line-height:1.7">
+        <li>Two to three motifs — not one, not five.</li>
+        <li>Accent block top-left; signature diagonally opposite.</li>
+        <li>CAPS on charcoal, sentence case on white.</li>
+        <li><strong>No divider line where dark and light meet.</strong></li>
+        <li>Charcoal labels on every cyan or amber fill.</li>
+      </ol>
+      <ol start="6" style="padding-left:5mm;margin:0;line-height:1.7">
+        <li>Square corners, no shadows, no gradients.</li>
+        <li>Logo clear space at 45% of its height, unbroken.</li>
+        <li><strong>Every figure tagged Measured / Modelled / Assumed.</strong></li>
+        <li><strong>Every total reconciles to source.</strong></li>
+      </ol>
+    </div>
+
+    <div class="callout" style="margin-top:6mm">
+      <p style="margin:0">The last two are not design rules. They are the reason the design exists —
+        TPCL sells evidence, and <strong>a modelled number presented as measured is the one
+        reputational mistake that cannot be walked back.</strong> If a provenance tag crowds the
+        layout, change the layout.</p>
+    </div>
+
+    <h4>Four things the system will not do for you</h4>
+    <ul class="t">
+      <li><strong>Email cannot carry the embedded font or the embedded logo.</strong> Gmail strips
+        webfonts; Gmail and Outlook both drop embedded images. Host the logo at an https URL and accept
+        the Century Gothic fallback. Do not work around it with pictures of text.</li>
+      <li><strong>Safe-zone bands are drawn guides, not enforcement.</strong> They are marked
+        "no-export" and must be deleted before you export. Nothing stops you exporting with them on.</li>
+      <li><strong>The logo is raster at 760px wide.</strong> Fine to about 700px on screen. For large
+        print, go back to the vector masters in the TPCL logo library.</li>
+      <li><strong>Poppins is bundled as a Latin subset.</strong> Another script or language needs the
+        font re-cut.</li>
+    </ul>
+
+    <h4>If you need something the templates do not cover</h4>
+    <p style="margin:0">Describe the surface and its exact pixel dimensions, and say which existing
+      template is closest. Claude will extend the system rather than invent a new one — for example:
+      <em>"Build a 1080×1080 event announcement. Closest template is the social square, but I need a
+      date block and a venue line under the headline."</em></p>
+
+    <div class="rule amb" style="margin-top:7mm">
+      <p style="margin:0"><strong>One thing to keep an eye on.</strong> The logo carries its own
+        colours — deep blue and a light cyan — which are close to, but not the same as, the system's
+        cyan accent. Never put the <em>full-colour</em> logo on a surface that also has a cyan accent
+        block; use the black or white version there. Page 4 of the guidelines explains why.</p>
+    </div>
+
+    <div style="flex:1"></div>
+    <div style="border-top:.5pt solid #E4E6EA;padding-top:4mm;display:flex;justify-content:space-between;align-items:flex-end">
+      <p style="margin:0;font-size:8pt;color:#6E6E6E">Travis Paul Consulting Ltd · Lusaka, Zambia<br>
+        Design System v1.0 · August 2026</p>
+      <span class="tp-mark tp-mark--colour" style="height:11mm"></span>
+    </div>
+  </div>
+  <div class="foot"><span>TPCL Design System Guide v1.0 · page 5</span><span></span></div>
+</section>
+
+</body></html>

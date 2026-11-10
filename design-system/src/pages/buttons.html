@@ -1,0 +1,73 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Buttons</title>
+<!--TPCL_CORE-->
+<style>
+  .bay { padding: 30px; display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .bay.light { border:1px solid var(--tp-rule); }
+  .lab { font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+         color:var(--tp-ink-muted); margin: 0 0 10px; }
+  .tp-dark .lab { color: rgba(255,255,255,.55); }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Buttons</h1>
+  <p class="tp-lede">Four variants, two sizes, square corners, 2px borders. One primary action per
+     surface — the rest are ghost.</p>
+
+  <div class="tp-sec">
+    <p class="lab">On white</p>
+    <div class="bay light">
+      <a class="tp-btn tp-btn--primary">Book a diagnostic</a>
+      <a class="tp-btn tp-btn--secondary">Download the pack</a>
+      <a class="tp-btn tp-btn--solid">Get in touch</a>
+      <a class="tp-btn tp-btn--ghost">Read the case note</a>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">On charcoal</p>
+    <div class="bay tp-dark" style="background:#3A3A3A">
+      <a class="tp-btn tp-btn--primary">Book a diagnostic</a>
+      <a class="tp-btn tp-btn--secondary">Download the pack</a>
+      <a class="tp-btn tp-btn--ghost">Read the case note</a>
+    </div>
+    <p class="tp-note" style="margin-top:10px">The solid-charcoal variant has no job on a charcoal
+      surface — use ghost there.</p>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Small · in cards, tables, email footers</p>
+    <div class="bay light">
+      <a class="tp-btn tp-btn--primary tp-btn--sm">View</a>
+      <a class="tp-btn tp-btn--solid tp-btn--sm">Reply</a>
+      <a class="tp-btn tp-btn--ghost tp-btn--sm">Dismiss</a>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">With a mark</p>
+    <div class="bay light">
+      <a class="tp-btn tp-btn--solid">Continue <span style="font-size:17px;line-height:0">→</span></a>
+      <a class="tp-btn tp-btn--ghost"><span class="tp-accent tp-accent--sm" style="width:14px;height:14px"></span> Filter</a>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Rules</h2>
+    <ul class="tp-note" style="padding-left:18px;max-width:70ch">
+      <li><strong>Cyan and amber buttons take charcoal labels, never white.</strong> White on cyan is
+        2.30:1 and fails WCAG; charcoal on cyan is 4.95:1 and passes.</li>
+      <li><strong>Padding 13/26 regular, 9/18 small.</strong> Height comes from the padding, not a fixed value.</li>
+      <li><strong>Label is sentence case, Medium 500, +.02em.</strong> Never all-caps, never a full stop.</li>
+      <li><strong>Verb + object.</strong> “Book a diagnostic”, not “Click here” or “Learn more”.</li>
+      <li>Hover: shift the fill one step darker, or on ghost, fill with the border colour. No lift, no shadow, no scale.</li>
+      <li>Focus: 2px charcoal outline offset 3px on light; 2px cyan on dark. Never remove it.</li>
+    </ul>
+  </div>
+</div>
+</body></html>

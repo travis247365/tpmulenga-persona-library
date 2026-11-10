@@ -1,0 +1,69 @@
+<!-- @dsCard group="Templates · Social" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Story / Reel cover 1080×1920</title>
+<!--TPCL_CORE-->
+<style>
+  body { background:#EDEEF0; }
+  .canvas { width:1080px; height:1920px; position:relative; overflow:hidden;
+            background:#3A3A3A; color:#fff; }
+  .pad { position:absolute; left:80px; right:80px; top:280px; bottom:280px;
+         display:flex; flex-direction:column; }
+  .eyebrow { font-size:22px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:#00BCD4; margin:0; }
+  .head { font-size:94px; line-height:.98; font-weight:700; text-transform:uppercase; letter-spacing:.01em; margin:0; }
+  .sub { font-size:30px; line-height:1.55; color:rgba(255,255,255,.72); margin:0; max-width:24ch; }
+  .step { width:64px;height:64px;border:3px solid #00BCD4;display:inline-flex;
+          align-items:center;justify-content:center;font-weight:700;font-size:26px; }
+  .li { display:flex; gap:26px; align-items:flex-start; margin-bottom:34px; }
+  .li p { margin:0; font-size:30px; line-height:1.4; }
+  /* safe-zone overlay — hidden on export */
+  .zone { position:absolute; left:0; right:0; background:rgba(0,188,212,.10);
+          border:2px dashed rgba(0,188,212,.6); }
+  .zone span { position:absolute; left:24px; top:16px; font-size:22px; letter-spacing:.12em;
+               text-transform:uppercase; color:#00BCD4; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="pad">
+    <span style="width:120px;height:40px;background:#00BCD4;display:block"></span>
+
+    <p class="eyebrow" style="margin-top:60px">Three lenses</p>
+
+    <!-- EDIT: 3–6 words, caps -->
+    <h1 class="head" style="margin-top:30px">Build.<br>Model.<br>Defend.</h1>
+
+    <p class="sub" style="margin-top:40px">The three-day arc every business case runs through before it reaches a board.</p>
+
+    <div style="flex:1"></div>
+
+    <div>
+      <div class="li"><span class="step">1</span><p>Syndicates draft the case in the war room.</p></div>
+      <div class="li"><span class="step">2</span><p>Numbers stress-tested against three lenses.</p></div>
+      <div class="li" style="margin-bottom:0"><span class="step">3</span><p>Live panel challenge, then certification.</p></div>
+    </div>
+
+    <div style="height:2px;background:rgba(255,255,255,.16);margin:56px 0 34px"></div>
+    <img src="{{LOGO_WHITE}}" alt="Travis Paul Consulting" style="height:66px;width:auto">
+  </div>
+
+  <!-- Safe zones · remove before export -->
+  <div class="tp-noexport zone" style="top:0;height:250px"><span>Top 250px — profile, progress bar</span></div>
+  <div class="tp-noexport zone" style="bottom:0;height:250px"><span>Bottom 250px — reply bar, CTA sticker</span></div>
+</div>
+
+<div class="tp-noexport" style="width:1080px;padding:28px 4px 40px;font-family:var(--tp-font);color:#3A3A3A">
+  <p style="font-size:15px;font-weight:500;margin:0 0 8px">1080 × 1920 (9:16) · Instagram / Facebook Story · Reel cover</p>
+  <p style="font-size:13.5px;line-height:1.6;color:#6E6E6E;margin:0;max-width:78ch">
+    <strong style="color:#3A3A3A">The dashed bands are guides, not artwork — delete them before export.</strong>
+    Instagram overlays your profile row and progress bar in the top ~250px and the reply bar in the
+    bottom ~250px, so all type and the signature live inside the middle 1420px. Background colour
+    still fills the full 1920 — only <em>content</em> respects the safe area.
+    Headline 94px caps, three to six words. Step boxes carry the sequence; if the story is a single
+    statement, drop them and let the headline take the whole frame. A Reel cover uses this same file
+    with the numbered list removed, because Instagram crops the cover to 1:1 in the profile grid —
+    keep anything that must survive that crop inside the centre square.
+  </p>
+</div>
+</body></html>

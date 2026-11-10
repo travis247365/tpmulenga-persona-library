@@ -1,0 +1,108 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Timeline &amp; steps</title>
+<!--TPCL_CORE-->
+<style>
+  .lab { font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+         color:var(--tp-ink-muted); margin: 0 0 10px; }
+  .tp-dark .lab { color: rgba(255,255,255,.55); }
+  .htl { display:grid; grid-template-columns:repeat(4,1fr); position:relative; padding-top:34px; }
+  .htl::before { content:""; position:absolute; top:22px; left:6%; right:6%; height:2px; background:var(--tp-cyan); }
+  .htl > div { position:relative; padding-right:24px; }
+  .htl > div::before { content:""; position:absolute; top:-18px; left:0; width:12px; height:12px;
+    border-radius:50%; background:var(--tp-cyan); box-shadow:0 0 0 4px #3A3A3A; }
+  .steprow { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .phase { font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--tp-cyan); font-weight:500; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Timeline &amp; steps</h1>
+  <p class="tp-lede">Anything sequential — phases, methodology, a roadmap, a three-day arc — uses the
+     cyan timeline. Weights never change: 2px rule, 12px dot, 4px halo, 40px step box.</p>
+
+  <div class="tp-sec">
+    <p class="lab">Vertical — the default, on charcoal</p>
+    <div class="tp-dark" style="background:#3A3A3A;padding:36px 40px">
+      <ul class="tp-timeline">
+        <li>
+          <p class="phase">Weeks 1–2</p>
+          <h3 class="tp-h3" style="margin:6px 0 6px">Diagnose</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66);max-width:56ch">Reconcile the book against
+            source totals. Name what could not be recovered. No recommendation is written before this closes.</p>
+        </li>
+        <li>
+          <p class="phase">Weeks 3–5</p>
+          <h3 class="tp-h3" style="margin:6px 0 6px">Model</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66);max-width:56ch">Build the country instance
+            of the group template. Assumptions sit on the page, not in an appendix.</p>
+        </li>
+        <li>
+          <p class="phase">Weeks 6–9</p>
+          <h3 class="tp-h3" style="margin:6px 0 6px">Embed</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66);max-width:56ch">Hand over the monthly
+            review the client's own team runs without us. Capability, not dependency.</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Vertical on white — rule and dot stay cyan, halo turns white</p>
+    <div style="border:1px solid var(--tp-rule);padding:32px 36px">
+      <ul class="tp-timeline">
+        <li><h3 class="tp-h3">Intake</h3><p class="tp-note">Six clusters, one brief, no slides built yet.</p></li>
+        <li><h3 class="tp-h3">Design brief</h3><p class="tp-note">Surface the system. Wait for sign-off.</p></li>
+        <li><h3 class="tp-h3">Build</h3><p class="tp-note">Two reference pages first, then the full set.</p></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Horizontal — for 16:9 slides and wide web sections</p>
+    <div class="tp-dark" style="background:#3A3A3A;padding:36px 40px 30px">
+      <div class="htl">
+        <div><p class="phase">Q3 2026</p><h3 class="tp-h3" style="margin:6px 0 4px">Scope</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.62)">Mandate and data boundary agreed.</p></div>
+        <div><p class="phase">Q4 2026</p><h3 class="tp-h3" style="margin:6px 0 4px">Build</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.62)">Lake, ETL and scoring engine live.</p></div>
+        <div><p class="phase">Q1 2027</p><h3 class="tp-h3" style="margin:6px 0 4px">Prove</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.62)">Test-vs-control on two segments.</p></div>
+        <div><p class="phase">Q2 2027</p><h3 class="tp-h3" style="margin:6px 0 4px">Hand over</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.62)">Client team owns the monthly cycle.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Step boxes — where a timeline would be too heavy</p>
+    <div class="tp-dark" style="background:#3A3A3A;padding:34px 40px">
+      <div class="steprow">
+        <div><span class="tp-step">1</span>
+          <h3 class="tp-h3" style="margin:16px 0 6px">Build</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66)">Syndicates draft the case in the war room.</p></div>
+        <div><span class="tp-step">2</span>
+          <h3 class="tp-h3" style="margin:16px 0 6px">Model</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66)">Numbers stress-tested against three lenses.</p></div>
+        <div><span class="tp-step">3</span>
+          <h3 class="tp-h3" style="margin:16px 0 6px">Defend</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66)">Live panel challenge, then certification.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Rules</h2>
+    <ul class="tp-note" style="padding-left:18px;max-width:70ch">
+      <li><strong>Three to five items.</strong> Six or more is a table, not a timeline.</li>
+      <li><strong>Every item carries a time label</strong> in cyan Medium uppercase — weeks, quarters or days. A timeline without dates is just a list.</li>
+      <li><strong>Dot halo matches the background</strong>, so the dot punches through the rule. On white it is a white halo; on charcoal, charcoal.</li>
+      <li><strong>Never combine the timeline with outline rectangles</strong> on the same page — both are cyan stroke work.</li>
+      <li>Steps are square; the timeline dot is the only circle in the system.</li>
+    </ul>
+  </div>
+</div>
+</body></html>
