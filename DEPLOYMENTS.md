@@ -69,6 +69,20 @@ Access policy.
    apex rather than the `jobs.` subdomain — which would mean a redeploy with
    that value.
 
+## 2026-11-10 · root sent to /app/, fourth deploy
+
+Branch `claude/epic-thompson-hgbsmp` at `5fc824c` (origin is 4 commits ahead of this Mac, not pulled). Auth: browser login (wrangler@3; `whoami` warns of missing scopes, Pages upload still allowed).
+
+- **Why:** the site root still served the scaffold's "Example Page" (`client/src/pages/Home.tsx`, untouched since bootstrap), so
+  the Job Search Agentic AI Engine at `/app/` looked as if it did not open. The root also fired a broken analytics call
+  (`%VITE_ANALYTICS_ENDPOINT%`, HTTP 400).
+- **Change:** `client/public/_redirects` with one rule, `/  /app/  302`. Pages applies `_redirects` before static assets.
+- Pages: 0 files changed, 434 already uploaded, `_redirects` uploaded. Alias https://a3945d19.job-search-agentic-ai.pages.dev
+- **Probe:** `GET /` → 302 to `https://job-search-agentic-ai.pages.dev/app/`; `GET /app/` → 200; `/dashboard/` and `/personas/`
+  still 200. The `dashboard.` alias host answers "Deployment Not Found" (unchanged). Worker `jobsearch-ingest` answers 404 on `/`
+  and `/health` (it only serves `/signup`); not probed further.
+- Not included: the pre-existing `package.json` change (`onlyBuiltDependencies`) and the staged `design-system/` files.
+
 ---
 
 ## 2026-09-27 · ingest domain set, third deploy
