@@ -1,0 +1,23 @@
+# ntfy configuration for career-agent notifications.
+#
+# Copy to ntfy.conf (gitignored) and edit. notify.sh reads this when NTFY_URL
+# is not already set in the environment.
+#
+# THE TOPIC IS THE PASSWORD. On ntfy.sh there are no accounts and no access
+# control: anyone who subscribes to the same topic string receives every
+# notification sent to it. These notifications carry recruiter names, role
+# titles and the fact that a search is underway.
+#
+# Option A - as requested. Memorable, and guessable by anyone who tries the
+# words. Use only if you accept that the contents are effectively public.
+#NTFY_URL="https://ntfy.sh/SuperbJobAGI"
+#
+# Option B - recommended. Same name, plus a random secret. You paste it into
+# the iOS app once and never type it again, so the suffix costs you nothing
+# and makes the topic unguessable.
+NTFY_URL="https://ntfy.sh/SuperbJobAGI-780e44267231bd68b9f8dc5a"
+#
+# Option C - a self-hosted or reserved ntfy server with real access control.
+# Set the token too; notify.sh sends it as a bearer token.
+#NTFY_URL="https://ntfy.example.com/SuperbJobAGI"
+#NTFY_TOKEN="tk_..."

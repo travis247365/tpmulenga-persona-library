@@ -1,0 +1,960 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<!-- The tab/bookmark icon. Without it the browser asks for /favicon.ico at the
+     site root, 404s, and falls back to a generic globe. -->
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<meta name="theme-color" content="#3A3A3A">
+<!-- iOS ignores the manifest's icons for the home screen and reads this one. -->
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- Kept short on purpose: iOS truncates a home-screen label past ~12 characters. -->
+<meta name="apple-mobile-web-app-title" content="Job Search AI">
+<title>TP Consulting.Co Job Search Agentic AI Engine</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;
+       -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:900px;margin:0 auto;
+        padding-inline:calc(20px + env(safe-area-inset-left)) calc(20px + env(safe-area-inset-right));
+        padding-block:env(safe-area-inset-top) calc(72px + env(safe-area-inset-bottom));}
+  .install{display:none;margin-top:14px;padding:12px 14px;background:var(--sunken);
+           border-left:var(--tp-rule-weight) solid var(--accent);font-size:.86rem;}
+  .install.on{display:block;}
+  header{padding-block:48px 28px;border-bottom:2px solid var(--ink);}
+  .eyebrow{font-family:var(--label);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;
+           color:var(--accent-ink);margin:0 0 14px;}
+  h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,5.5vw,3.1rem);
+     line-height:1.05;letter-spacing:-.022em;margin:0;text-wrap:balance;}
+  .lede{font-size:1.04rem;color:var(--slate);max-width:60ch;margin:18px 0 0;}
+
+  .privacy{display:flex;gap:14px;align-items:flex-start;margin-top:26px;padding:16px 18px;
+           background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:0 var(--r-sm) var(--r-sm) 0;}
+  .privacy .k{font-family:var(--label);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+              color:var(--accent-ink);white-space:nowrap;padding-top:3px;}
+  .privacy p{margin:0;font-size:.92rem;max-width:72ch;}
+
+  /* The label is nowrap, so on a phone it eats half the row and squeezes the
+     text into a ~20-character column. Stack it instead. */
+  @media (max-width:560px){
+    .privacy{display:block;}
+    .privacy .k{display:block;padding:0 0 8px;}
+  }
+
+  .step{margin-top:34px;background:var(--raised);border:1px solid var(--rule);
+        border-radius:var(--r-md);padding:22px;}
+  .step h2{font-family:var(--display);font-weight:500;font-size:1.12rem;margin:0 0 4px;
+           display:flex;align-items:baseline;gap:10px;}
+  .num{font-family:var(--label);font-size:.76rem;color:var(--accent-ink);}
+  .hint{font-size:.89rem;color:var(--slate);margin:0 0 14px;max-width:70ch;}
+
+  /* No link rule existed, so every link rendered browser-default blue: off-brand
+     in light mode and barely legible on charcoal in dark. --accent-ink is the
+     text-safe side of the palette - charcoal on white, cyan on charcoal - and
+     the underline, not the colour, is what marks it as a link. */
+  a{color:var(--accent-ink);text-underline-offset:.18em;text-decoration-thickness:1px;}
+  a:hover{text-decoration-thickness:2px;}
+
+  /* The note is closed by default: someone who already has a key should not
+     have to scroll past six steps to reach the input. */
+  .howto{margin:0 0 14px;background:var(--sunken);border:1px solid var(--rule);
+         border-radius:var(--r-sm);}
+  .howto > summary{font-family:var(--label);font-size:.72rem;letter-spacing:.06em;
+         text-transform:uppercase;padding:11px 14px;cursor:pointer;color:var(--ink);}
+  .howto > summary::marker{color:var(--accent-ink);}
+  .howto ol{margin:0;padding:0 18px 14px 34px;font-size:.89rem;color:var(--slate);
+            max-width:66ch;}
+  .howto li{margin:0 0 8px;}
+  .howto li:last-child{margin-bottom:0;}
+  .howto .warn{margin:2px 18px 14px;padding:10px 12px;background:var(--raised);
+               border-left:var(--tp-rule-weight) solid var(--accent);
+               font-size:.86rem;color:var(--ink);max-width:66ch;}
+  label{display:block;font-family:var(--label);font-size:.68rem;letter-spacing:.08em;
+        text-transform:uppercase;color:var(--slate);margin:14px 0 6px;}
+  textarea,input[type=password],input[type=text]{
+    width:100%;box-sizing:border-box;background:var(--sunken);color:var(--ink);
+    border:1px solid var(--rule);border-radius:var(--r-sm);padding:11px 13px;
+    font-family:var(--mono);font-size:.82rem;line-height:1.5;}
+  textarea{min-height:150px;resize:vertical;}
+  input:focus-visible,textarea:focus-visible,button:focus-visible{
+    outline:2px solid var(--accent);outline-offset:2px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;}
+  button{font-family:var(--label);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;
+         padding:10px 16px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--ink);
+         background:var(--ink);color:var(--paper);}
+  button.ghost{background:transparent;color:var(--ink);}
+  input[type=file]{font-family:var(--label);font-size:.72rem;color:var(--slate);
+                   max-width:100%;}
+  input[type=file]::file-selector-button{font-family:var(--label);font-size:.74rem;
+    letter-spacing:.05em;text-transform:uppercase;padding:9px 14px;margin-right:10px;
+    border:1px solid var(--ink);border-radius:var(--r-sm);cursor:pointer;
+    background:transparent;color:var(--ink);}
+  input[type=file]::file-selector-button:hover{background:var(--sunken);}
+  button[disabled]{opacity:.45;cursor:not-allowed;}
+  .filerow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;
+           font-size:.85rem;color:var(--slate);}
+
+  .status{font-family:var(--label);font-size:.76rem;margin-top:14px;padding:11px 13px;
+          border-radius:var(--r-sm);border:1px solid var(--rule);background:var(--sunken);display:none;}
+  .status.on{display:block;}
+  .status.err{border-color:var(--crit);color:var(--crit);}
+  .status.ok{border-color:var(--good);}
+
+  .out{margin-top:18px;display:none;}
+  .out.on{display:block;}
+  .persona{border:1px solid var(--rule);border-radius:var(--r-md);padding:16px 18px;margin-top:12px;
+           background:var(--sunken);}
+  .persona h3{font-family:var(--display);font-size:1.02rem;margin:0 0 3px;}
+  .persona .dom{font-family:var(--label);font-size:.68rem;color:var(--slate);margin:0 0 10px;}
+  .persona pre{white-space:pre-wrap;font-family:var(--body);font-size:.9rem;margin:0;}
+  .persona .ev{font-size:.85rem;color:var(--slate);margin:10px 0 0;padding-top:9px;
+               border-top:1px solid var(--rule);}
+  .copy{font-size:.66rem;padding:6px 11px;margin-top:10px;}
+  .score{display:flex;align-items:center;gap:10px;margin-top:10px;}
+  .meter{flex:1;height:8px;background:var(--sunken);border-radius:var(--r-sm);overflow:hidden;}
+  .meter i{display:block;height:100%;border-radius:0 var(--r-sm) var(--r-sm) 0;background:var(--accent);}
+  .sv{font-family:var(--label);font-size:.8rem;font-variant-numeric:tabular-nums;}
+
+  footer{margin-top:44px;padding-top:22px;border-top:1px solid var(--rule);
+         font-size:.85rem;color:var(--slate);}
+  footer a{color:var(--accent-ink);}
+  code.addr{font-family:var(--mono);font-size:.82rem;background:var(--sunken);
+            border:1px solid var(--rule);border-radius:var(--r-sm);padding:9px 11px;
+            word-break:break-all;flex:1;min-width:0;}
+  .feedrow{display:flex;gap:12px;align-items:baseline;padding:11px 0;
+           border-top:1px solid var(--rule);}
+  .feedrow:first-child{border-top:0;}
+  .feedrow .when{font-family:var(--label);font-size:.68rem;color:var(--slate);
+                 white-space:nowrap;}
+  .feedrow .what{flex:1;min-width:0;}
+  .feedrow .what a{color:var(--accent-ink);}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="tp-accent" aria-hidden="true"></span>
+    <p class="eyebrow">TP Consulting.Co Job Search Agentic AI Engine</p>
+    <h1>Your CV, read properly</h1>
+    <p class="lede">Paste a CV and get five working personas — each a usable system prompt,
+      each backed by the engagement it came from. Then score any job advert against them.</p>
+    <div class="privacy"><span class="k">Where your data goes</span>
+      <p><b>Nowhere but Anthropic.</b> This page has no backend and no database. Your CV and
+      your API key stay in this browser and are sent only to <code>api.anthropic.com</code>,
+      directly from your machine. Nobody — including whoever published this page — can read
+      either. That is why it needs your own key rather than offering a free tier.</p></div>
+  </header>
+
+  <div class="step">
+    <h2><span class="num">01</span>Your Anthropic API key</h2>
+    <p class="hint">Tap <a href="https://console.anthropic.com/settings/keys" target="_blank"
+      rel="noopener">console.anthropic.com/settings/keys</a> → <b>Create key</b> → copy → paste
+      below. Entered once; this browser remembers it. Five personas from a two-page CV costs a
+      few cents on your own account.</p>
+    <p class="hint">There is no "sign in with Claude" for this: a claude.ai subscription and an
+      API key are separate products, and no website can call the API on your behalf from a
+      login. A key is also what keeps this page honest — it has no server, so your CV goes
+      straight from this browser to Anthropic and nowhere else.</p>
+    <details class="howto">
+      <summary>How to get your Anthropic key</summary>
+      <ol>
+        <li>Go to <a href="https://console.anthropic.com/" target="_blank"
+          rel="noopener">console.anthropic.com</a> and sign in, or create an account. This is
+          the developer console — separate from claude.ai, even with the same email.</li>
+        <li>Open <b>Billing</b> and add a payment method, then buy credit (the smallest
+          top-up is plenty — five personas from a two-page CV costs a few cents).</li>
+        <li>Open <b>API keys</b> → <b>Create key</b>. Give it any name, e.g.
+          <i>persona-forge</i>.</li>
+        <li>Copy the key the moment it appears. It starts <code>sk-ant-</code> and the
+          console will not show it again — if you lose it, delete it and create another.</li>
+        <li>Paste it in the field below. It is stored in this browser only, and you can
+          remove it any time with <b>Forget key</b>.</li>
+      </ol>
+      <p class="warn">A brand-new account has no credit, and a key on an account with no
+        credit fails on the first request. If step 2 is skipped, this page will tell you the
+        request was refused for credit — not that your key is wrong.</p>
+    </details>
+    <label for="key">sk-ant-…</label>
+    <input id="key" type="password" autocomplete="off" spellcheck="false"
+           placeholder="sk-ant-api03-…">
+    <div class="row">
+      <button class="ghost" id="forget" type="button">Forget key</button>
+      <span class="hint" style="margin:0" id="keystate">not saved</span>
+    </div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">02</span>Your CV</h2>
+    <p class="hint">Paste the text, or load a PDF, Word document, .txt or .md file. Everything is parsed in this browser — the file itself is never uploaded anywhere.</p>
+    <textarea id="cv" placeholder="Paste your CV…" spellcheck="false"></textarea>
+    <div class="filerow">
+      <input type="file" id="file" accept=".pdf,.docx,.txt,.md,.markdown,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+      <span id="fileinfo"></span>
+    </div>
+    <div class="row"><button id="go" type="button">Build my personas</button></div>
+    <p class="install" id="needkey">Add your API key in step 1 above, then this button works.</p>
+    <div class="status" id="s1"></div>
+    <div class="out" id="personas"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">03</span>Score a role</h2>
+    <p class="hint">Paste a job advert. It is scored against the personas above, with the
+      reasoning shown — including what the CV does <em>not</em> support.</p>
+    <textarea id="job" placeholder="Paste a job advert…" spellcheck="false"
+              style="min-height:120px"></textarea>
+    <div class="row"><button id="scoreBtn" type="button" disabled>Score it</button></div>
+    <div class="status" id="s2"></div>
+    <div class="out" id="scoreOut"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">04</span>Turn on the job feed</h2>
+    <p class="hint">From here on it runs without you. You get one forwarding address and
+      add one filter in whatever mail client you already use; every job alert that arrives
+      is parsed, de-duplicated and stacked below. No Google sign-in, no permissions to
+      grant, nothing to revoke later except the filter itself.</p>
+
+    <div class="row">
+      <button id="feedBtn" type="button">Create my feed</button>
+      <button id="feedForget" type="button" class="ghost" hidden>Forget this feed</button>
+      <span class="sv" id="feedState">not set up</span>
+    </div>
+
+    <div class="status" id="s3"></div>
+    <p class="install" id="install"></p>
+
+    <div class="out" id="feedSetup" hidden>
+      <p class="hint" style="margin-top:0">Forward your job alerts to this address:</p>
+      <div class="row">
+        <code class="addr" id="feedAddr"></code>
+        <button id="feedCopy" type="button" class="ghost">Copy</button>
+      </div>
+      <p class="hint"><strong>In Gmail:</strong> Settings → Filters and Blocked Addresses →
+        Create a new filter. Put <code>jobalerts-noreply@linkedin.com</code> in
+        <em>From</em>, choose <em>Forward it to</em>, and pick the address above. Repeat for
+        any other job board you subscribe to.</p>
+      <p class="hint"><strong>Keep the address.</strong> It is the whole credential — there
+        is no password and no recovery. Anyone who has it can post into your feed, and
+        losing it means starting a new one.</p>
+    </div>
+
+    <div class="out" id="feedList"></div>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">05</span>Get a ranked pack by email</h2>
+    <p class="hint">Once this is on, every batch of alerts comes back as a pack — the roles
+      worth applying for, scored and explained, with the CV changes to make before you apply.
+      Markdown, Word and PDF, attached.</p>
+    <p class="hint">To rank anything it needs to know who you are. It never gets your CV.
+      Your browser reads the CV and writes a short <b>profile</b> from it — titles, skills,
+      seniority, years — and only that profile is uploaded, only when you press the button
+      below, and <b>only after you have read it</b>. The server refuses anything long enough
+      to be CV text, so this is a limit, not a promise.</p>
+
+    <div class="row">
+      <button id="profBtn" type="button">Read my CV and show me the profile</button>
+      <button id="profForget" type="button" class="ghost" hidden>Delete my profile</button>
+      <span class="sv" id="profState">no profile uploaded</span>
+    </div>
+    <p class="install" id="profNeed"></p>
+    <div class="status" id="s4"></div>
+
+    <div class="out" id="profPreview" hidden>
+      <p class="hint" style="margin-top:0"><b>This, and nothing else, is what gets uploaded.</b>
+        Read it. If a line is wrong, fix the CV and run it again — a wrong profile produces
+        confident, wrong rankings.</p>
+      <pre class="addr" id="profJson" style="white-space:pre-wrap"></pre>
+      <div class="row">
+        <button id="profSend" type="button">Upload this profile</button>
+        <button id="profCancel" type="button" class="ghost">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Personas are generated from what the CV actually says. The prompt instructs the model
+    not to invent credentials, employers or figures, and to leave a claim out rather than
+    guess — a portfolio gets tested before it gets believed. Verify every generated line
+    against your own documents before using it anywhere.</p>
+      <div class="tp-sign"><span class="tp-mark" role="img" aria-label="Travis Paul Consulting"></span></div>
+  </footer>
+</div>
+
+<script type="module">
+const $ = function (id) { return document.getElementById(id); };
+const MODEL = "claude-opus-5";
+// Upper bounds on a single run. The key is the user's own, so an
+// accidental paste of a 200-page PDF bills them, not us - refusing it
+// up front is cheaper than a refund conversation. Roughly 15k and 5k
+// tokens of input; a long CV runs about 4k.
+const MAX_CV = 60000;
+const MAX_JOB = 20000;
+const API = "https://api.anthropic.com/v1/messages";
+let personas = [];
+
+// ---- key, kept only in this browser -------------------------------------
+try { $("key").value = localStorage.getItem("pf.key") || ""; } catch (e) {}
+function keyState() {
+  var v = $("key").value.trim();
+  var has = !!v;
+  // An sk-ant- key is long; anything short is a half-paste, which is worth
+  // catching before it becomes a 401 the person has to interpret.
+  var looksRight = /^sk-ant-/.test(v) && v.length > 40;
+  $("keystate").textContent = !has ? "no key yet"
+    : looksRight ? "saved in this browser only"
+    : "that does not look like a full key";
+
+  // Gate the two buttons that spend the key, and say why on the button rather
+  // than after it is pressed. Pressing Build with no key used to be a dead end
+  // reached only after pasting a whole CV.
+  var go = $("go");
+  go.disabled = !looksRight;
+  go.title = looksRight ? "" : "Add your API key in step 1 first";
+  var need = $("needkey");
+  if (need) need.className = looksRight ? "install" : "install on";
+}
+$("key").addEventListener("input", function () {
+  try { localStorage.setItem("pf.key", $("key").value.trim()); } catch (e) {}
+  keyState();
+});
+$("forget").addEventListener("click", function () {
+  $("key").value = "";
+  try { localStorage.removeItem("pf.key"); } catch (e) {}
+  keyState();
+});
+keyState();
+
+// ---- resume ingestion ---------------------------------------------------
+// A CV is a PDF far more often than it is anything else, and "open the PDF,
+// select all, paste" is the step people give up at. Both parsers run entirely
+// in this page: the bytes are read with FileReader and never leave the
+// browser, which is the same promise the rest of the app makes about the key.
+// The libraries load on demand, so someone pasting text never pays for them.
+// Served from this origin, not a CDN. A page whose whole claim is that the CV
+// never leaves the browser should not announce "someone is parsing a CV right
+// now" to a third party on load, and a self-hosted copy cannot be swapped
+// under us. Versions are pinned by what is committed in app/vendor/.
+//   pdfjs-dist 4.10.38 · mammoth 1.12.3
+// The "./" is load-bearing: a dynamic import() of "vendor/pdf.min.mjs" is a
+// BARE specifier, not a relative path, and fails with "Failed to resolve
+// module specifier" rather than a 404.
+var LIBS = {
+  pdf: "./vendor/pdf.min.mjs",
+  pdfWorker: "./vendor/pdf.worker.min.mjs",
+  docx: "./vendor/mammoth.browser.min.js",
+};
+
+var _pdfjs = null;
+async function pdfLib() {
+  if (!_pdfjs) {
+    _pdfjs = await import(LIBS.pdf);
+    _pdfjs.GlobalWorkerOptions.workerSrc = LIBS.pdfWorker;
+  }
+  return _pdfjs;
+}
+
+function loadScript(src) {
+  return new Promise(function (ok, fail) {
+    var el = document.createElement("script");
+    el.src = src;
+    el.onload = ok;
+    el.onerror = function () { fail(new Error("could not load the .docx parser")); };
+    document.head.appendChild(el);
+  });
+}
+
+function readAs(file, how) {
+  return new Promise(function (ok, fail) {
+    var r = new FileReader();
+    r.onload = function () { ok(r.result); };
+    r.onerror = function () { fail(new Error("could not read that file")); };
+    how === "buffer" ? r.readAsArrayBuffer(file) : r.readAsText(file);
+  });
+}
+
+async function extractText(file) {
+  var name = (file.name || "").toLowerCase();
+
+  if (name.endsWith(".pdf")) {
+    var pdfjs = await pdfLib();
+    var doc = await pdfjs.getDocument({ data: await readAs(file, "buffer") }).promise;
+    var out = [];
+    for (var i = 1; i <= doc.numPages; i++) {
+      var content = await (await doc.getPage(i)).getTextContent();
+      // Join items with a space but respect the PDF's own line breaks, or the
+      // whole CV arrives as one run-on line and the model reads the dates as
+      // part of the job titles.
+      var line = "", page = [];
+      content.items.forEach(function (it) {
+        line += it.str;
+        if (it.hasEOL) { page.push(line); line = ""; }
+      });
+      if (line) page.push(line);
+      out.push(page.join("\n"));
+    }
+    var text = out.join("\n\n").trim();
+    if (!text) {
+      throw new Error("That PDF has no text layer — it is probably a scan. " +
+        "Export a text PDF from the original, or paste the text.");
+    }
+    return text;
+  }
+
+  if (name.endsWith(".docx")) {
+    if (!window.mammoth) await loadScript(LIBS.docx);
+    var res = await window.mammoth.extractRawText({
+      arrayBuffer: await readAs(file, "buffer"),
+    });
+    return (res.value || "").trim();
+  }
+
+  if (name.endsWith(".doc")) {
+    throw new Error("Old .doc files are not readable here. Save as .docx or PDF.");
+  }
+
+  return String(await readAs(file, "text")).trim();
+}
+
+$("file").addEventListener("change", async function (e) {
+  var f = e.target.files && e.target.files[0];
+  if (!f) return;
+  var info = $("fileinfo");
+  info.textContent = "reading " + f.name + "…";
+  try {
+    var text = await extractText(f);
+    if (!text) throw new Error("that file had no readable text in it");
+    $("cv").value = text;
+    info.textContent = f.name + " — " + text.length.toLocaleString() + " characters";
+  } catch (err) {
+    info.textContent = "";
+    say($("s1"), err.message, "err");
+  }
+});
+
+// ---- step 4: the autonomous feed ----------------------------------------
+// The worker's origin, read at runtime from config.json, which the deploy
+// script writes. It used to be a constant edited by hand after every deploy -
+// which is the kind of step that gets forgotten once and then ships a page
+// whose feed button does nothing. Absent or blank, the UI says the worker is
+// not deployed rather than failing at the first click with a network error
+// nobody can act on.
+var WORKER = "";
+var CONFIG_READY = fetch("config.json", { cache: "no-store" })
+  .then(function (r) { return r.ok ? r.json() : {}; })
+  .catch(function () { return {}; })
+  .then(function (c) { WORKER = (c && c.worker) || ""; return c; });
+
+// The token is the account: no password, no recovery. It lives in this
+// browser's localStorage only, which is also why the UI is blunt about what
+// losing it means. Wrapped because storage throws outright in a private window
+// with site data blocked, and a page that cannot remember a token should still
+// render.
+function tokenGet() {
+  try { return localStorage.getItem("pf.feed.token") || ""; } catch (e) { return ""; }
+}
+function tokenSet(v) {
+  try { v ? localStorage.setItem("pf.feed.token", v)
+          : localStorage.removeItem("pf.feed.token"); } catch (e) {}
+}
+
+function feedRender(alerts) {
+  var box = $("feedList");
+  if (!alerts.length) {
+    box.className = "out on";
+    box.innerHTML = '<p class="hint" style="margin:0">Nothing forwarded yet. ' +
+      'The first alert usually lands within a day of adding the filter.</p>';
+    return;
+  }
+  box.className = "out on";
+  box.innerHTML = alerts.map(function (a) {
+    var when = new Date(a.received_at).toLocaleDateString(undefined,
+      { day: "numeric", month: "short" });
+    var title = String(a.subject || "(no subject)");
+    var link = a.job_id
+      ? '<a href="https://www.linkedin.com/jobs/view/' + encodeURIComponent(a.job_id) +
+        '" target="_blank" rel="noopener noreferrer">' + esc(title) + "</a>"
+      : esc(title);
+    return '<div class="feedrow"><span class="when">' + esc(when) + "</span>" +
+           '<span class="what">' + link + "</span></div>";
+  }).join("");
+}
+
+async function feedLoad() {
+  await CONFIG_READY;
+  var t = tokenGet();
+  if (!t || !WORKER) return;
+  try {
+    var res = await fetch(WORKER + "/feed/" + t, { cache: "no-store" });
+    if (res.status === 404) {
+      say($("s3"), "That feed no longer exists on the server. Create a new one.", "err");
+      return;
+    }
+    if (!res.ok) throw new Error("the feed returned " + res.status);
+    feedRender((await res.json()).alerts || []);
+  } catch (e) {
+    say($("s3"), "Could not reach the feed: " + e.message, "err");
+  }
+}
+
+function feedShow(address) {
+  $("feedAddr").textContent = address;
+  $("feedSetup").hidden = false;
+  $("feedSetup").className = "out on";
+  $("feedState").textContent = "active";
+  $("feedBtn").hidden = true;
+  $("feedForget").hidden = false;
+}
+
+$("feedBtn").addEventListener("click", async function () {
+  await CONFIG_READY;
+  if (!WORKER) {
+    say($("s3"), "The job feed is not switched on for this site yet — " +
+                 "the ingest worker has not been deployed.", "err");
+    return;
+  }
+  $("feedBtn").disabled = true;
+  say($("s3"), "Creating your feed…");
+  try {
+    var res = await fetch(WORKER + "/signup", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ label: "" }),
+    });
+    var body = await res.json();
+    // 503 is the worker saying its mail domain is not configured. That is an
+    // operator problem, not the visitor's, and it is the one failure where a
+    // retry will never help - so it reads as a state of the site rather than
+    // an error the person did something to cause.
+    if (res.status === 503) {
+      say($("s3"), body.error || "The job feed is not switched on for this " +
+                                 "site yet. Nothing was created.", "err");
+      return;
+    }
+    if (!res.ok) throw new Error(body.error || "signup returned " + res.status);
+    tokenSet(body.token);
+    feedShow(body.address);
+    say($("s3"), "Feed created. Add the filter below and it fills itself.", "ok");
+    feedLoad();
+  } catch (e) {
+    say($("s3"), e.message, "err");
+  } finally {
+    $("feedBtn").disabled = false;
+  }
+});
+
+$("feedForget").addEventListener("click", function () {
+  tokenSet("");
+  $("feedSetup").hidden = true;
+  $("feedList").innerHTML = "";
+  $("feedList").className = "out";
+  $("feedState").textContent = "not set up";
+  $("feedBtn").hidden = false;
+  $("feedForget").hidden = true;
+  say($("s3"), "Forgotten on this device. Mail already forwarded is still stored " +
+               "server-side under that address.", "ok");
+});
+
+$("feedCopy").addEventListener("click", async function () {
+  try {
+    await navigator.clipboard.writeText($("feedAddr").textContent);
+    say($("s3"), "Address copied.", "ok");
+  } catch (e) {
+    say($("s3"), "Could not copy — select the address and copy it manually.", "err");
+  }
+});
+
+// A returning visitor should find their feed already there - but only once
+// config.json has answered, or feedLoad() would run against a blank WORKER.
+CONFIG_READY.then(function () { if (tokenGet()) feedLoad(); });
+if (tokenGet()) {
+  $("feedState").textContent = "active on this device";
+  $("feedBtn").hidden = true;
+  $("feedForget").hidden = false;
+  feedLoad();
+}
+
+// ---- install to the home screen -----------------------------------------
+// Two different worlds. Chromium fires beforeinstallprompt and gives a button.
+// iOS Safari fires nothing and has no API at all - the only route is Share >
+// Add to Home Screen - so the honest thing is to say so rather than show a
+// button that cannot work.
+var deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", function (e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  var el = $("install");
+  el.className = "install on";
+  el.innerHTML = '<b>Install this.</b> It opens from your home screen and works offline. ';
+  var b = document.createElement("button");
+  b.type = "button"; b.className = "ghost"; b.textContent = "Install";
+  b.addEventListener("click", async function () {
+    b.disabled = true;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    el.className = "install";
+  });
+  el.appendChild(b);
+});
+
+(function iosHint() {
+  var standalone = window.matchMedia("(display-mode: standalone)").matches
+                || window.navigator.standalone === true;
+  if (standalone) return;                       // already installed
+  var ua = navigator.userAgent;
+  // iPadOS reports as Macintosh, so touch points are the tell.
+  var ios = /iPad|iPhone|iPod/.test(ua)
+         || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  if (!ios || !/Safari/.test(ua) || /CriOS|FxiOS/.test(ua)) return;
+  var el = $("install");
+  el.className = "install on";
+  el.innerHTML = "<b>Add this to your home screen.</b> Tap Share, then " +
+    "<b>Add to Home Screen</b>. It then opens full screen and works without a " +
+    "connection \u2014 iOS has no install button, so this is the only route.";
+})();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function (e) {
+      // A failed registration must never break the page: everything here works
+      // online without it.
+      console.warn("service worker did not register:", e.message);
+    });
+  });
+}
+
+function say(el, msg, cls) {
+  el.className = "status on" + (cls ? " " + cls : "");
+  el.textContent = msg;
+}
+
+// ---- the one call site --------------------------------------------------
+async function ask(system, user, schema) {
+  var key = $("key").value.trim();
+  if (!key) throw new Error("Add your API key in step 1.");
+
+  var body = {
+    model: MODEL,
+    max_tokens: 16000,
+    system: system,
+    messages: [{ role: "user", content: user }],
+    output_config: { format: { type: "json_schema", schema: schema }, effort: "high" }
+  };
+
+  var res = await fetch(API, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      // Required for calls made straight from a browser. The key is the
+      // user's own and never leaves their machine except to Anthropic.
+      "anthropic-dangerous-direct-browser-access": "true"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!res.ok) {
+    var detail = "";
+    try { detail = (await res.json()).error.message; } catch (e) { detail = res.statusText; }
+    if (res.status === 401) throw new Error("Anthropic rejected that key (401).");
+    if (res.status === 429) throw new Error("Rate limited (429). Wait a moment and retry.");
+    throw new Error("Anthropic returned " + res.status + ": " + detail);
+  }
+
+  var data = await res.json();
+  // Always check stop_reason before reading content. A refusal has no JSON to
+  // parse; a max_tokens cut-off has HALF the JSON, which is worse - it reaches
+  // JSON.parse and surfaces to the user as "Unexpected end of JSON input",
+  // which reads like a bug in this page rather than a CV that ran long.
+  if (data.stop_reason === "refusal") {
+    throw new Error("The model declined this request" +
+      (data.stop_details && data.stop_details.category
+        ? " (" + data.stop_details.category + ")." : "."));
+  }
+  if (data.stop_reason === "max_tokens") {
+    throw new Error("The reply was cut off before it finished (max_tokens). " +
+      "Trim the CV to the career history and try again.");
+  }
+  var text = (data.content || []).filter(function (b) { return b.type === "text"; })
+                                 .map(function (b) { return b.text; }).join("");
+  return JSON.parse(text);
+}
+
+// ---- step 2: personas ---------------------------------------------------
+const PERSONA_SYSTEM = [
+  "You turn a CV into five AI personas. Each is a usable system prompt AND a piece of",
+  "portfolio evidence.",
+  "",
+  "Rules you must not break:",
+  "- Use ONLY what the CV states. Never invent an employer, a qualification, a date or a figure.",
+  "- Name a qualification exactly as the CV names it. If it says Postgraduate Diploma, never",
+  "  write MBA. If a credential is absent, it does not exist.",
+  "- Every persona's evidence must quote or closely paraphrase something in the CV, and name",
+  "  the organisation and period it came from.",
+  "- Where the CV is vague, say so in the gap field rather than filling it in. A portfolio is",
+  "  tested before it is believed, and one unsupported claim discredits the rest.",
+  "- Derive the five domains from this CV specifically. Do not use a generic set."
+].join("\n");
+
+const PERSONA_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["personas"],
+  properties: {
+    personas: {
+      type: "array", minItems: 5, maxItems: 5,
+      items: {
+        type: "object", additionalProperties: false,
+        required: ["name", "domain", "systemPrompt", "evidence", "gap"],
+        properties: {
+          name: { type: "string" },
+          domain: { type: "string" },
+          systemPrompt: { type: "string" },
+          evidence: { type: "string" },
+          gap: { type: "string" }
+        }
+      }
+    }
+  }
+};
+
+$("go").addEventListener("click", async function () {
+  var cv = $("cv").value.trim();
+  if (cv.length < 200) return say($("s1"), "That CV looks too short to work from.", "err");
+  if (cv.length > MAX_CV) return say($("s1"), "That is " + cv.length.toLocaleString() +
+    " characters — longer than any CV needs to be, and it would bill your key for a large request. Trim it to the career history and try again.", "err");
+  $("go").disabled = true;
+  say($("s1"), "Reading the CV and building five personas…");
+  try {
+    var out = await ask(PERSONA_SYSTEM, "Here is the CV:\n\n" + cv, PERSONA_SCHEMA);
+    personas = out.personas;
+    $("personas").className = "out on";
+    $("personas").innerHTML = personas.map(function (p, i) {
+      return '<div class="persona"><h3>' + esc(p.name) + "</h3>" +
+        '<p class="dom">' + esc(p.domain) + "</p>" +
+        "<pre>" + esc(p.systemPrompt) + "</pre>" +
+        '<p class="ev"><b>Evidence:</b> ' + esc(p.evidence) +
+        (p.gap ? '<br><b>Not supported by the CV:</b> ' + esc(p.gap) : "") + "</p>" +
+        '<button class="copy ghost" data-i="' + i + '" type="button">Copy prompt</button></div>';
+    }).join("");
+    $("scoreBtn").disabled = false;
+    say($("s1"), "Five personas built. Check each against your own documents.", "ok");
+  } catch (err) {
+    say($("s1"), err.message, "err");
+  } finally {
+    $("go").disabled = false;
+  }
+});
+
+$("personas").addEventListener("click", function (e) {
+  var b = e.target.closest(".copy");
+  if (!b) return;
+  var t = personas[+b.dataset.i].systemPrompt;
+  var done = function () {
+    b.textContent = "Copied";
+    setTimeout(function () { b.textContent = "Copy prompt"; }, 1600);
+  };
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(t).then(done, function () { b.textContent = "Copy failed"; });
+    } else { b.textContent = "Copy unavailable"; }
+  } catch (err) { b.textContent = "Copy unavailable"; }
+});
+
+// ---- step 3: score ------------------------------------------------------
+const SCORE_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["score", "verdict", "fits", "gaps"],
+  properties: {
+    score: { type: "integer", minimum: 0, maximum: 5 },
+    verdict: { type: "string" },
+    fits: { type: "array", items: { type: "string" } },
+    gaps: { type: "array", items: { type: "string" } }
+  }
+};
+
+$("scoreBtn").addEventListener("click", async function () {
+  var job = $("job").value.trim();
+  if (job.length < 80) return say($("s2"), "Paste the advert text first.", "err");
+  if (job.length > MAX_JOB) return say($("s2"), "That is " + job.length.toLocaleString() +
+    " characters — more than an advert. Paste the advert itself rather than the whole page.", "err");
+  $("scoreBtn").disabled = true;
+  say($("s2"), "Scoring against your personas…");
+  try {
+    var sys = "Score a job advert against a candidate's personas. Award one point each for: " +
+      "seniority match; domain match; function match; location or remote match; and implied " +
+      "P&L, team or transformation ownership. Be honest about gaps — naming a real gap is " +
+      "more useful than a flattering score, and the candidate will be asked about it in an " +
+      "interview. Never claim experience the personas do not evidence.";
+    var out = await ask(sys,
+      "PERSONAS:\n" + JSON.stringify(personas, null, 1) + "\n\nJOB ADVERT:\n" + job,
+      SCORE_SCHEMA);
+    $("scoreOut").className = "out on";
+    $("scoreOut").innerHTML =
+      '<div class="persona"><div class="score"><span class="sv">' + out.score +
+      '/5</span><span class="meter"><i style="width:' + (out.score / 5 * 100) +
+      '%"></i></span></div><p style="margin:12px 0 0">' + esc(out.verdict) + "</p>" +
+      list("Fits", out.fits) + list("Gaps", out.gaps) + "</div>";
+    say($("s2"), "Scored.", "ok");
+  } catch (err) {
+    say($("s2"), err.message, "err");
+  } finally {
+    $("scoreBtn").disabled = false;
+  }
+});
+
+// ---- step 05: the derived profile ---------------------------------------
+// The CV never leaves this browser. It is read here, a short profile is
+// written from it, the user is shown that profile in full, and only then -
+// on a second, separate press - is the profile uploaded. The two presses are
+// the point: an upload the user has not read is not consent.
+const PROFILE_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["headline", "seniority", "titles", "skills"],
+  properties: {
+    headline:   { type: "string", maxLength: 200,
+                  description: "One line: what this person is, in their own terms." },
+    seniority:  { type: "string", maxLength: 60,
+                  description: "e.g. 'senior manager', 'executive', 'head of function'." },
+    years:      { type: "integer", minimum: 0, maximum: 60 },
+    titles:     { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    skills:     { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    sectors:    { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    locations:  { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    languages:  { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    certifications: { type: "array", maxItems: 40, items: { type: "string", maxLength: 120 } },
+    summary:    { type: "string", maxLength: 1200,
+                  description: "A short paragraph a screener could rank against." },
+  },
+};
+
+const PROFILE_SYSTEM = [
+  "Write a short, factual profile from this CV, for matching job adverts against.",
+  "",
+  "- Use only what the CV says. Never infer a qualification, employer, date or figure.",
+  "- A qualification is whatever the CV names it. Do not upgrade a diploma to a degree, or a certificate to a qualification it is not.",
+  "- Keep the CV's own status words. 'Led delivery of' and 'built' are different claims.",
+  "- Where the CV withholds a client or employer name, leave it withheld. Describe the sector instead.",
+  "- This is a SUMMARY, not an extract. Do not copy sentences out of the CV, and never reproduce contact details, addresses, ID numbers or referees.",
+  "- Omit a field entirely rather than guessing at it.",
+].join("\n");
+
+let derivedProfile = null;
+
+// .out is display:none until it also carries .on, so toggling the hidden
+// attribute alone leaves the panel invisible. Both, in one place.
+function showPreview(on) {
+  const el = $("profPreview");
+  el.hidden = !on;
+  el.className = on ? "out on" : "out";
+}
+
+function profileReady() {
+  const haveKey = /^sk-ant-/.test($("key").value.trim());
+  const haveCv = $("cv").value.trim().length > 40;
+  const haveFeed = Boolean(tokenGet());
+  return { haveKey, haveCv, haveFeed, ok: haveKey && haveCv && haveFeed };
+}
+
+function profileGate() {
+  const g = profileReady();
+  const missing = [];
+  if (!g.haveKey) missing.push("add your API key in step 1");
+  if (!g.haveCv) missing.push("paste or load your CV in step 2");
+  if (!g.haveFeed) missing.push("create your feed in step 4");
+  $("profBtn").disabled = !g.ok;
+  const need = $("profNeed");
+  need.textContent = missing.length ? "First: " + missing.join(", ") + "." : "";
+  need.className = missing.length ? "install on" : "install";
+}
+
+$("key").addEventListener("input", profileGate);
+$("cv").addEventListener("input", profileGate);
+
+$("profBtn").addEventListener("click", async function () {
+  const g = profileReady();
+  if (!g.ok) return;
+  $("profBtn").disabled = true;
+  showPreview(false);
+  say($("s4"), "Reading your CV in this browser…");
+  try {
+    const cv = $("cv").value.trim().slice(0, MAX_CV);
+    derivedProfile = await ask(PROFILE_SYSTEM, "CV:\n" + cv, PROFILE_SCHEMA);
+    $("profJson").textContent = JSON.stringify(derivedProfile, null, 2);
+    showPreview(true);
+    say($("s4"), "Nothing has been uploaded. Read it, then press Upload.", "ok");
+  } catch (err) {
+    say($("s4"), err.message, "err");
+  } finally {
+    profileGate();
+  }
+});
+
+$("profCancel").addEventListener("click", function () {
+  derivedProfile = null;
+  showPreview(false);
+  say($("s4"), "Discarded. Nothing left this browser.", "ok");
+});
+
+$("profSend").addEventListener("click", async function () {
+  if (!derivedProfile) return;
+  await CONFIG_READY;
+  if (!WORKER) { say($("s4"), "The ingest worker has not been deployed.", "err"); return; }
+  $("profSend").disabled = true;
+  say($("s4"), "Uploading the profile…");
+  try {
+    const res = await fetch(WORKER + "/profile/" + tokenGet(), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(derivedProfile),
+    });
+    const body = await res.json().catch(function () { return {}; });
+    if (!res.ok) throw new Error(body.error || "the server returned " + res.status);
+    $("profState").textContent = "profile uploaded";
+    $("profForget").hidden = false;
+    showPreview(false);
+    say($("s4"), "Uploaded: " + (body.stored || []).join(", ") +
+      ". Packs will be ranked against this from the next batch of alerts.", "ok");
+  } catch (err) {
+    say($("s4"), err.message, "err");
+  } finally {
+    $("profSend").disabled = false;
+  }
+});
+
+$("profForget").addEventListener("click", async function () {
+  // Replacing it with the minimum the server accepts is the honest option
+  // available: there is no delete route, so claiming "deleted" would be a lie.
+  if (!confirm("Overwrite the stored profile with a blank one? Packs will stop being ranked.")) return;
+  try {
+    const res = await fetch(WORKER + "/profile/" + tokenGet(), {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ headline: "withdrawn" }),
+    });
+    if (!res.ok) throw new Error("the server returned " + res.status);
+    $("profState").textContent = "profile withdrawn";
+    $("profForget").hidden = true;
+    say($("s4"), "Overwritten. Nothing of your old profile remains in the row.", "ok");
+  } catch (err) {
+    say($("s4"), err.message, "err");
+  }
+});
+
+profileGate();
+
+function list(title, arr) {
+  if (!arr || !arr.length) return "";
+  return '<p class="ev"><b>' + title + ":</b></p><ul style='margin:4px 0 0'>" +
+    arr.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>";
+}
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+  });
+}
+</script>

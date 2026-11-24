@@ -1,0 +1,108 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Colour</title>
+<!--TPCL_CORE-->
+<style>
+  .sw { border: 1px solid var(--tp-rule); }
+  .sw .chip { height: 104px; display:flex; align-items:flex-end; padding: 12px; }
+  .sw .meta { padding: 12px 14px 14px; }
+  .sw .hex { font-family: ui-monospace,"SF Mono",Menlo,monospace; font-size: 13px; letter-spacing:.02em; }
+  .sw .role { font-size: 12px; color: var(--tp-ink-muted); margin-top: 4px; line-height:1.45; }
+  .sw .nm { font-weight: 500; font-size: 14px; }
+  .pairs { display:grid; grid-template-columns: repeat(auto-fill,minmax(210px,1fr)); gap: var(--tp-3); }
+  .pair { padding: 14px 16px; }
+  .pair .r { font-size: 11px; letter-spacing:.08em; text-transform:uppercase; margin-top:6px; opacity:.85 }
+  .verdict { display:inline-block; font-size:10px; font-weight:700; letter-spacing:.1em; padding:2px 6px; }
+  .ok   { background: var(--tp-charcoal); color:#fff; }
+  .warn { background: #FFC107; color: var(--tp-charcoal); }
+  .no   { background: #B00020; color:#fff; }
+  .rules li { margin-bottom: 10px; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Colour</h1>
+  <p class="tp-lede">Six tokens, two modes. Charcoal and white do all the work; cyan, amber and blue-gray
+     are accents with strict jobs. Nothing outside this list is a TPCL colour.</p>
+
+  <div class="tp-sec">
+    <h2>Core tokens</h2>
+    <div class="tp-grid" style="grid-template-columns: repeat(auto-fill,minmax(210px,1fr))">
+      <div class="sw"><div class="chip" style="background:#3A3A3A"></div>
+        <div class="meta"><div class="nm">Charcoal</div><div class="hex">#3A3A3A</div>
+        <div class="role">Dark-mode background · light-mode body text. The primary.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--tp-rule)"></div>
+        <div class="meta"><div class="nm">White</div><div class="hex">#FFFFFF</div>
+        <div class="role">Light-mode background · dark-mode text. Pure white — never off-white.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#B8C5D6"></div>
+        <div class="meta"><div class="nm">Blue-gray</div><div class="hex">#B8C5D6</div>
+        <div class="role">Split-slide right panel, index chips, accent cards. A surface, not a text colour.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#00BCD4"></div>
+        <div class="meta"><div class="nm">Cyan</div><div class="hex">#00BCD4</div>
+        <div class="role"><strong>Dark-mode accent.</strong> Accent block, timeline, outline cards, primary button.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FFC107"></div>
+        <div class="meta"><div class="nm">Amber</div><div class="hex">#FFC107</div>
+        <div class="role"><strong>Light-mode accent.</strong> Top-left accent block on white. Used sparingly.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6E6E6E"></div>
+        <div class="meta"><div class="nm">Ink muted</div><div class="hex">#6E6E6E</div>
+        <div class="role">Secondary text, captions, table headers on white. 5.10:1 — passes AA.</div></div></div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Support neutrals</h2>
+    <div class="tp-grid" style="grid-template-columns: repeat(auto-fill,minmax(160px,1fr))">
+      <div class="sw"><div class="chip" style="background:#2B2B2B;height:64px"></div><div class="meta"><div class="nm">Charcoal deep</div><div class="hex">#2B2B2B</div></div></div>
+      <div class="sw"><div class="chip" style="background:#4A4A4A;height:64px"></div><div class="meta"><div class="nm">Charcoal soft</div><div class="hex">#4A4A4A</div></div></div>
+      <div class="sw"><div class="chip" style="background:#F5F6F8;height:64px;border-bottom:1px solid var(--tp-rule)"></div><div class="meta"><div class="nm">Surface</div><div class="hex">#F5F6F8</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E4E6EA;height:64px"></div><div class="meta"><div class="nm">Rule</div><div class="hex">#E4E6EA</div></div></div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Contrast — measured, not assumed</h2>
+    <div class="pairs">
+      <div class="pair" style="background:#3A3A3A;color:#fff">White on charcoal<div class="r">11.37:1 <span class="verdict ok">AAA</span></div></div>
+      <div class="pair" style="background:#fff;color:#3A3A3A;border:1px solid var(--tp-rule)">Charcoal on white<div class="r">11.37:1 <span class="verdict ok">AAA</span></div></div>
+      <div class="pair" style="background:#3A3A3A;color:#FFC107">Amber on charcoal<div class="r">6.98:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#3A3A3A;color:#B8C5D6">Blue-gray on charcoal<div class="r">6.50:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#3A3A3A;color:#00BCD4">Cyan on charcoal<div class="r">4.95:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#fff;color:#6E6E6E;border:1px solid var(--tp-rule)">Ink-muted on white<div class="r">5.10:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#00BCD4;color:#3A3A3A">Charcoal on cyan<div class="r">4.95:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#FFC107;color:#3A3A3A">Charcoal on amber<div class="r">6.98:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#B8C5D6;color:#3A3A3A">Charcoal on blue-gray<div class="r">6.50:1 <span class="verdict ok">AA</span></div></div>
+      <div class="pair" style="background:#00BCD4;color:#fff">White on cyan<div class="r">2.30:1 <span class="verdict no">FAIL</span></div></div>
+      <div class="pair" style="background:#fff;color:#00BCD4;border:1px solid var(--tp-rule)">Cyan on white<div class="r">2.30:1 <span class="verdict no">FAIL</span></div></div>
+      <div class="pair" style="background:#fff;color:#FFC107;border:1px solid var(--tp-rule)">Amber on white<div class="r">1.63:1 <span class="verdict no">FAIL</span></div></div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Rules that follow from those numbers</h2>
+    <ol class="tp-note rules" style="padding-left:18px;max-width:70ch">
+      <li><strong>Cyan buttons carry charcoal text, never white.</strong> White on cyan is 2.30:1 and fails.</li>
+      <li><strong>On white, cyan and amber are graphic-only</strong> — accent blocks, rules, dots, borders, fills behind dark text. Never body copy, never a link colour on white.</li>
+      <li><strong>On charcoal, cyan and amber are safe as text</strong> (4.95:1 and 6.98:1). This is why the cyan timeline and cyan numerals live on dark slides.</li>
+      <li><strong>Blue-gray is a surface.</strong> It is 1.75:1 on white — it can never be read as text on white.</li>
+      <li><strong>One accent per surface.</strong> Cyan and amber do not appear on the same slide or post except where amber is the accent block and cyan is a data mark.</li>
+    </ol>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Client-overlay slot</h2>
+    <p class="tp-note" style="max-width:70ch">Engagement work tints exactly one variable —
+      <span class="tp-code">--tp-client</span> — and swaps the co-brand logo. The charcoal/white
+      frame, Poppins and the motifs stay TPCL. Precedent: Zamtel green
+      <span class="tp-code">#28B04C</span>, Discover blue <span class="tp-code">#3865B0</span>.
+      <strong>Check the client colour against charcoal and white before using it as text.</strong></p>
+    <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">
+      <div class="pair" style="background:#28B04C;color:#fff;min-width:180px">Zamtel green<div class="r">#28B04C</div></div>
+      <div class="pair" style="background:#3865B0;color:#fff;min-width:180px">Discover blue<div class="r">#3865B0</div></div>
+      <div class="pair" style="background:#F47321;color:#3A3A3A;min-width:180px">Discover orange<div class="r">#F47321</div></div>
+    </div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,1360 @@
+▗ ▗   ▖ ▖  Claude Code v2.1.221
+           Opus 5 · Claude Pro
+  ▘▘ ▝▝    ~/Desktop/TPCL_Design_System
+
+ ▎ Using Opus 5 (from .claude/settings.json) · /model
+
+❯ Create a TPCL Design System, that can be attached on Claude Design Beta (for  
+  code-free users), Templates for all Media Assets (Socials, Emailers, WhatsApp 
+  Status, LinkedIn, and Website), and specific Prompt links and skills or       
+  memory to use/import. [Image #1]                                              
+  ⎿  [Image #1]
+
+⏺ I'll start by pulling the existing TPCL design context and checking how Claude
+  Design systems get attached.
+
+  Searched for 2 patterns, read 1 file, listed 3 directories, ran 2 shell commands, recalled 2 memories (ctrl+o to expand)
+
+⏺ Everything I need is on disk: the design brief, the Poppins TTFs, and the
+  durable logo copies. Poppins subsets to ~7.6KB per weight in woff2, so I can
+  embed fonts and logos directly — the design system will be fully
+  self-contained under Claude Design's CSP.
+
+  Let me set up the build.
+
+  Ran 3 shell commands (ctrl+o to expand)
+
+⏺ Now the core of the system — tokens, motifs, and components, with the
+  accessibility rules grounded in real contrast math.
+
+⏺ Write(src/tpcl-core.css)
+  ⎿  Wrote 230 lines to src/tpcl-core.css
+       1 /* ============================================================
+       2    TPCL DESIGN SYSTEM — CORE
+       3    Travis Paul Consulting Ltd · v1.0
+       4    Two-mode system: charcoal DARK + white LIGHT.
+       5    Poppins only (400 / 500 / 700 — the three weights TPCL owns).
+         */
+       7 
+       8 /* ---------- 1. TOKENS ---------- */
+       9 :root {
+      10   /* Brand core */
+     … +285 lines (ctrl+o to expand)
+
+⏺ Write(build_tpcl_ds.py)
+  ⎿  Wrote 121 lines to build_tpcl_ds.py
+       1 #!/usr/bin/env python3
+       2 """
+       4 
+       5 Reads src/tpcl-core.css + src/pages/*.html and emits dist/ where
+          every page is
+          Travis Paul
+       7 Consulting logos are inlined as data URIs, so the pages render c
+         orrectly under
+       9 
+      10 Usage:  python3 build_tpcl_ds.py
+     … +170 lines (ctrl+o to expand)
+
+⏺ Now the foundation pages.
+
+⏺ Write(src/pages/colour.html)
+  ⎿  Wrote 108 lines to src/pages/colour.html
+       1 <!-- @dsCard group="Foundations" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Colour</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .sw .chip { height: 104px; display:flex; align-items:flex-end;
+          padding: 12px; }
+      10   .sw .meta { padding: 12px 14px 14px; }
+     … +177 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/typography.html)
+  ⎿  Wrote 97 lines to src/pages/typography.html
+       1 <!-- @dsCard group="Foundations" -->
+       3 <html lang="en"><head><meta charset="utf-8">
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       6 <!--TPCL_CORE-->
+       7 <style>
+         px; align-items: baseline;
+       9          padding: 18px 0; border-bottom: 1px solid var(--tp-rule
+         ); }
+         ne-height:1.5;
+     … +135 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/logo.html)
+  ⎿  Wrote 129 lines to src/pages/logo.html
+       1 <!-- @dsCard group="Foundations" -->
+       3 <html lang="en"><head><meta charset="utf-8">
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       6 <!--TPCL_CORE-->
+       7 <style>
+         r(--tp-rule); overflow:hidden; }
+       9   .frame .cap { position:absolute; top:12px; left:14px; font-siz
+         e:11px; letter-spacing:.1em;
+         ed); }
+     … +177 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/motifs.html)
+  ⎿  Wrote 105 lines to src/pages/motifs.html
+       1 <!-- @dsCard group="Foundations" -->
+       3 <html lang="en"><head><meta charset="utf-8">
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       6 <!--TPCL_CORE-->
+       7 <style>
+         ; align-items:start;
+       9        padding: 28px 0; border-bottom:1px solid var(--tp-rule); 
+         }
+         tion:relative; overflow:hidden;
+     … +153 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/layout-grid.html)
+  ⎿  Wrote 124 lines to src/pages/layout-grid.html
+       1 <!-- @dsCard group="Foundations" -->
+       2 <!doctype html>
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       5 <title>TPCL · Layout &amp; spacing</title>
+       7 <style>
+       8   .sp { display:flex; align-items:center; gap:14px; padding:7px 
+         0; }
+      10   .sp .lbl { font-size:12px; font-family: ui-monospace,"SF Mono"
+         ,Menlo,monospace; width:110px; color:var(--tp-ink-muted); }
+     … +180 lines (ctrl+o to expand)
+
+⏺ Foundations done. Now components.
+
+⏺ Write(src/pages/buttons.html)  ⎿  Wrote 73 lines to src/pages/buttons.html
+       1 <!-- @dsCard group="Components" -->
+       2 <!doctype html>
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       5 <title>TPCL · Buttons</title>
+       7 <style>
+       8   .bay { padding: 30px; display:flex; gap:14px; flex-wrap:wrap; 
+         align-items:center; }
+      10   .lab { font-size:11px; letter-spacing:.14em; text-transform:up
+         percase;
+     … +76 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/cards.html)
+  ⎿  Wrote 91 lines to src/pages/cards.html
+       1 <!-- @dsCard group="Components" -->
+       2 <!doctype html>
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       5 <title>TPCL · Cards &amp; panels</title>
+       7 <style>
+       8   .lab { font-size:11px; letter-spacing:.14em; text-transform:up
+         percase;
+      10   .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1
+         6px; }
+     … +108 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/stat-tiles.html)
+  ⎿  Wrote 133 lines to src/pages/stat-tiles.html
+       1 <!-- @dsCard group="Components" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Stat tiles &amp; KPI row</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+         percase;
+       9          color:var(--tp-ink-muted); margin: 0 0 10px; }
+      10   .kpi { display:grid; grid-template-columns:repeat(4,1fr); }
+     … +166 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/timeline.html)
+  ⎿  Wrote 108 lines to src/pages/timeline.html
+       1 <!-- @dsCard group="Components" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Timeline &amp; steps</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+         percase;
+       9          color:var(--tp-ink-muted); margin: 0 0 10px; }
+      10   .tp-dark .lab { color: rgba(255,255,255,.55); }
+     … +140 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/table-quote.html)
+  ⎿  Wrote 106 lines to src/pages/table-quote.html
+       1 <!-- @dsCard group="Components" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Tables, quotes &amp; tags</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+         percase;
+       9          color:var(--tp-ink-muted); margin: 0 0 10px; }
+      10   .tp-dark .lab { color: rgba(255,255,255,.55); }
+     … +141 lines (ctrl+o to expand)
+
+⏺ Now the media templates — real canvas dimensions, exportable as-is.
+
+⏺ Write(src/pages/social-square.html)
+  ⎿  Wrote 82 lines to src/pages/social-square.html
+       1 <!-- @dsCard group="Templates · Social" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Social square 1080×1080</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .canvas { width:1080px; height:1080px; position:relative; over
+         flow:hidden;
+      10             background:#3A3A3A; color:#fff; }
+     … +102 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/social-portrait.html)
+  ⎿  Wrote 79 lines to src/pages/social-portrait.html
+       1 <!-- @dsCard group="Templates · Social" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Social portrait 1080×1350</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .canvas { width:1080px; height:1350px; position:relative; over
+         flow:hidden;
+      10             background:#FFFFFF; color:#3A3A3A; }
+     … +105 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/social-story.html)
+  ⎿  Wrote 69 lines to src/pages/social-story.html
+       1 <!-- @dsCard group="Templates · Social" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Story / Reel cover 1080×1920</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .canvas { width:1080px; height:1920px; position:relative; over
+         flow:hidden;
+      10             background:#3A3A3A; color:#fff; }
+     … +91 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/whatsapp-status.html)
+  ⎿  Wrote 77 lines to src/pages/whatsapp-status.html
+       1 <!-- @dsCard group="Templates · Social" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · WhatsApp Status 1080×1920</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .canvas { width:1080px; height:1920px; position:relative; over
+         flow:hidden;
+      10             background:#FFFFFF; color:#3A3A3A; }
+     … +102 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/linkedin-single.html)
+  ⎿  Wrote 58 lines to src/pages/linkedin-single.html
+       1 <!-- @dsCard group="Templates · LinkedIn" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · LinkedIn single image 1200×627</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .canvas { width:1200px; height:627px; position:relative; overf
+         low:hidden; display:grid;
+      10             grid-template-columns:1fr 1fr; }
+     … +76 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/linkedin-carousel.html)
+  ⎿  Wrote 125 lines to src/pages/linkedin-carousel.html
+       1 <!-- @dsCard group="Templates · LinkedIn" -->
+       2 <!doctype html>
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       5 <title>TPCL · LinkedIn carousel 1080×1350</title>
+       7 <style>
+       8   body { background:#EDEEF0; }
+       9   .canvas { width:1080px; height:1350px; position:relative; over
+      10   .tag { width:1080px; font-family:var(--tp-font); font-size:13p
+         x; font-weight:500;
+     … +176 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/linkedin-banner.html)
+  ⎿  Wrote 81 lines to src/pages/linkedin-banner.html
+       1 <!-- @dsCard group="Templates · LinkedIn" -->
+       2 <!doctype html>
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       5 <title>TPCL · LinkedIn banners</title>
+       7 <style>
+       8   body { background:#EDEEF0; }
+       9   .tag { font-family:var(--tp-font); font-size:13px; font-weight
+      10          text-transform:uppercase; color:#6E6E6E; padding:26px 4
+         px 10px; }
+     … +112 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/emailer.html)
+  ⎿  Wrote 152 lines to src/pages/emailer.html
+       1 <!-- @dsCard group="Templates · Email" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Email 600px</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .wrap { padding:32px 4px 44px; }
+      10   .tag { font-family:var(--tp-font); font-size:13px; font-weight
+         :500; letter-spacing:.14em;
+     … +205 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/website-hero.html)
+  ⎿  Wrote 100 lines to src/pages/website-hero.html
+       1 <!-- @dsCard group="Templates · Website" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+         1">
+       5 <title>TPCL · Website hero</title>
+       6 <!--TPCL_CORE-->
+       7 <style>
+       9   .frame { width:1440px; background:#fff; }
+      10   .nav { height:88px; background:#3A3A3A; display:flex; align-it
+         ems:center;
+     … +128 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/website-sections.html)
+  ⎿  Wrote 147 lines to src/pages/website-sections.html
+       1 <!-- @dsCard group="Templates · Website" -->
+       2 <!doctype html>
+       3 <html lang="en"><head><meta charset="utf-8">
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       6 <!--TPCL_CORE-->
+       7 <style>
+       8   body { background:#EDEEF0; }
+       9   .frame { width:1440px; background:#fff; }
+      10   .sec { padding:96px 48px; }
+     … +202 lines (ctrl+o to expand)
+
+⏺ Write(src/pages/slide-16x9.html)
+  ⎿  Wrote 140 lines to src/pages/slide-16x9.html
+       1 <!-- @dsCard group="Templates · Deck" -->
+       2 <!doctype html>
+       4 <meta name="viewport" content="width=device-width,initial-scale=
+         1">
+       5 <title>TPCL · Slide masters 16:9</title>
+       7 <style>
+       8   body { background:#EDEEF0; }
+       9   /* 1280 × 720 preview = 1920 × 1080 at 0.667 scale. Margins sh
+      10   .slide { width:1280px; height:720px; position:relative; overfl
+         ow:hidden; }
+     … +202 lines (ctrl+o to expand)
+
+⏺ Update(build_tpcl_ds.py)  ⎿  Added 11 lines, removed 11 lines
+      36      "timeline.html":          ("components/timeline.html",     
+                "Components",  "Timeline & steps",    "Cyan rule, dots, n
+          umbered boxes", 1080, 900),
+      37      "table-quote.html":       ("components/table-quote.html",  
+                "Components",  "Tables & quotes",     "Data table, statem
+          ent, tags", 1080, 900),
+      38      # ---- Templates: social ----
+      39 -    "social-square.html":     ("templates/social-square-1080.ht
+         -ml",  "Templates · Social", "Instagram / Facebook square", "108
+         -0 × 1080", 1080, 1080),                                        
+      40 -    "social-portrait.html":   ("templates/social-portrait-1080x
+         -1350.html", "Templates · Social", "Instagram / LinkedIn portrai
+         -t", "1080 × 1350 (4:5)", 1080, 1350),                          
+      41 -    "social-story.html":      ("templates/social-story-1080x192
+         -0.html","Templates · Social", "Story / Reel cover", "1080 × 192
+         -0 (9:16) + safe zones", 1080, 1920),                           
+      42 -    "whatsapp-status.html":   ("templates/whatsapp-status-1080x
+         -1920.html","Templates · Social", "WhatsApp Status", "1080 × 192
+         -0, WA chrome safe zones", 1080, 1920),                         
+      39 +    "social-square.html":     ("templates/social-square-1080.ht
+         +ml",  "Templates · Social", "Instagram / Facebook square", "108
+         +0 × 1080 · dark statement", 1080, 1330),                       
+      40 +    "social-portrait.html":   ("templates/social-portrait-1080x
+         +1350.html", "Templates · Social", "Instagram / LinkedIn portrai
+         +t", "1080 × 1350 (4:5) · light insight", 1080, 1610),          
+      41 +    "social-story.html":      ("templates/social-story-1080x192
+         +0.html","Templates · Social", "Story / Reel cover", "1080 × 192
+         +0 (9:16) + safe zones", 1080, 2190),                           
+      42 +    "whatsapp-status.html":   ("templates/whatsapp-status-1080x
+         +1920.html","Templates · Social", "WhatsApp Status", "1080 × 192
+         +0, WA chrome safe zones", 1080, 2260),                         
+      43      # ---- Templates: LinkedIn ----
+      44 -    "linkedin-single.html":   ("templates/linkedin-single-1200x
+         -627.html", "Templates · LinkedIn", "LinkedIn single image post"
+         -, "1200 × 627 (1.91:1)", 1200, 627),                           
+      45 -    "linkedin-carousel.html": ("templates/linkedin-carousel-108
+         -0x1350.html","Templates · LinkedIn", "LinkedIn carousel / docum
+         -ent", "1080 × 1350, cover + inner + CTA", 1080, 1350),         
+      46 -    "linkedin-banner.html":   ("templates/linkedin-banner-1584x
+         -396.html","Templates · LinkedIn", "LinkedIn banners", "1584 × 3
+         -96 personal + 1128 × 191 page", 1584, 900),                    
+      44 +    "linkedin-single.html":   ("templates/linkedin-single-1200x
+         +627.html", "Templates · LinkedIn", "LinkedIn single image post"
+         +, "1200 × 627 (1.91:1) · also the link-preview crop", 1200, 900
+         +),                                                             
+      45 +    "linkedin-carousel.html": ("templates/linkedin-carousel-108
+         +0x1350.html","Templates · LinkedIn", "LinkedIn carousel / docum
+         +ent", "1080 × 1350 · cover, inner, CTA", 1080, 4460),          
+      46 +    "linkedin-banner.html":   ("templates/linkedin-banner-1584x
+         +396.html","Templates · LinkedIn", "LinkedIn banners", "1584 × 3
+         +96 personal + 1128 × 191 page", 1584, 1080),                   
+      47      # ---- Templates: Email ----
+      48 -    "emailer.html":           ("templates/emailer-600.html",   
+         -      "Templates · Email", "Email newsletter", "600px, table-ba
+         -sed, client-safe", 700, 1600),                                 
+      48 +    "emailer.html":           ("templates/emailer-600.html",   
+         +      "Templates · Email", "Email newsletter", "600px, table-ba
+         +sed, client-safe", 700, 1900),                                 
+      49      # ---- Templates: Web ----
+      50 -    "website-hero.html":      ("templates/website-hero.html",  
+         -      "Templates · Website", "Website hero",   "Split dark/ligh
+         -t, 1440 frame", 1440, 760),                                    
+      51 -    "website-sections.html":  ("templates/website-sections.html
+         -",    "Templates · Website", "Website sections", "Services, pro
+         -of, CTA, footer", 1440, 2200),                                 
+      50 +    "website-hero.html":      ("templates/website-hero.html",  
+         +      "Templates · Website", "Website hero",   "7/5 split dark 
+         ++ blue-gray, 1440 frame", 1440, 1000),                         
+      51 +    "website-sections.html":  ("templates/website-sections.html
+         +",    "Templates · Website", "Website sections", "Services, sta
+         +tement, proof, CTA, footer", 1440, 2900),                      
+      52      # ---- Templates: Deck ----
+      53 -    "slide-16x9.html":        ("templates/slide-16x9.html",    
+         -      "Templates · Deck", "Slide masters 16:9", "Opener, split,
+         - content, statement", 1280, 1600),                             
+      53 +    "slide-16x9.html":        ("templates/slide-16x9.html",    
+         +      "Templates · Deck", "Slide masters 16:9", "Cover, split, 
+         +content, statement", 1280, 3400),                              
+      54  }
+      55  
+      56  
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ The build guard caught the email merge tags — those are meant to survive to
+  the output.
+
+⏺ Update(build_tpcl_ds.py)
+  ⎿  Added 2 lines, removed 1 line
+       95          html = html.replace("<!--TPCL_CORE-->", style_block)
+       96          for k, uri in logo_uris.items():
+       97              html = html.replace(k, uri)
+       98 -        leftover = re.findall(r"\{\{[A-Z_]+\}\}", html)       
+       98 +        # ESP merge tags are meant to survive to the output — 
+          +everything else is a bug.                                     
+       99 +        leftover = set(re.findall(r"\{\{[A-Z_]+\}\}", html)) -
+          + MERGE_TAGS                                                   
+      100          if leftover:
+      101              sys.exit(f"{page.name}: unresolved placeholders {s
+           et(leftover)}")
+      102          # @dsCard marker must be the very first line of the fi
+           le
+
+⏺ Update(build_tpcl_ds.py)
+  ⎿  Added 3 lines
+      20           "{{LOGO_BLACK}}": "tpc_black.png",
+      21           "{{LOGO_COLOUR}}": "tpc_colour.png"}
+      22  
+      23 +# Placeholders the email tool fills in at send time — these shi
+         +p through unchanged.                                           
+      24 +MERGE_TAGS = {"{{FIRST_NAME}}", "{{UNSUBSCRIBE_URL}}", "{{PREFE
+         +RENCES_URL}}"}                                                 
+      25 +                                                               
+      26  # Where each page lands in the design-system project, and its c
+          ard metadata.
+      27  # group -> the section label shown in the Claude Design "Design
+           system" pane.
+      28  LAYOUT = {
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ logo.html came out at 458 KB because the logo data URI repeats nine times. Let
+  me deduplicate it into CSS classes, injecting only the cuts each page
+  actually uses.
+
+⏺ Update(src/tpcl-core.css)
+  ⎿  Added 6 lines, removed 1 line
+      112    font-variant-numeric: tabular-nums;
+      113  }
+      114  
+      115 -/* M3 · Signature logo lockup. Bottom-LEFT on dark, bottom-RIG
+          -HT on light. */                                               
+      115 +/* M3 · Signature logo lockup. Bottom-LEFT on dark, bottom-RIG
+          +HT on light.                                                  
+      116 +   The three cuts are injected by the bundler as .tp-mark--whi
+          +te / --black / --colour,                                      
+      117 +   only for the pages that actually use them. Set height (or w
+          +idth) — the                                                   
+      118 +   locked 1.924:1 ratio supplies the other dimension. */      
+      119 +.tp-mark { display: block; aspect-ratio: 760 / 395; background
+          +-repeat: no-repeat;                                           
+      120 +           background-size: contain; background-position: left
+          + center; }                                                    
+      121  .tp-logo { height: 34px; width: auto; }
+      122  .tp-logo--sm { height: 26px; }
+      123  .tp-logo--lg { height: 48px; }
+
+⏺ Update(build_tpcl_ds.py)
+  ⎿  Added 16 lines, removed 2 lines
+       95          html = page.read_text()
+       96          if "<!--TPCL_CORE-->" not in html:
+       97              sys.exit(f"{page.name}: missing <!--TPCL_CORE--> p
+           laceholder")
+       98 -        html = html.replace("<!--TPCL_CORE-->", style_block)  
+       99 -        for k, uri in logo_uris.items():                      
+       98 +                                                              
+       99 +        # Logos: collapse repeated <img src="{{LOGO_*}}"> into
+          + one CSS class per cut, so a                                  
+      100 +        # page that shows the mark nine times still carries th
+          +e PNG bytes once. Email is                                    
+      101 +        # exempt — Gmail and Outlook drop CSS background image
+          +s, so it keeps a real <img>.                                  
+      102 +        page_style = style_block                              
+      103 +        if page.name not in EMAIL_PAGES:                      
+      104 +            used = {k for k in LOGOS if k in html}            
+      105 +            marks = "".join(                                  
+      106 +                ".tp-mark--%s{background-image:url(%s);}" % (k
+          +[7:-2].lower(), logo_uris[k])                                 
+      107 +                for k in sorted(used)                         
+      108 +            )                                                 
+      109 +            if marks:                                         
+      110 +                page_style = page_style[: -len("</style>")] + 
+          +marks + "</style>"                                            
+      111 +            html = LOGO_IMG_RE.sub(_img_to_mark, html)        
+      112 +        html = html.replace("<!--TPCL_CORE-->", page_style)   
+      113 +        for k, uri in logo_uris.items():   # any remaining raw
+          + uses (email)                                                 
+      114              html = html.replace(k, uri)
+      115          # ESP merge tags are meant to survive to the output — 
+           everything else is a bug.
+      116          leftover = set(re.findall(r"\{\{[A-Z_]+\}\}", html)) -
+            MERGE_TAGS
+
+⏺ Update(build_tpcl_ds.py)
+  ⎿  Added 14 lines
+      23  # Placeholders the email tool fills in at send time — these shi
+          p through unchanged.
+      24  MERGE_TAGS = {"{{FIRST_NAME}}", "{{UNSUBSCRIBE_URL}}", "{{PREFE
+          RENCES_URL}}"}
+      25  
+      26 +# Pages that must keep literal <img> tags rather than CSS backg
+         +round marks.                                                   
+      27 +EMAIL_PAGES = {"emailer.html"}                                 
+      28 +                                                               
+      29 +LOGO_IMG_RE = re.compile(r'<img\s+src="(\{\{LOGO_(?:WHITE|BLACK
+         +|COLOUR)\}\})"([^>]*?)/?>')                                    
+      30 +ALT_RE = re.compile(r'\s*alt="[^"]*"')                         
+      31 +                                                               
+      32 +                                                               
+      33 +def _img_to_mark(m: "re.Match[str]") -> str:                   
+      34 +    """<img src="{{LOGO_WHITE}}" alt=".." style=".."> -> <span 
+         +class="tp-mark tp-mark--white" ..>"""                          
+      35 +    cut = m.group(1)[7:-2].lower()          # {{LOGO_WHITE}} ->
+         + white                                                         
+      36 +    attrs = ALT_RE.sub("", m.group(2)).rstrip()                
+      37 +    return (f'<span class="tp-mark tp-mark--{cut}" role="img" '
+      38 +            f'aria-label="Travis Paul Consulting"{attrs}></span
+         +>')                                                            
+      39 +                                                               
+      40  # Where each page lands in the design-system project, and its c
+          ard metadata.
+      41  # group -> the section label shown in the Claude Design "Design
+           system" pane.
+      42  LAYOUT = {
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ Structurally clean. Let me verify it actually renders correctly in a browser.
+
+  Called claude-in-chrome 5 times, ran 1 shell command (ctrl+o to expand)
+
+⏺ Let me zoom in on the logo areas — I need to confirm the CSS-mark conversion
+  actually renders the signature.
+
+  Called claude-in-chrome (ctrl+o to expand)
+
+⏺ Found a real bug — the WhatsApp CTA is stretching to full column width instead
+  of hugging its label.
+
+⏺ Update(src/pages/whatsapp-status.html)
+  ⎿  Added 5 lines, removed 2 lines
+      16    .figure { font-size:190px; font-weight:700; line-height:.86; 
+          letter-spacing:-.035em;
+      17              font-variant-numeric:tabular-nums; }
+      18    .figlabel { font-size:26px; font-weight:500; letter-spacing:.
+          1em; text-transform:uppercase; color:#6E6E6E; }
+      19 -  .cta { display:inline-flex; align-items:center; gap:16px; bac
+         -kground:#FFC107; color:#3A3A3A;                                
+      20 -         font-weight:500; font-size:28px; letter-spacing:.02em;
+         - padding:26px 44px; }                                          
+      19 +  /* align-self keeps the button hugging its label — .pad is a 
+         +column flex,                                                   
+      20 +     which would otherwise stretch it edge to edge. */         
+      21 +  .cta { display:inline-flex; align-self:flex-start; align-item
+         +s:center; gap:16px;                                            
+      22 +         background:#FFC107; color:#3A3A3A; font-weight:500; fo
+         +nt-size:28px;                                                  
+      23 +         letter-spacing:.02em; padding:26px 44px; }            
+      24    .zone { position:absolute; left:0; right:0; background:rgba(0
+          ,188,212,.10);
+      25            border:2px dashed rgba(0,188,212,.6); }
+      26    .zone span { position:absolute; left:24px; top:16px; font-siz
+          e:22px; letter-spacing:.12em;
+
+  Called claude-in-chrome, ran 1 shell command (ctrl+o to expand)
+
+⏺ Both render correctly — fonts embedded, signature mark showing, motifs intact.
+  One more check on the most complex layout, then I'll close the browser.
+
+  Called claude-in-chrome (ctrl+o to expand)
+
+⏺ Verified. Closing the browser and stopping the local server.
+
+  Called claude-in-chrome, ran 1 shell command (ctrl+o to expand)
+
+⏺ Now the spec that Claude Design reads when the system is attached.
+⏺ Write(src/README.md)
+  ⎿  Wrote 195 lines to src/README.md
+      1 # TPCL Design System
+      2 
+      3 **Travis Paul Consulting Ltd · v1.0**
+      5 Apply this system to everything TPCL-branded: slides, social post
+        s, LinkedIn, WhatsApp Status,
+      6 email, and the website. `tokens.css` is the machine-readable sour
+        ce of truth; the pages in
+        mples.
+      8 
+      9 ---
+     … +264 lines (ctrl+o to expand)
+
+⏺ Update(build_tpcl_ds.py)
+  ⎿  Added 2 lines, removed 1 line
+       98          shutil.rmtree(DIST)
+       99      DIST.mkdir(parents=True)
+      100  
+      101 -    # tokens.css ships as a plain, human-readable file too (no
+          - fonts inlined)                                               
+      101 +    # The spec Claude reads when the system is attached, plus 
+          +the raw tokens.                                               
+      102 +    (DIST / "README.md").write_text((SRC / "README.md").read_t
+          +ext())                                                        
+      103      (DIST / "tokens.css").write_text(core)
+      104  
+      105      written, cards = [], []
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Now let me publish it to Claude Design. First, checking what design-system
+  projects exist.
+
+⏺ Design: List design-system projects(List design-system projects)
+
+⏺ Design: Create project "TPCL — Travis Paul Consulting"(Create project "TPCL —
+                                                        Travis Paul Consulting")
+
+⏺ Design: Upload design system (5 to upload)(1c6cc31b…)
+  ⎿  Error: finalize_plan requires: deletes.
+
+⏺ Design: Upload design system (5 to upload)(1c6cc31b…)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Design: Write 23 files from disk(Write 23 files from disk)
+
+⏺ All 23 files uploaded. Now registering the cards with correct viewport sizes
+  so the tall canvases preview properly.
+
+⏺ Design: Register 21 asset cards(Register 21 asset cards)
+
+⏺ Now the usage guide and prompt library.
+
+⏺ Write(HOW_TO_USE.md)
+  ⎿  Wrote 165 lines to HOW_TO_USE.md
+       1 # TPCL Design System — how to use it
+       2 
+       3 **v1.0 · built 4 August 2026**
+       4 
+       5 Two ways in: **Claude Design** (no code, for you or anyone you h
+       6 (the `/tpcl-brand` skill, for builds that produce files).
+       7 
+       8 ---
+       9 
+      10 ## 1. Claude Design — the code-free path
+     … +225 lines (ctrl+o to expand)
+
+⏺ Now the Claude Code skill.
+
+⏺ Write(~/.claude/skills/tpcl-brand/SKILL.md)
+  ⎿  Wrote 78 lines to ../../.claude/skills/tpcl-brand/SKILL.md
+       1 ---
+       3 description: TPCL (Travis Paul Consulting) visual identity — app
+          social posts, Instagram/Facebook, WhatsApp Status, LinkedIn pos
+         sals. Also use when asked for the TPCL palette, Poppins type sca
+         d2c Telcare work (Circular Std) or for a client's own brand syst
+         em.
+       5 
+       7 
+       9 — `dist/README.md` is the full written spec, `src/tpcl-core.css`
+      10 `dist/templates/*.html` are worked exam
+     … +112 lines (ctrl+o to expand)
+
+⏺ Finally, memory so this is findable in future sessions.
+
+  Ran 2 shell commands, wrote 3 memories (ctrl+o to expand)
+  ⎿  1 skill available
+
+⏺ Design: Read project metadata(Read project metadata)
+
+⏺ Confirmed as a real design-system project. Done — here's what exists now.
+
+  1. Live in Claude Design (code-free)
+
+  Project: "TPCL — Travis Paul Consulting" — 23 files uploaded, 21 cards
+  registered.
+
+  Go to claude.ai/design → open the "Design system" dropdown (currently None) →
+  pick it. Leave Template on None; that picker is Anthropic's own starter
+  layouts. TPCL's templates are cards inside the system — you name them in the
+  prompt instead.
+
+  ┌───────────────────┬─────────────────────────────────────────────────────┐
+  │       Group       │                        Cards                        │
+  ├───────────────────┼─────────────────────────────────────────────────────┤
+  │ Foundations       │ Colour · Typography · Logo & lockups · Motifs ·     │
+  │                   │ Layout & spacing                                    │
+  ├───────────────────┼─────────────────────────────────────────────────────┤
+  │ Components        │ Buttons · Cards & panels · Stat tiles/KPI ·         │
+  │                   │ Timeline & steps · Tables, quotes & tags            │
+  ├───────────────────┼─────────────────────────────────────────────────────┤
+  │ Social            │ Square 1080 · Portrait 1080×1350 · Story 1080×1920  │
+  │                   │ · WhatsApp Status 1080×1920                         │
+  ├───────────────────┼─────────────────────────────────────────────────────┤
+  │ LinkedIn          │ Single 1200×627 · Carousel 1080×1350 · Banners      │
+  │                   │ 1584×396 + 1128×191                                 │
+  ├───────────────────┼─────────────────────────────────────────────────────┤
+  │ Email / Website / │ Newsletter 600px · Hero + Sections · Slide masters  │
+  │  Deck             │ 16:9                                                │
+  └───────────────────┴─────────────────────────────────────────────────────┘
+
+  Every page is self-contained under Claude Design's strict CSP: Poppins subset
+  to WOFF2 (~7.6 KB/weight) and the signature logo inlined as data URIs. Nothing
+  depends on fonts being installed.
+
+  2. Files — ~/Desktop/TPCL_Design_System/
+
+  src/tpcl-core.css (tokens + components), src/pages/*.html (21 pages),
+  src/README.md (the spec Claude reads), build_tpcl_ds.py, and HOW_TO_USE.md
+  with a copy-paste prompt library per surface. dist/ is generated — don't
+  hand-edit.
+
+  3. Skill + memory
+
+  /tpcl-brand at ~/.claude/skills/tpcl-brand/SKILL.md (auto-loads on TPCL work;
+  explicitly excludes d2c/Circular Std). Memory written as
+  tpcl_design_system.md, indexed, and cross-linked from
+  tpcl_consultant_system.md.
+
+  Decisions I made — flag anything you disagree with
+
+  Your 2026 brief left six questions open. I closed them from the memory record:
+  signature logo, pure white (not off-white), cyan+amber kept, mixed case rule
+  kept (CAPS on charcoal / sentence case on white), Poppins, no confidentiality
+  footer.
+
+  I added two things the brief didn't have, because the work needs them:
+  - Measured contrast. I computed the palette. White on cyan is 2.30:1 — it 
+  fails. So cyan/amber fills now carry charcoal labels, and on white both are
+  graphic-only. That's a real constraint your existing decks may violate.
+  - Provenance chips (Measured/Modelled/Assumed) on every figure, with the rule
+  that this overrides layout preference.
+
+  I also added a --tp-client overlay slot so engagement work tints one variable
+  rather than forking the system.
+
+  Verified, and the limits
+
+  I rendered the pages in Chrome and checked them: fonts embed, logos render,
+  motifs and splits are correct. Found and fixed one real bug (the WhatsApp CTA
+  was stretching full-width instead of hugging its label).
+
+  Two honest limits: email can't use the embedded font or logo — Gmail strips
+  @font-face and both Gmail and Outlook drop data-URI images, so you must host
+  the logo and accept the Century Gothic fallback. And the safe-zone bands on
+  Story/WhatsApp are drawn guides marked .tp-noexport; nothing stops you
+  exporting with them visible.
+
+✻ Baked for 27m 22s
+※ recap: Goal was a TPCL design system usable in Claude Design plus media templates, prompts, skill and memory. All of it is built, uploaded and verified. Next: open claude.ai/design, select "TPCL — Travis Paul Consulting" from the Design system dropdown, and try a prompt. (disable recaps in /config)
+
+❯ Prepare one pack that can be shared with Web GUI user, with written guide and 
+  referencing the TPCL Brand Guidelines .pdf                                    
+
+⏺ Let me first check whether a TPCL Brand Guidelines PDF already exists — that
+  decides whether I reference it or generate it.
+
+  Ran 2 shell commands (ctrl+o to expand)
+
+⏺ No existing guidelines PDF — but the 2021 Illustrator masters Proper use of 
+  Colour.ai and logo_Clear Space.ai do exist. Those hold the official rules. Let
+  me read them rather than restate my inferred version.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ They're PDF-compatible. Let me render them.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Text is mostly outlined artwork. Let me render and look at them.
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+⏺ That's the official colour-usage sheet — and it shows four approved
+  treatments, not the three I documented. Let me check clear space and sample
+  the actual logo colours.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Let me measure the clear-space ratio and sample the official logo colours
+  properly rather than eyeball them.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Three hard facts came out of that. Let me confirm the grey treatment and check
+  my PDF tooling.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Three corrections to fold in first — my inferred clear-space rule was
+  materially wrong.
+
+⏺ Update(src/pages/logo.html)
+  ⎿  Added 8 lines, removed 3 lines
+      78          <span class="guide"></span>
+      79        </div>
+      80        <div style="max-width:44ch">
+      81 -        <p class="tp-note"><strong>Clear space = the cap-height
+         - of “CONSULTING” × 2</strong> on all four                      
+      82 -          sides — about 24% of the logo height. Nothing enters 
+         -it: no text, no rule, no accent block,                         
+      83 -          no photo edge.</p>                                   
+      81 +        <p class="tp-note"><strong>Clear space = 45% of the log
+         +o height on all four sides</strong>                            
+      82 +          (equivalently 23.5% of its width — the padding is uni
+         +form, not proportional to the side).                           
+      83 +          Measured off the 2021 brand master <span class="tp-co
+         +de">travis paul_logo_Clear Space.ai</span>:                    
+      84 +          logo bbox 232 × 121, padding 54–55px on every side. N
+         +othing enters it — no text, no rule,                           
+      85 +          no accent block, no photo edge.</p>                  
+      86 +        <p class="tp-note" style="margin-top:12px">This is roug
+         +hly <strong>double</strong> the clear                          
+      87 +          space most people leave by eye. At a 34px slide-foote
+         +r logo that is 15px of protected space                         
+      88 +          all round; at 120px wide (62px tall) it is 28px.</p> 
+      89          <p class="tp-note" style="margin-top:12px"><strong>Mini
+          mum sizes.</strong>
+      90            Screen / social: <strong>120px wide</strong>. Slide f
+          ooter: <strong>34px tall</strong>.
+      91            Print: <strong>28mm wide</strong>. Below that the scr
+          ipt closes up and the caps disappear —
+
+⏺ Update(src/pages/logo.html)
+  ⎿  Added 43 lines
+      50    </div>
+      51  
+      52    <div class="tp-sec">
+      53 +    <h2>A fourth approved treatment — tint</h2>                
+      54 +    <div style="display:flex;gap:36px;align-items:center;flex-w
+         +rap:wrap">                                                     
+      55 +      <div class="frame" style="height:150px;width:340px;displa
+         +y:flex;align-items:center;justify-content:center;flex:0 0 auto"
+         +>                                                              
+      56 +        <img src="{{LOGO_BLACK}}" alt="" style="width:62%;opaci
+         +ty:.62">                                                       
+      57 +      </div>                                                   
+      58 +      <div style="max-width:48ch">                             
+      59 +        <p class="tp-note">The 2021 brand master approves <stro
+         +ng>four</strong> treatments, not three:                        
+      60 +          full colour, black, <strong>tint</strong>, and revers
+         +ed white. The tint sets the script at                          
+      61 +          <span class="tp-code">#57585A</span> with the tracked
+         + caps at a lighter step —                                      
+      62 +          for watermarks, document backgrounds, and partner wal
+         +ls where the mark must be present but                          
+      63 +          must not compete. <strong>Never use tint below 40% or
+         + the caps disappear.</strong></p>                              
+      64 +      </div>                                                   
+      65 +    </div>                                                     
+      66 +  </div>                                                       
+      67 +                                                               
+      68 +  <div class="tp-sec">                                         
+      69 +    <h2>The logo's own colours vs the layout palette</h2>      
+      70 +    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bot
+         +tom:14px">                                                     
+      71 +      <div style="background:#085F89;color:#fff;padding:14px 18
+         +px;min-width:170px">Logo deep blue                             
+      72 +        <div style="font-size:11px;letter-spacing:.08em;margin-
+         +top:6px;opacity:.85">#085F89</div></div>                       
+      73 +      <div style="background:#59D1E2;color:#3A3A3A;padding:14px
+         + 18px;min-width:170px">Logo caps cyan                          
+      74 +        <div style="font-size:11px;letter-spacing:.08em;margin-
+         +top:6px;opacity:.85">#59D1E2</div></div>                       
+      75 +      <div style="background:#57585A;color:#fff;padding:14px 18
+         +px;min-width:170px">Logo tint grey                             
+      76 +        <div style="font-size:11px;letter-spacing:.08em;margin-
+         +top:6px;opacity:.85">#57585A</div></div>                       
+      77 +      <div style="background:#00BCD4;color:#3A3A3A;padding:14px
+         + 18px;min-width:170px">System cyan                             
+      78 +        <div style="font-size:11px;letter-spacing:.08em;margin-
+         +top:6px;opacity:.85">#00BCD4</div></div>                       
+      79 +    </div>                                                     
+      80 +    <p class="tp-note" style="max-width:72ch"><strong>These are
+         + two different eras and they do not                            
+      81 +      match.</strong> The 2021 logo master is built on deep blu
+         +e <span class="tp-code">#085F89</span>,                        
+      82 +      light cyan <span class="tp-code">#59D1E2</span> and pure 
+         +black                                                          
+      83 +      <span class="tp-code">#000000</span>. The layout system d
+         +erived from the business-profile deck                          
+      84 +      uses charcoal <span class="tp-code">#3A3A3A</span> and cy
+         +an                                                             
+      85 +      <span class="tp-code">#00BCD4</span>.                    
+      86 +      <br><br>                                                 
+      87 +      <strong>The ruling:</strong> the logo is a fixed asset an
+         +d keeps its own colours — do not recolour                      
+      88 +      it to match the palette. The layout keeps charcoal and sy
+         +stem cyan. But because                                         
+      89 +      <span class="tp-code">#59D1E2</span> and <span class="tp-
+         +code">#00BCD4</span> are close without                         
+      90 +      being equal, <strong>never place the full-colour logo on 
+         +the same surface as a cyan accent                              
+      91 +      block</strong> — the near-miss reads as a mistake. Use th
+         +e black or white cut there instead.                            
+      92 +      That is why the deck templates use black-on-white and whi
+         +te-on-charcoal everywhere.</p>                                 
+      93 +  </div>                                                       
+      94 +                                                               
+      95 +  <div class="tp-sec">                                         
+      96      <h2>Placement</h2>
+      97      <div class="tp-grid" style="grid-template-columns:1fr 1fr">
+      98        <div class="frame tp-dark" style="background:#3A3A3A">
+
+⏺ Update(src/README.md)
+  ⎿  Added 4 lines, removed 2 lines
+       96  ## Logo
+       97  
+       98  Handwritten **Travis Paul** script with **CONSULTING** in trac
+           ked caps. Ratio locked at 1.93:1.
+       99 -White cut on charcoal, black on white, full colour on plain li
+          -ght surfaces only.                                            
+       99 +**Four approved treatments** (2021 brand master): full colour,
+          + black, tint `#57585A`, reversed white.                       
+      100  
+      101  - **Dark surface → bottom LEFT. Light surface → bottom RIGHT.*
+           *
+      102 -- Clear space = 2× the cap-height of "CONSULTING" on all sides
+          - (~24% of logo height).                                       
+      102 +- **Clear space = 45% of the logo height on all four sides** (
+          += 23.5% of its width; padding is                              
+      103 +  uniform). Measured off `travis paul_logo_Clear Space.ai`. Th
+          +is is about double what most people                           
+      104 +  leave by eye.                                               
+      105  - Minimum: 120px wide on screen, 34px tall in a slide footer, 
+           28mm in print.
+      106  - Never on cyan or amber, never stretched, never on a mid-tone
+            or a busy photo.
+      107  - Co-branding: TPCL left, client right, 1px rule between, opti
+           cally matched heights. On a client's
+
+⏺ Update(src/README.md)
+  ⎿  Added 6 lines
+      110  Files: `memory/assets/tpcl_logos/tpc_{white,black,colour}.png`
+           . Use **Consulting** by default;
+      111  Holdings (`pthl_*`) only for parent-entity material.
+      112  
+      113 +**The logo's colours are not the layout palette.** The 2021 ma
+          +ster is deep blue `#085F89`, caps cyan                        
+      114 +`#59D1E2`, pure black `#000000`. The layout system is charcoal
+          + `#3A3A3A` + cyan `#00BCD4`. The logo                         
+      115 +keeps its own colours — never recolour it. But `#59D1E2` and `
+          +#00BCD4` are close without matching, so                       
+      116 +**never put the full-colour logo on a surface that carries a c
+          +yan accent block**; use black or white                        
+      117 +there. This is why every template uses black-on-white and whit
+          +e-on-charcoal.                                                
+      118 +                                                              
+      119  ---
+      120  
+      121  ## Layout
+
+⏺ Now the Brand Guidelines document itself, built in the system it documents.
+
+⏺ Write(src/guidelines.html)
+  ⎿  Wrote 596 lines to src/guidelines.html
+       1 <!doctype html>
+       2 <html lang="en"><head><meta charset="utf-8">
+       3 <title>TPCL Brand Guidelines</title>
+       5 <style>
+       6   @page { size: A4 landscape; margin: 0; }
+       7   body { background:#fff; }
+       8   .pg { width:297mm; height:210mm; position:relative; overflow:h
+       9         page-break-after:always; break-after:page; background:#f
+         ff; }
+      10   .pg:last-child { page-break-after:auto; break-after:auto; }
+     … +883 lines (ctrl+o to expand)
+
+⏺ Now the written guide for the web user, which references the guidelines PDF.
+
+⏺ Write(src/webguide.html)
+  ⎿  Wrote 268 lines to src/webguide.html
+       1 <!doctype html>
+       2 <html lang="en"><head><meta charset="utf-8">
+       3 <title>TPCL Design System — Guide for claude.ai</title>
+       5 <style>
+       6   @page { size: A4 portrait; margin: 0; }
+       7   body { background:#fff; }
+       8   .pg { width:210mm; height:297mm; position:relative; overflow:h
+       9         page-break-after:always; break-after:page; background:#f
+         ff; }
+      10   .pg:last-child { page-break-after:auto; break-after:auto; }
+     … +382 lines (ctrl+o to expand)
+⏺ Now the pack builder — inlines assets, prints both PDFs via headless Chrome,
+  and assembles.
+
+⏺ Write(build_pack.py)
+  ⎿  Wrote 86 lines to build_pack.py
+       1 #!/usr/bin/env python3
+       2 """
+         (web) user.
+       4 
+       5 Renders src/guidelines.html and src/webguide.html with fonts + l
+       6 both to PDF via headless Chrome, and assembles pack/ with the lo
+         gos, tokens.css and
+       7 an index. Run build_tpcl_ds.py first (this reuses its inlining).
+       9 Usage:  python3 build_pack.py
+      10 """
+     … +96 lines (ctrl+o to expand)
+
+  Listed 1 directory, ran 1 shell command (ctrl+o to expand)
+
+⏺ Background command "Rebuild design system and build the share pack" completed
+(exit code 0)
+
+⏺ Both PDFs built. Let me verify they actually paginated correctly and look
+  right.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Correct pagination, no overflow pages. Let me look at them.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Page 4 overflows — the comparison boxes are colliding with the footer. Let me
+  check the rest before fixing.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Systematic overflow — content is running past the pad and colliding with the
+  footer on pages 4–8. Let me measure it precisely rather than guess.
+
+  Called claude-in-chrome 2 times, ran 2 shell commands (ctrl+o to expand)
+
+⏺ Exact overflow per page. Let me fix the density globally plus the two worst
+  pages, then re-measure.
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 2 lines, removed 1 line
+       8    .pg { width:297mm; height:210mm; position:relative; overflow:
+          hidden;
+       9          page-break-after:always; break-after:page; background:#
+          fff; }
+      10    .pg:last-child { page-break-after:auto; break-after:auto; }
+      11 -  .pad { position:absolute; inset:18mm; display:flex; flex-dire
+         -ction:column; }                                                
+      11 +  /* bottom inset clears the footer, which sits at 9mm */      
+      12 +  .pad { position:absolute; inset:14mm 18mm 20mm; display:flex;
+         + flex-direction:column; }                                      
+      13    .dk { background:#3A3A3A; color:#fff; }
+      14    .acc { width:22mm; height:7.5mm; background:#FFC107; display:
+          block; flex:0 0 auto; }
+      15    .dk .acc { background:#00BCD4; }
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 1 line, removed 1 line
+      21    h2.sent { font-size:24pt; line-height:1.1; font-weight:400; l
+          etter-spacing:-.015em; margin:0; }
+      22    h2.sent b { font-weight:700; }
+      23    h3 { font-size:12pt; font-weight:700; margin:0 0 2mm; }
+      24 -  p, li, td, th { font-size:9.5pt; line-height:1.55; }         
+      24 +  p, li, td, th { font-size:8.8pt; line-height:1.5; }          
+      25    .lede { font-size:12pt; line-height:1.5; color:#6E6E6E; max-w
+          idth:60ch; margin:0; }
+      26    .dk .lede { color:rgba(255,255,255,.7); }
+      27    .chip { position:absolute; right:0; top:50%; transform:transl
+          ateY(-50%); width:11mm; height:11mm;
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 9 lines, removed 8 lines
+      32            letter-spacing:.05em; }
+      33    .dk .foot { color:rgba(255,255,255,.42); }
+      34    .mk { height:9mm; }
+      35 -  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:10mm; 
+         -}                                                              
+      36 -  .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:
+         -7mm; }                                                         
+      37 -  .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:
+         -5mm; }                                                         
+      35 +  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:9mm; }
+      36 +  .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:
+         +5mm; }                                                         
+      37 +  .g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:
+         +4mm; }                                                         
+      38 +  .g6 { display:grid; grid-template-columns:repeat(6,1fr); gap:
+         +3.5mm; }                                                       
+      39    .sw { border:1px solid #E4E6EA; }
+      39 -  .sw .b { height:22mm; }                                      
+      40 -  .sw .m { padding:3mm 3.5mm 4mm; }                            
+      41 -  .sw .hx { font-family:ui-monospace,Menlo,monospace; font-size
+         -:8pt; }                                                        
+      42 -  .sw .rl { font-size:7.5pt; color:#6E6E6E; line-height:1.4; ma
+         -rgin-top:1.5mm; }                                              
+      43 -  .pair { padding:3.5mm 4mm; font-size:8.5pt; }                
+      40 +  .sw .b { height:15mm; }                                      
+      41 +  .sw .m { padding:2.2mm 2.6mm 2.8mm; }                        
+      42 +  .sw .hx { font-family:ui-monospace,Menlo,monospace; font-size
+         +:7.5pt; }                                                      
+      43 +  .sw .rl { font-size:7pt; color:#6E6E6E; line-height:1.35; mar
+         +gin-top:1.2mm; }                                               
+      44 +  .pair { padding:2.6mm 3mm; font-size:8pt; }                  
+      45    .pair .r { font-size:7pt; letter-spacing:.08em; text-transfor
+          m:uppercase; margin-top:1.5mm; opacity:.9 }
+      46    .vd { display:inline-block; font-size:6.5pt; font-weight:700;
+           letter-spacing:.1em; padding:.6mm 1.6mm; }
+      47    .ok { background:#3A3A3A; color:#fff; } .no { background:#B00
+          020; color:#fff; }
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 3 lines, removed 3 lines
+      46    .vd { display:inline-block; font-size:6.5pt; font-weight:700;
+           letter-spacing:.1em; padding:.6mm 1.6mm; }
+      47    .ok { background:#3A3A3A; color:#fff; } .no { background:#B00
+          020; color:#fff; }
+      48    table.g { width:100%; border-collapse:collapse; }
+      49 -  table.g th { text-align:left; font-weight:500; font-size:7.5p
+         -t; letter-spacing:.1em;                                        
+      50 -    text-transform:uppercase; color:#6E6E6E; padding:2mm 3mm; b
+         -order-bottom:1.5pt solid #3A3A3A; }                            
+      51 -  table.g td { padding:2.2mm 3mm; border-bottom:.5pt solid #E4E
+         -6EA; font-size:8.5pt; }                                        
+      49 +  table.g th { text-align:left; font-weight:500; font-size:7pt;
+         + letter-spacing:.1em;                                          
+      50 +    text-transform:uppercase; color:#6E6E6E; padding:1.6mm 2.4m
+         +m; border-bottom:1.5pt solid #3A3A3A; }                        
+      51 +  table.g td { padding:1.5mm 2.4mm; border-bottom:.5pt solid #E
+         +4E6EA; font-size:8pt; }                                        
+      52    table.g td.n { text-align:right; font-variant-numeric:tabular
+          -nums; }
+      53    .dk table.g th { color:rgba(255,255,255,.6); border-bottom-co
+          lor:#fff; }
+      54    .dk table.g td { border-bottom-color:#4A4A4A; }
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 2 lines, removed 2 lines
+      53    .dk table.g th { color:rgba(255,255,255,.6); border-bottom-co
+          lor:#fff; }
+      54    .dk table.g td { border-bottom-color:#4A4A4A; }
+      55    .rule { border-left:2.5pt solid #00BCD4; padding-left:5mm; }
+      56 -  ul.t { padding-left:4.5mm; margin:0; } ul.t li { margin-botto
+         -m:1.8mm; }                                                     
+      57 -  .box { border:1.5pt solid #00BCD4; padding:6mm 7mm; }        
+      56 +  ul.t { padding-left:4.5mm; margin:0; } ul.t li { margin-botto
+         +m:1.2mm; }                                                     
+      57 +  .box { border:1.5pt solid #00BCD4; padding:4.5mm 5.5mm; }    
+      58    .mini { border:1px solid #E4E6EA; aspect-ratio:16/9; position
+          :relative; overflow:hidden; }
+      59    .mini .cp { position:absolute; bottom:2mm; left:2.5mm; font-s
+          ize:6.5pt; letter-spacing:.08em;
+      60                text-transform:uppercase; color:#6E6E6E; }
+
+⏺ Now the colour page — collapsing the six swatches to one row is the big win
+  there.
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 1 line, removed 1 line
+      280      <p class="eyeb" style="margin-top:7mm">04 · Colour</p>
+      281      <h2 class="sent" style="margin-top:3mm">Six tokens, and <b
+           >the contrast maths that governs them.</b></h2>
+      282  
+      283 -    <div class="g3" style="margin-top:7mm">                   
+      283 +    <div class="g6" style="margin-top:6mm">                   
+      284        <div class="sw"><div class="b" style="background:#3A3A3A
+           "></div><div class="m">
+      285          <strong style="font-size:9pt">Charcoal</strong> <span 
+           class="hx">#3A3A3A</span>
+      286          <div class="rl">Dark background · light-mode body text
+           . The primary.</div></div></div>
+
+⏺ Update(src/guidelines.html)
+  ⎿  Added 2 lines, removed 2 lines
+      301          <div class="rl">Secondary text, captions, table header
+           s on white. 5.10:1 — passes AA.</div></div></div>
+      302      </div>
+      303  
+      304 -    <div class="g2" style="margin-top:8mm;flex:1">            
+      304 +    <div class="g2" style="margin-top:7mm;flex:1">            
+      305        <div>
+      306          <h3>Measured contrast</h3>
+      307 -        <div class="g3" style="gap:3mm;margin-top:3mm">       
+      307 +        <div class="g3" style="gap:2.5mm;margin-top:3mm">     
+      308            <div class="pair" style="background:#3A3A3A;color:#f
+           ff">White on charcoal<div class="r">11.37:1 <span class="vd ok
+           ">AAA</span></div></div>
+      309            <div class="pair" style="background:#3A3A3A;color:#F
+           FC107">Amber on charcoal<div class="r">6.98:1 <span class="vd 
+           ok">AA</span></div></div>
+      310            <div class="pair" style="background:#3A3A3A;color:#0
+           0BCD4">Cyan on charcoal<div class="r">4.95:1 <span class="vd o
+           k">AA</span></div></div>
+
+⏺ Now trimming the remaining over-long pages.
+
+  Called claude-in-chrome, ran 2 shell commands (ctrl+o to expand)
+
+⏺ All pages fit now (p6's 3px is well inside the 23px gap before the footer).
+  Let me check the guide the same way.
+
+  Called claude-in-chrome (ctrl+o to expand)
+⏺ Page 3 of the guide is badly over — the prompt library needs two pages. Let me
+  split it.
+
+  Called claude-in-chrome, ran 1 shell command (ctrl+o to expand)
+
+⏺ Those numbers are identical — that's a cached page, not the new render. Let me
+  cache-bust.
+
+  Called claude-in-chrome (ctrl+o to expand)
+
+⏺ All five pages fit. Regenerating both PDFs.
+
+  Read 1 file, ran 1 shell command (ctrl+o to expand)
+
+⏺ Both fixed. Now the pack index and the zip.
+
+⏺ Write(TPCL_Share_Pack/READ_ME_FIRST.md)
+  ⎿  Wrote 67 lines to TPCL_Share_Pack/READ_ME_FIRST.md
+      1 # TPCL Brand & Design System — share pack
+      2 
+      3 **Travis Paul Consulting Ltd · v1.0 · August 2026**
+      4 
+      5 Everything needed to produce on-brand TPCL work in claude.ai, wit
+        hout writing code.
+      6 
+      7 ---
+      8 
+      9 ## Start here
+     … +83 lines (ctrl+o to expand)
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ with_suffix treated .0 as the extension — the zip exists under the right name,
+  but the code is wrong. Fixing it properly.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Now syncing the corrected pages back to the Claude Design project.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Design: Upload design system (2 to upload)(1c6cc31b…)
+
+⏺ Design: Write 2 files from disk(Write 2 files from disk)
+
+  Called claude-in-chrome, wrote 1 memory (ctrl+o to expand)
+
+⏺ TPCL Brand Pack v1.0 — the zip is the thing to send; the two PDFs are also
+  attached separately.
+
+  › [file] TPCL_Brand_Pack_v1.0.zip (683.8KB)
+  › [file] TPCL_Share_Pack/TPCL_Brand_Guidelines_v1.0.pdf (309KB)
+  › [file] TPCL_Share_Pack/TPCL_Design_System_Guide.pdf (203.2KB)
+
+⏺ TPCL_Brand_Pack_v1.0.zip — 684 KB, at ~/Desktop/TPCL_Design_System/. Send that
+  one file.
+
+  ┌────────────────────────────────┬─────────────────────────────────────────┐
+  │          In the pack           │                                         │
+  ├────────────────────────────────┼─────────────────────────────────────────┤
+  │                                │ 5pp A4 portrait — read first. Setup in  │
+  │ TPCL_Design_System_Guide.pdf   │ claude.ai, full prompt library, how to  │
+  │                                │ judge the output.                       │
+  ├────────────────────────────────┼─────────────────────────────────────────┤
+  │                                │ 9pp A4 landscape — the authority on     │
+  │ TPCL_Brand_Guidelines_v1.0.pdf │ what's correct. Logo, colour, type,     │
+  │                                │ motifs, layout, nine pre-flight checks. │
+  ├────────────────────────────────┼─────────────────────────────────────────┤
+  │ READ_ME_FIRST.md               │ One-screen orientation.                 │
+  ├────────────────────────────────┼─────────────────────────────────────────┤
+  │ tokens.css · logos/ · spec.md  │ For a developer or agency.              │
+  └────────────────────────────────┴─────────────────────────────────────────┘
+
+  The guide tells them how to make it; the guidelines tell them what's right.
+  Both are cross-referenced, and both are built in the system they document.
+
+  You asked me to reference the brand guidelines PDF — there wasn't one
+
+  No TPCL Brand Guidelines.pdf existed. What did exist were two 2021 Illustrator
+  masters in your logo zip: travis paul_Proper use of Colour.ai and travis 
+  paul_logo_Clear Space.ai. They're PDF-compatible, so I rendered and read them
+  rather than writing guidelines from my own inference.
+
+  That turned up three corrections to what I gave you earlier — one of them 
+  mine:
+
+  1. Clear space is 45% of the logo height, not ~24%. Measured off the master:
+  bbox 232×121, padding 54–55px uniform. My earlier "2× the cap-height of
+  CONSULTING" was inferred, and it was roughly half the real requirement.
+  Corrected in the system and pushed to Claude Design.
+  2. Four approved treatments, not three. I'd documented
+  white/black/full-colour. The master also approves a tint at #57585A for
+  watermarks and document grounds.
+  3. The logo's colours are not the layout palette. The 2021 master is deep blue
+  #085F89, caps cyan #59D1E2, pure black #000000. The deck-derived system is
+  charcoal #3A3A3A + cyan #00BCD4. Ruling in the guidelines: never recolour the
+  logo — but never put the full-colour logo on a surface carrying a cyan accent 
+  block, because #59D1E2 against #00BCD4 is a near-miss that reads as a
+  production error. Page 4 of the guidelines is devoted to this.
+
+  What I checked, and one thing I nearly shipped broken
+
+  First PDF pass looked fine at a glance but content was overflowing into the
+  footer on five of nine pages — page 5 by 229px. I measured every page in the
+  browser (pad rect vs deepest child) rather than eyeballing, fixed the density,
+  and re-measured: all pages now clear. The guide's prompt library needed
+  splitting across two pages, so that PDF is 5pp not 4pp.
+
+  Also fixed a latent bug in the builder:
+  Path("TPCL_Brand_Pack_v1.0").with_suffix(".zip") resolves to ..._v1.zip —
+  pathlib reads .0 as the extension. The archive was correct, the code wasn't.
+
+  One judgement call to flag: the guidelines assert #59D1E2 and #085F89 as the
+  logo colours, but those are sampled from a render of the 2021 artwork, not
+  read from a stated spec — the .ai files have no written colour values. They're
+  accurate to the pixel, but if a printer ever asks for Pantone/CMYK you'll
+  need the original designer's spec, which isn't in the zip.
+
+✻ Worked for 1h 25m 48s
+
+※ recap: Built and shipped the TPCL design system: live in Claude Design, plus a share pack zip with brand guidelines and a web-user guide. Everything's done and delivered; next step is yours to review the two PDFs. (disable recaps in /config)
+
+❯ /export                                                                       
+  ⎿  Conversation copied to clipboard
+
+※ recap: Built the TPCL design system and shipped it two ways: live on claude.ai Design, plus a shareable brand pack zip with a 9-page guidelines PDF and a 5-page web-user guide. Everything's delivered; next step is yours to review the PDFs. (disable recaps in /config)

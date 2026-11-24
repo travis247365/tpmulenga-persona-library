@@ -1,0 +1,18 @@
+# COPY . . runs after pnpm install, so without this the host's node_modules
+# overwrites the one just installed in the image. On a Mac build context that
+# means darwin-arm64 binaries for esbuild and rollup landing in a linux image,
+# which fails at build with a "cannot find module @rollup/rollup-linux-x64-gnu"
+# that reads like a dependency bug rather than a copy.
+node_modules
+**/node_modules
+dist
+build
+.git
+.github
+.claude
+*.log
+.env
+.env.*
+.DS_Store
+__pycache__
+*.pyc

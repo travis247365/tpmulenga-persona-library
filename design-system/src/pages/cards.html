@@ -1,0 +1,91 @@
+<!-- @dsCard group="Components" -->
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TPCL · Cards &amp; panels</title>
+<!--TPCL_CORE-->
+<style>
+  .lab { font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+         color:var(--tp-ink-muted); margin: 0 0 10px; }
+  .g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .g2 { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+</style>
+</head>
+<body class="tp-light">
+<div class="tp-doc">
+  <span class="tp-accent"></span>
+  <h1 style="margin-top:20px">Cards &amp; panels</h1>
+  <p class="tp-lede">Four surfaces. Hairline on white for content, blue-gray for framing,
+     charcoal-soft for dark pages, and a 3px cyan rule when a card is the point of the section.</p>
+
+  <div class="tp-sec">
+    <p class="lab">Content cards — hairline on white</p>
+    <div class="g3">
+      <div class="tp-card">
+        <span class="tp-accent tp-accent--sm"></span>
+        <h3 class="tp-h3" style="margin:14px 0 8px">Diagnose</h3>
+        <p class="tp-note">Reconcile the book against source totals before a single recommendation is written.</p>
+      </div>
+      <div class="tp-card">
+        <span class="tp-accent tp-accent--sm"></span>
+        <h3 class="tp-h3" style="margin:14px 0 8px">Model</h3>
+        <p class="tp-note">Build the country instance of the group template, with the assumptions named on the page.</p>
+      </div>
+      <div class="tp-card">
+        <span class="tp-accent tp-accent--sm"></span>
+        <h3 class="tp-h3" style="margin:14px 0 8px">Embed</h3>
+        <p class="tp-note">Hand over a monthly review the client's own team can run without us.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">Accent-rule card — for the one that matters</p>
+    <div class="g2">
+      <div class="tp-card tp-card--accent">
+        <p class="tp-eyebrow" style="color:var(--tp-ink-muted)">Acceptance test</p>
+        <h3 class="tp-h2" style="margin:10px 0 8px">Reconciliation, not review</h3>
+        <p class="tp-note">A model ships when it ties back to the source total. ZMW 128,890,976, to the kwacha.</p>
+      </div>
+      <div class="tp-card tp-card--panel">
+        <p class="tp-eyebrow">Blue-gray panel</p>
+        <h3 class="tp-h2" style="margin:10px 0 8px">Framing surface</h3>
+        <p class="tp-body" style="font-size:15px">Pull-quotes, contact blocks, the right half of a split.
+          Charcoal text only — blue-gray is 6.50:1 against charcoal and 1.75:1 against white.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <p class="lab">On charcoal</p>
+    <div class="tp-dark" style="background:#3A3A3A;padding:30px">
+      <div class="g3">
+        <div class="tp-card tp-card--dark">
+          <span class="tp-step" style="width:32px;height:32px;font-size:13px">1</span>
+          <h3 class="tp-h3" style="margin:14px 0 8px">Raised panel</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66)">Charcoal-soft #4A4A4A. No border — the tone shift does the work.</p>
+        </div>
+        <div class="tp-outline-card" style="padding:24px">
+          <h3 class="tp-h3" style="margin:0 0 8px">Outline card</h3>
+          <p class="tp-note" style="color:rgba(255,255,255,.66)">2px cyan. Reserved for a statement, an ask, or a commercial number.</p>
+        </div>
+        <div class="tp-card tp-card--panel">
+          <h3 class="tp-h3" style="margin:0 0 8px">Panel on dark</h3>
+          <p class="tp-note" style="color:var(--tp-charcoal)">Blue-gray still carries charcoal text. It inverts the page, so use one per slide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tp-sec">
+    <h2>Rules</h2>
+    <ul class="tp-note" style="padding-left:18px;max-width:70ch">
+      <li><strong>Padding 24; 32 when the card holds a heading and more than three lines.</strong></li>
+      <li><strong>Square corners, no shadow.</strong> Depth comes from tone (white → surface → blue-gray → charcoal-soft), never from elevation.</li>
+      <li><strong>One accent-rule card per section.</strong> If everything is emphasised, nothing is.</li>
+      <li>Cards in a row are equal height. Let the shortest set the height and pad the rest — do not let content set it.</li>
+      <li>A card never carries both an accent block and a step number. Pick the one that matches the section.</li>
+    </ul>
+  </div>
+</div>
+</body></html>

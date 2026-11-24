@@ -9,7 +9,11 @@
     "start": "NODE_ENV=production node dist/index.js",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:worker": "node --test worker/test/worker.test.js worker/test/reply.test.js",
+    "sync:static": "node scripts/sync-static.mjs",
+    "prebuild": "node scripts/sync-static.mjs",
+    "predev": "node scripts/sync-static.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
